@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Order Details | JGGL-STORE</title>
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    >
+
+    <link
+        rel="stylesheet"
+      href="style_v8.css?v=29"
+
+    >
+
+</head>
+
+<body>
+
+<header class="top-header">
+
+    <button
+        type="button"
+        class="back-btn"
+        onclick="window.location.href='orders.html'"
+    >
+
+        <i class="fas fa-arrow-left"></i>
+        <span>Back</span>
+
+    </button>
+
+    <h2>Order Details</h2>
+
+</header>
+
+
+<section
+    id="printReceiptHeader"
+    class="print-receipt-header"
+>
+    <img
+        src="logo/logo.png"
+        alt="JGGL-STORE"
+        class="print-receipt-logo"
+    >
+
+    <h2>JGGL-STORE</h2>
+
+    <p>Your trusted online market</p>
+
+    <strong>ORDER RECEIPT</strong>
+
+    <div id="printReceiptOrderNumber"></div>
+</section>
+
+<main class="order-details-page">
+
+    <section class="order-card">
+
+        <h3 id="orderDetailsId">
+            Order ID
+        </h3>
+
+        <p>
+            <strong>Status:</strong>
+            <span id="orderDetailsStatus">
+                Pending
+            </span>
+        </p>
+
+        <p>
+            <strong>Date:</strong>
+            <span id="orderDetailsDate"></span>
+        </p>
+
+
+<div class="order-tracking">
+
+    <h3>Order Tracking</h3>
+
+    <div id="orderTrackingTimeline">
+
+        <div class="tracking-step active">
+            🟡 Pending
+        </div>
+
+        <div class="tracking-step">
+            🔵 Processing
+        </div>
+
+        <div class="tracking-step">
+            🟠 Out for Delivery
+        </div>
+
+        <div class="tracking-step">
+            🟢 Delivered
+        </div>
+
+    </div>
+
+</div>
+
+
+
+    </section>
+
+
+    <section class="order-card">
+
+        <h3>
+            Customer Details
+        </h3>
+
+        <p>
+            <strong>Name:</strong>
+            <span id="orderCustomerName"></span>
+        </p>
+
+        <p>
+            <strong>Phone:</strong>
+            <span id="orderCustomerPhone"></span>
+        </p>
+
+
+<p>
+    <strong>Email:</strong>
+    <span id="orderCustomerEmail"></span>
+</p>
+
+        <p>
+            <strong>Address:</strong>
+            <span id="orderCustomerAddress"></span>
+        </p>
+
+    </section>
+
+    <section class="order-card">
+
+        <h3>
+            Products
+        </h3>
+
+        <div id="orderDetailsItems">
+
+        </div>
+
+    </section>
+
+ <section class="order-card order-summary">
+
+
+     <p>
+
+        <strong>Subtotal:</strong>
+
+            <span id="orderDetailsSubtotal">
+                ₦0
+            </span>
+
+        </p>
+
+<p>
+    <strong>Coupon:</strong>
+    <span id="orderDetailsCoupon">-</span>
+</p>
+
+<p>
+    <strong>Discount:</strong>
+    <span id="orderDetailsDiscount">₦0</span>
+</p>
+
+<p>
+    <strong>Shipping State:</strong>
+    <span id="orderDetailsShippingState">-</span>
+</p>
+
+<p>
+    <strong>Estimated Delivery:</strong>
+    <span id="orderDetailsEstimatedDelivery">-</span>
+</p>
+
+
+        <p>
+
+            <strong>Delivery Fee:</strong>
+
+            <span id="orderDetailsDeliveryFee">
+                ₦0
+            </span>
+
+        </p>
+
+      
+<p>
+    <strong>Payment Method:</strong>
+    <span id="orderDetailsPaymentMethod">-</span>
+</p>
+
+<p>
+    <strong>Payment Status:</strong>
+    <span id="orderDetailsPaymentStatus">-</span>
+</p>
+
+
+
+<p class="total">
+            <strong>Total:</strong>
+
+            <span id="orderDetailsTotal">
+                ₦0
+            </span>
+
+        </p>
+
+    </section>
+
+
+
+    <div class="order-actions">
+
+
+<button
+    type="button"
+    class="btn secondary"
+    onclick="showCurrentOrderQr()"
+>
+    <i class="fas fa-qrcode"></i>
+    QR
+</button>
+
+<button
+    type="button"
+    class="btn secondary"
+    onclick="printCurrentOrderReceipt80mm()"
+>
+    <i class="fas fa-receipt"></i>
+    Print 80mm
+</button>
+
+<button
+    type="button"
+    class="btn secondary"
+    onclick="printCurrentOrderReceipt()"
+>
+    <i class="fas fa-print"></i>
+    Print Receipt
+</button>
+
+<button
+    type="button"
+    class="btn secondary"
+    onclick="saveCurrentOrderReceipt()"
+>
+    <i class="fas fa-download"></i>
+    Save Receipt
+</button>
+
+<button
+    type="button"
+    class="btn secondary"
+    onclick="shareCurrentOrderReceipt()"
+>
+    <i class="fas fa-share-nodes"></i>
+    Share Receipt
+</button>
+
+<button
+    type="button"
+    class="btn primary"
+    onclick="shareCurrentOrder()"
+>
+    <i class="fas fa-share-nodes"></i>
+    Share
+</button>
+
+
+<a
+    href="orders.html"
+    class="btn secondary"
+>
+    Back to My Orders
+</a>
+
+
+    </div>
+
+</main>
+
+<section
+    id="printReceiptFooter"
+    class="print-receipt-footer"
+>
+    <div id="printReceiptQr"></div>
+
+    <p>
+        Thank you for shopping with JGGL-STORE.
+    </p>
+</section>
+
+
+
+
+<div
+    id="orderQrModal"
+    style="
+        display:none;
+        position:fixed;
+        inset:0;
+        background:rgba(0,0,0,.70);
+        z-index:99999;
+        align-items:center;
+        justify-content:center;
+        padding:20px;
+    "
+>
+    <div
+        style="
+            background:#fff;
+            width:min(92vw,360px);
+            border-radius:18px;
+            padding:18px;
+            text-align:center;
+        "
+    >
+        <div
+            style="
+                display:flex;
+                justify-content:space-between;
+                align-items:center;
+                margin-bottom:14px;
+            "
+        >
+            <strong>Order QR Code</strong>
+
+            <button
+                type="button"
+                onclick="closeCurrentOrderQr()"
+                style="
+                    border:none;
+                    background:transparent;
+                    font-size:24px;
+                "
+            >
+                &times;
+            </button>
+        </div>
+
+        <div id="orderQrCode"></div>
+
+        <p
+            id="orderQrLabel"
+            style="
+                margin-top:12px;
+                font-weight:700;
+                word-break:break-word;
+            "
+        ></p>
+
+        <button
+            type="button"
+            onclick="saveCurrentOrderQr()"
+            style="
+                width:100%;
+                margin-top:10px;
+                padding:11px;
+                border:none;
+                border-radius:10px;
+                background:#0B7A3E;
+                color:#fff;
+                font-weight:700;
+            "
+        >
+            Save QR
+        </button>
+
+        <button
+            type="button"
+            onclick="shareCurrentOrderQr()"
+            style="
+                width:100%;
+                margin-top:10px;
+                padding:11px;
+                border:1px solid #0B7A3E;
+                border-radius:10px;
+                background:#fff;
+                color:#0B7A3E;
+                font-weight:700;
+            "
+        >
+            Share QR
+        </button>
+    </div>
+</div>
+
+<nav class="bottom-nav">
+
+    <a href="index.html" class="bottom-nav-item">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+    </a>
+
+    <a href="product-types.html" class="bottom-nav-item">
+        <i class="fas fa-box"></i>
+        <span>Products</span>
+    </a>
+
+    <a href="cart.html" class="bottom-nav-item">
+        <i class="fas fa-shopping-cart"></i>
+        <span>Cart</span>
+    </a>
+
+    <a href="wishlist.html" class="bottom-nav-item">
+        <i class="fas fa-heart"></i>
+        <span>Wishlist</span>
+    </a>
+
+    <a href="account.html" class="bottom-nav-item active">
+        <i class="fas fa-user"></i>
+        <span>Account</span>
+    </a>
+
+</nav>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+
+function getCurrentOrderQrNumber(){
+    return String(
+        localStorage.getItem("selectedOrderId") || ""
+    ).trim();
+}
+
+function showCurrentOrderQr(){
+
+    const orderNumber =
+        getCurrentOrderQrNumber();
+
+    if(!orderNumber){
+        alert("Order not found.");
+        return;
+    }
+
+    const modal =
+        document.getElementById("orderQrModal");
+
+    const container =
+        document.getElementById("orderQrCode");
+
+    const label =
+        document.getElementById("orderQrLabel");
+
+    if(!modal || !container){
+        return;
+    }
+
+    container.innerHTML = "";
+
+    new QRCode(
+        container,
+        {
+            text:
+                "JGGL-ORDER:" +
+                orderNumber,
+            width:240,
+            height:240
+        }
+    );
+
+    if(label){
+        label.textContent =
+            "Order: " + orderNumber;
+    }
+
+    modal.style.display = "flex";
+}
+
+function closeCurrentOrderQr(){
+
+    const modal =
+        document.getElementById("orderQrModal");
+
+    if(modal){
+        modal.style.display = "none";
+    }
+}
+
+function getOrderQrCanvas(){
+
+    const container =
+        document.getElementById("orderQrCode");
+
+    return container
+        ? container.querySelector("canvas")
+        : null;
+}
+
+function saveCurrentOrderQr(){
+
+    const orderNumber =
+        getCurrentOrderQrNumber();
+
+    const canvas =
+        getOrderQrCanvas();
+
+    if(!orderNumber || !canvas){
+        alert("Order QR is not ready.");
+        return;
+    }
+
+    canvas.toBlob(function(blob){
+
+        if(!blob){
+            alert("Unable to save Order QR.");
+            return;
+        }
+
+        const url =
+            URL.createObjectURL(blob);
+
+        const link =
+            document.createElement("a");
+
+        const safeOrder =
+            orderNumber.replace(
+                /[^a-zA-Z0-9-]+/g,
+                "-"
+            );
+
+        link.href = url;
+        link.download =
+            "JGGL-ORDER-" +
+            safeOrder +
+            "-QR.png";
+
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        setTimeout(function(){
+            URL.revokeObjectURL(url);
+        }, 1000);
+
+    }, "image/png");
+}
+
+async function shareCurrentOrderQr(){
+
+    const orderNumber =
+        getCurrentOrderQrNumber();
+
+    const canvas =
+        getOrderQrCanvas();
+
+    if(!orderNumber || !canvas){
+        alert("Order QR is not ready.");
+        return;
+    }
+
+    canvas.toBlob(async function(blob){
+
+        if(!blob){
+            alert("Unable to share Order QR.");
+            return;
+        }
+
+        const safeOrder =
+            orderNumber.replace(
+                /[^a-zA-Z0-9-]+/g,
+                "-"
+            );
+
+        const file =
+            new File(
+                [blob],
+                "JGGL-ORDER-" +
+                safeOrder +
+                "-QR.png",
+                {
+                    type:"image/png"
+                }
+            );
+
+        const text =
+            "JGGL-STORE Order QR\n" +
+            "Order: " +
+            orderNumber;
+
+        try{
+
+            if(
+                navigator.canShare &&
+                navigator.canShare({
+                    files:[file]
+                })
+            ){
+
+                await navigator.share({
+                    title:"JGGL-STORE Order",
+                    text:text,
+                    files:[file]
+                });
+
+            }else if(navigator.share){
+
+                await navigator.share({
+                    title:"JGGL-STORE Order",
+                    text:text
+                });
+
+            }else{
+
+                alert(
+                    "Sharing is not supported on this browser."
+                );
+            }
+
+        }catch(error){
+
+            if(error.name !== "AbortError"){
+                console.error(
+                    "ORDER QR SHARE ERROR:",
+                    error
+                );
+            }
+        }
+
+    }, "image/png");
+}
+
+
+</script>
+<script src="products-data.js"></script>
+<script src="script_v8.js"></script>
+
+
+<script>
+
+function preparePrintableReceipt(){
+
+    const orderNumber =
+        String(
+            localStorage.getItem("selectedOrderId") || ""
+        ).trim();
+
+    const numberBox =
+        document.getElementById(
+            "printReceiptOrderNumber"
+        );
+
+    const qrBox =
+        document.getElementById(
+            "printReceiptQr"
+        );
+
+    if(numberBox){
+        numberBox.textContent =
+            orderNumber
+                ? "Order: " + orderNumber
+                : "";
+    }
+
+    if(qrBox && orderNumber){
+
+        qrBox.innerHTML = "";
+
+        new QRCode(
+            qrBox,
+            {
+                text:
+                    "JGGL-ORDER:" +
+                    orderNumber,
+                width:90,
+                height:90
+            }
+        );
+    }
+
+}
+
+
+function printCurrentOrderReceipt80mm(){
+
+    preparePrintableReceipt();
+
+    document.body.classList.add(
+        "printing-order-receipt",
+        "thermal-80mm"
+    );
+
+    window.print();
+
+}
+
+function printCurrentOrderReceipt(){
+
+    preparePrintableReceipt();
+
+    document.body.classList.add(
+        "printing-order-receipt"
+    );
+
+    window.print();
+
+}
+
+window.addEventListener(
+    "afterprint",
+    function(){
+
+        document.body.classList.remove(
+            "printing-order-receipt",
+            "thermal-80mm"
+        );
+
+    }
+);
+</script>
+
+
+<script>
+
+/* ==========================================
+   RECEIPT SAVE + SHARE IMAGE
+========================================== */
+
+async function buildCurrentOrderReceiptCanvas(){
+
+    if(typeof html2canvas !== "function"){
+        throw new Error("html2canvas is not available.");
+    }
+
+    preparePrintableReceipt();
+
+    await new Promise(function(resolve){
+        setTimeout(resolve, 150);
+    });
+
+    const header =
+        document.getElementById("printReceiptHeader");
+
+    const main =
+        document.querySelector(".order-details-page");
+
+    const footer =
+        document.getElementById("printReceiptFooter");
+
+    if(!header || !main || !footer){
+        throw new Error("Receipt elements were not found.");
+    }
+
+    const capture =
+        document.createElement("div");
+
+    capture.style.position = "fixed";
+    capture.style.left = "-10000px";
+    capture.style.top = "0";
+    capture.style.width = "390px";
+    capture.style.boxSizing = "border-box";
+    capture.style.padding = "12px 14px";
+    capture.style.background = "#ffffff";
+    capture.style.color = "#111111";
+    capture.style.fontFamily =
+        "Arial, Helvetica, sans-serif";
+    capture.style.zIndex = "-1";
+
+    const headerClone =
+        header.cloneNode(true);
+
+    const mainClone =
+        main.cloneNode(true);
+
+    const footerClone =
+        footer.cloneNode(true);
+
+    headerClone.style.display = "block";
+    headerClone.style.textAlign = "center";
+    headerClone.style.padding = "4px 0 6px";
+    headerClone.style.marginBottom = "8px";
+    headerClone.style.borderBottom =
+        "1px solid #cccccc";
+
+    footerClone.style.display = "block";
+    footerClone.style.textAlign = "center";
+    footerClone.style.paddingTop = "6px";
+    footerClone.style.marginTop = "8px";
+    footerClone.style.borderTop =
+        "1px solid #cccccc";
+
+    const actions =
+        mainClone.querySelector(".order-actions");
+
+    if(actions){
+        actions.remove();
+    }
+
+    const tracking =
+        mainClone.querySelector(".order-tracking");
+
+    if(tracking){
+        tracking.remove();
+    }
+
+    const sourceQr =
+        document.querySelector(
+            "#printReceiptQr canvas"
+        );
+
+    const clonedQr =
+        footerClone.querySelector(
+            "#printReceiptQr"
+        );
+
+    if(sourceQr && clonedQr){
+
+        try{
+
+            const qrImage =
+                document.createElement("img");
+
+            qrImage.src =
+                sourceQr.toDataURL("image/png");
+
+            qrImage.style.width = "92px";
+            qrImage.style.height = "92px";
+            qrImage.style.display = "block";
+            qrImage.style.margin = "0 auto 8px";
+
+            clonedQr.innerHTML = "";
+            clonedQr.appendChild(qrImage);
+
+        }catch(error){
+
+            console.warn(
+                "Receipt QR conversion warning:",
+                error
+            );
+
+        }
+
+    }
+
+    const logo =
+        headerClone.querySelector(
+            ".print-receipt-logo"
+        );
+
+    if(logo){
+        logo.style.width = "52px";
+        logo.style.height = "52px";
+        logo.style.objectFit = "contain";
+        logo.style.display = "block";
+        logo.style.margin = "0 auto 5px";
+    }
+
+    mainClone.style.width = "100%";
+    mainClone.style.maxWidth = "100%";
+    mainClone.style.margin = "0";
+    mainClone.style.padding = "0";
+
+    const orderCards =
+        mainClone.querySelectorAll(".order-card");
+
+    orderCards.forEach(function(card){
+        card.style.margin = "0 0 5px 0";
+        card.style.padding = "5px 7px";
+        card.style.border = "1px solid #d9d9d9";
+        card.style.borderRadius = "0";
+        card.style.boxShadow = "none";
+        card.style.background = "#ffffff";
+    });
+
+    mainClone.querySelectorAll(".order-card h3")
+        .forEach(function(el){
+            el.style.fontSize = "15px";
+            el.style.lineHeight = "1.2";
+            el.style.margin = "0 0 4px 0";
+        });
+
+    mainClone.querySelectorAll(".order-card p")
+        .forEach(function(el){
+            el.style.fontSize = "13px";
+            el.style.lineHeight = "1.25";
+            el.style.margin = "1px 0";
+        });
+
+    const itemsWrap =
+        mainClone.querySelector("#orderDetailsItems");
+
+    if(itemsWrap){
+        itemsWrap.style.margin = "0";
+        itemsWrap.style.padding = "0";
+    }
+
+    mainClone.querySelectorAll("#orderDetailsItems > *")
+        .forEach(function(el){
+            el.style.margin = "2px 0";
+            el.style.padding = "4px";
+        });
+
+    mainClone.querySelectorAll(".order-summary")
+        .forEach(function(el){
+            el.style.marginBottom = "0";
+        });
+
+    mainClone.querySelectorAll(".order-summary .total")
+        .forEach(function(el){
+            el.style.marginTop = "4px";
+            el.style.paddingTop = "4px";
+            el.style.fontSize = "12px";
+        });
+
+    const headerH2 =
+        headerClone.querySelector("h2");
+
+    if(headerH2){
+        headerH2.style.margin = "1px 0";
+        headerH2.style.fontSize = "20px";
+    }
+
+    const headerP =
+        headerClone.querySelector("p");
+
+    if(headerP){
+        headerP.style.margin = "1px 0 2px 0";
+        headerP.style.fontSize = "11px";
+    }
+
+    const headerStrong =
+        headerClone.querySelector("strong");
+
+    if(headerStrong){
+        headerStrong.style.display = "block";
+        headerStrong.style.marginTop = "2px";
+        headerStrong.style.fontSize = "15px";
+    }
+
+    const headerOrder =
+        headerClone.querySelector("#printReceiptOrderNumber");
+
+    if(headerOrder){
+        headerOrder.style.marginTop = "2px";
+        headerOrder.style.fontSize = "12px";
+        headerOrder.style.fontWeight = "700";
+    }
+
+    const footerText =
+        footerClone.querySelector("p");
+
+    if(footerText){
+        footerText.style.margin = "2px 0 0 0";
+        footerText.style.fontSize = "11px";
+        footerText.style.fontWeight = "700";
+    }
+
+    capture.appendChild(headerClone);
+    capture.appendChild(mainClone);
+    capture.appendChild(footerClone);
+
+    document.body.appendChild(capture);
+
+    try{
+
+        const images =
+            capture.querySelectorAll("img");
+
+        await Promise.all(
+            Array.from(images).map(
+                function(img){
+
+                    if(img.complete){
+                        return Promise.resolve();
+                    }
+
+                    return new Promise(
+                        function(resolve){
+
+                            img.onload = resolve;
+                            img.onerror = resolve;
+
+                        }
+                    );
+
+                }
+            )
+        );
+
+        const canvas =
+            await html2canvas(
+                capture,
+                {
+                    backgroundColor:"#ffffff",
+                    scale:2,
+                    useCORS:true,
+                    logging:false
+                }
+            );
+
+        return canvas;
+
+    }finally{
+
+        capture.remove();
+
+    }
+
+}
+
+
+function getCurrentReceiptFileName(){
+
+    const orderNumber =
+        String(
+            localStorage.getItem(
+                "selectedOrderId"
+            ) || "order"
+        )
+        .trim()
+        .replace(
+            /[^a-zA-Z0-9_-]/g,
+            "-"
+        );
+
+    return (
+        "JGGL-STORE-Receipt-" +
+        orderNumber +
+        ".png"
+    );
+
+}
+
+
+async function saveCurrentOrderReceipt(){
+
+    try{
+
+        const canvas =
+            await buildCurrentOrderReceiptCanvas();
+
+        const link =
+            document.createElement("a");
+
+        link.download =
+            getCurrentReceiptFileName();
+
+        link.href =
+            canvas.toDataURL("image/png");
+
+        document.body.appendChild(link);
+
+        link.click();
+        link.remove();
+
+    }catch(error){
+
+        console.error(
+            "SAVE RECEIPT ERROR:",
+            error
+        );
+
+        alert(
+            "Unable to save receipt.\n\n" +
+            error.message
+        );
+
+    }
+
+}
+
+
+async function shareCurrentOrderReceipt(){
+
+    try{
+
+        const canvas =
+            await buildCurrentOrderReceiptCanvas();
+
+        const blob =
+            await new Promise(
+                function(resolve){
+
+                    canvas.toBlob(
+                        resolve,
+                        "image/png",
+                        1
+                    );
+
+                }
+            );
+
+        if(!blob){
+            throw new Error(
+                "Unable to create receipt image."
+            );
+        }
+
+        const file =
+            new File(
+                [blob],
+                getCurrentReceiptFileName(),
+                {
+                    type:"image/png"
+                }
+            );
+
+        if(
+            navigator.share &&
+            navigator.canShare &&
+            navigator.canShare({
+                files:[file]
+            })
+        ){
+
+            await navigator.share({
+                title:"JGGL-STORE Receipt",
+                text:"JGGL-STORE Order Receipt",
+                files:[file]
+            });
+
+            return;
+        }
+
+        const link =
+            document.createElement("a");
+
+        link.download =
+            getCurrentReceiptFileName();
+
+        link.href =
+            URL.createObjectURL(blob);
+
+        document.body.appendChild(link);
+
+        link.click();
+        link.remove();
+
+        setTimeout(
+            function(){
+                URL.revokeObjectURL(
+                    link.href
+                );
+            },
+            1000
+        );
+
+        alert(
+            "Direct file sharing is not supported here. Receipt has been saved instead."
+        );
+
+    }catch(error){
+
+        if(error.name === "AbortError"){
+            return;
+        }
+
+        console.error(
+            "SHARE RECEIPT ERROR:",
+            error
+        );
+
+        alert(
+            "Unable to share receipt.\n\n" +
+            error.message
+        );
+
+    }
+
+}
+
+</script>
+
+</body>
+</html>

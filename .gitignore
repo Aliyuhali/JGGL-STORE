@@ -1,0 +1,64 @@
+# Secrets
+.env
+backend/.env
+*.env
+
+# Node
+node_modules/
+backend/node_modules/
+
+# Logs
+*.log
+backend/*.log
+
+# Backups / temporary files
+backups/
+role-test.html
+
+# OS / editor
+.DS_Store
+*.swp
+*.tmp
+
+# ==========================================
+# JGGL-STORE legacy / backup / test files
+# ==========================================
+
+*-before-*
+*.backup-links
+*_backup*
+*_old*
+*_broken*
+*_before_*
+*-backup-*
+
+# Accidental / temporary filenames
+4434
+grep
+~grep
+http.server
+index.htmlx
+index_v8.htmlpython
+notifications.htmlo
+script_v8.js99999
+style_v8.cs
+script.j
+
+# Old development versions
+version7.0/
+index_v7*
+index_v8*
+index_v9.html
+script_v7*
+script_v9.js
+style_v7*
+style_v9.css
+
+# Standalone test files
+test-qr.html
+
+# Additional legacy / duplicate files
+*.htm
+index_tmp.txt
+new_index.html
+*.before-jwt-frontend

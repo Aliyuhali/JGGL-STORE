@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Search - JGGL-STORE</title>
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+
+<h1>JGGL-STORE</h1>
+
+<nav>
+<a href="index_v8.html">Home</a>
+<a href="products.html">Products</a>
+<a href="category.html">Categories</a>
+<a href="cart.html">Cart</a>
+<a href="contact.html">Contact</a>
+</nav>
+
+</header>
+
+<section class="search-box">
+
+<h2>Search Products</h2>
+
+<input
+type="text"
+id="searchInput"
+placeholder="Search products..."
+onkeyup="searchProduct()"
+>
+
+<div id="result"></div>
+
+</section>
+
+<script>
+
+let products = [
+"Rice",
+"Sugar",
+"Salt",
+"Spaghetti",
+"Flour",
+"Cooking Oil",
+"Water",
+"Juice",
+"Soft Drinks",
+"Mobile Phones",
+"Laptops",
+"Power Banks",
+"Chargers",
+"Clothes",
+"Shoes",
+"Bags",
+"Watches",
+"Perfume",
+"Cream",
+"Cosmetics"
+];
+
+function searchProduct() {
+
+let input = document.getElementById("searchInput").value.toLowerCase();
+
+let output = "";
+
+for (let i = 0; i < products.length; i++) {
+
+if (products[i].toLowerCase().includes(input)) {
+output += "<p>" + products[i] + "</p>";
+}
+
+}
+
+if (output === "") {
+output = "<p>No product found.</p>";
+}
+
+document.getElementById("result").innerHTML = output;
+
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Admin Products | JGGL-STORE</title>
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    >
+
+
+<link
+    rel="stylesheet"
+
+  href="style_v8.css?v=10"
+>
+
+<link
+    rel="stylesheet"
+
+   href="admin.css?v=2"
+>
+
+
+</head>
+
+<body>
+
+<header class="top-header">
+
+    <button
+        type="button"
+        class="back-btn"
+        onclick="window.location.href='admin-dashboard.html'"
+    >
+
+        <i class="fas fa-arrow-left"></i>
+
+        <span>Back</span>
+
+    </button>
+
+    <h2>Admin Products</h2>
+
+</header>
+
+<main class="admin-products-page">
+
+    <section class="admin-products-actions">
+
+        <button
+            type="button"
+            class="btn"
+            onclick="openAddProductForm()"
+        >
+
+            <i class="fas fa-plus"></i>
+
+            Add Product
+
+        </button>
+
+    </section>
+
+    <section class="admin-products-list">
+
+        <h3>All Products</h3>
+
+        <div id="adminProductsContainer">
+
+        </div>
+
+    </section>
+
+</main>
+
+<script src="products-data.js"></script>
+<script src="script_v8.js"></script>
+<script src="admin.js?v=1"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Admin Dashboard | JGGL-STORE</title>
+
+
+<link
+    rel="stylesheet"
+    href="style_v8.css?v=9"
+>
+
+<link
+    rel="stylesheet"
+    href="admin.css?v=1"
+>
+
+</head>
+
+<body>
+
+<header class="top-header">
+
+<button
+    type="button"
+    class="back-btn"
+    onclick="history.back()"
+>
+
+<i class="fas fa-arrow-left"></i>
+
+<span>Back</span>
+
+</button>
+
+<h2>Admin Dashboard</h2>
+
+</header>
+
+<main class="admin-dashboard">
+
+<div class="dashboard-cards">
+
+<div class="dashboard-card">
+<h3 id="dashboardTotalOrders">0</h3>
+<p>Total Orders</p>
+</div>
+
+<div class="dashboard-card">
+<h3 id="dashboardPendingOrders">0</h3>
+<p>Pending</p>
+</div>
+
+<div class="dashboard-card">
+<h3 id="dashboardDeliveredOrders">0</h3>
+<p>Delivered</p>
+</div>
+
+<div class="dashboard-card">
+<h3 id="dashboardTotalSales">₦0</h3>
+<p>Total Sales</p>
+</div>
+
+</div>
+
+<section class="dashboard-actions">
+
+
+<a
+    href="admin-orders.html"
+    class="btn"
+>
+    Manage Orders
+</a>
+
+<a
+    href="admin-products.html"
+    class="btn secondary"
+>
+    Products
+</a>
+
+<a
+    href="admin-customers.html"
+    class="btn secondary"
+>
+    Customers
+</a>
+
+<a
+    href="admin-analytics.html"
+    class="btn secondary"
+>
+    Analytics
+</a>
+
+
+<a
+    href="admin-notifications.html"
+    class="btn secondary"
+>
+    Notifications
+</a>
+
+
+
+<a
+    href="admin-settings.html"
+    class="btn secondary"
+>
+    Settings
+</a>
+
+
+
+</section>
+
+<section class="dashboard-recent">
+
+<h3>Recent Orders</h3>
+
+<div id="dashboardRecentOrders">
+
+</div>
+
+</section>
+
+</main>
+
+<script src="products-data.js"></script>
+<script src="script_v8.js"></script>
+<script src="admin.js?v=1"></script>
+
+</body>
+
+</html>

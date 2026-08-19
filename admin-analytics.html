@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Admin Analytics - JGGL-STORE</title>
+
+    <link
+        rel="stylesheet"
+        href="style_v8.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="admin.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    >
+</head>
+
+<body>
+
+    <header class="top-header">
+
+        <a
+            href="admin-dashboard.html"
+            class="admin-back-btn"
+        >
+            <i class="fas fa-arrow-left"></i>
+        </a>
+
+        <h1>Analytics & Reports</h1>
+
+    </header>
+
+    <main class="admin-analytics-page">
+
+        <section class="admin-analytics-heading">
+
+            <h2>Business Overview</h2>
+
+            <p>
+                Sales, orders and customer summary
+            </p>
+
+        </section>
+
+        <section class="admin-analytics-grid">
+
+            <article class="admin-analytics-card">
+
+                <div class="admin-analytics-icon">
+                    <i class="fas fa-naira-sign"></i>
+                </div>
+
+                <div>
+                    <span>Total Sales</span>
+
+                    <h3 id="analyticsTotalSales">
+                        ₦0
+                    </h3>
+                </div>
+
+            </article>
+
+            <article class="admin-analytics-card">
+
+                <div class="admin-analytics-icon">
+                    <i class="fas fa-bag-shopping"></i>
+                </div>
+
+                <div>
+                    <span>Total Orders</span>
+
+                    <h3 id="analyticsTotalOrders">
+                        0
+                    </h3>
+                </div>
+
+            </article>
+
+            <article class="admin-analytics-card">
+
+                <div class="admin-analytics-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+
+                <div>
+                    <span>Total Customers</span>
+
+                    <h3 id="analyticsTotalCustomers">
+                        0
+                    </h3>
+                </div>
+
+            </article>
+
+            <article class="admin-analytics-card">
+
+                <div class="admin-analytics-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+
+                <div>
+                    <span>Average Order Value</span>
+
+                    <h3 id="analyticsAverageOrder">
+                        ₦0
+                    </h3>
+                </div>
+
+            </article>
+
+        </section>
+
+        <section class="admin-analytics-section">
+
+            <h2>Order Status Summary</h2>
+
+            <div class="admin-status-report-grid">
+
+                <article class="admin-status-report-card pending">
+
+                    <span>Pending</span>
+
+                    <strong id="analyticsPendingOrders">
+                        0
+                    </strong>
+
+                </article>
+
+                <article class="admin-status-report-card processing">
+
+                    <span>Processing</span>
+
+                    <strong id="analyticsProcessingOrders">
+                        0
+                    </strong>
+
+                </article>
+
+
+
+<article class="admin-status-report-card out-for-delivery">
+
+    <span>Out for Delivery</span>
+
+    <strong id="analyticsOutForDeliveryOrders">
+        0
+    </strong>
+
+</article>
+
+
+                <article class="admin-status-report-card delivered">
+
+                    <span>Delivered</span>
+
+                    <strong id="analyticsDeliveredOrders">
+                        0
+                    </strong>
+
+                </article>
+
+                <article class="admin-status-report-card cancelled">
+
+                    <span>Cancelled</span>
+
+                    <strong id="analyticsCancelledOrders">
+                        0
+                    </strong>
+
+                </article>
+
+            </div>
+
+        </section>
+
+        <section class="admin-analytics-section">
+
+            <h2>Top Selling Products</h2>
+
+            <div id="analyticsTopProducts">
+
+                <p class="admin-empty-message">
+                    No sales data yet.
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <script src="products-data.js"></script>
+    <script src="script_v8.js"></script>
+
+</body>
+
+</html>

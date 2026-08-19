@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Wishlist | JGGL-STORE</title>
+
+    <link
+        rel="stylesheet"
+        href="style_v8.css">
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+
+        *{
+            box-sizing:border-box;
+        }
+
+        body{
+            margin:0;
+            padding:0 0 80px;
+            background:#f5f6f7;
+            color:#222;
+            font-family:Arial, sans-serif;
+        }
+
+        .wishlist-header{
+            display:flex;
+            align-items:center;
+            gap:15px;
+            background:#0B7A3E;
+            color:#fff;
+            padding:16px;
+            position:sticky;
+            top:0;
+            z-index:20;
+            box-shadow:0 2px 8px rgba(0,0,0,.12);
+        }
+
+        .wishlist-header a{
+            color:#fff;
+            font-size:21px;
+            text-decoration:none;
+        }
+
+        .wishlist-header h1{
+            margin:0;
+            font-size:21px;
+        }
+
+        .wishlist-container{
+            width:100%;
+            max-width:650px;
+            margin:auto;
+            padding:14px;
+        }
+
+        .wishlist-top-card{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:10px;
+            background:#fff;
+            border-radius:16px;
+            padding:14px;
+            margin-bottom:14px;
+            box-shadow:0 3px 12px rgba(0,0,0,.08);
+        }
+
+        .wishlist-title h2{
+            margin:0 0 4px;
+            font-size:18px;
+            color:#0B7A3E;
+        }
+
+        .wishlist-title p{
+            margin:0;
+            color:#777;
+            font-size:13px;
+        }
+
+        .clear-wishlist{
+            border:none;
+            background:#ffe8e8;
+            color:#c62828;
+            padding:10px 12px;
+            border-radius:10px;
+            font-size:13px;
+            font-weight:700;
+            cursor:pointer;
+        }
+
+        #wishlistItems{
+            display:grid;
+            grid-template-columns:repeat(2, minmax(0, 1fr));
+            gap:12px;
+        }
+
+        .wishlist-item{
+            background:#fff;
+            border-radius:14px;
+            overflow:hidden;
+            box-shadow:0 3px 12px rgba(0,0,0,.08);
+        }
+
+        .wishlist-item img{
+            width:100%;
+            height:150px;
+            object-fit:cover;
+            display:block;
+            background:#eee;
+        }
+
+        .wishlist-item-content{
+            padding:12px;
+        }
+
+        .wishlist-item h3{
+            margin:0 0 7px;
+            font-size:15px;
+        }
+
+        .wishlist-item .price{
+            margin:0 0 10px;
+            color:#0B7A3E;
+            font-size:15px;
+            font-weight:700;
+        }
+
+        .wishlist-buttons{
+            display:grid;
+            grid-template-columns:1fr;
+            gap:8px;
+        }
+
+        .wishlist-btn{
+            min-height:40px;
+            border:none;
+            border-radius:10px;
+            font-size:13px;
+            font-weight:700;
+            cursor:pointer;
+        }
+
+        .add-wishlist-cart{
+            background:#0B7A3E;
+            color:#fff;
+        }
+
+        .remove-wishlist{
+            background:#f1f1f1;
+            color:#c62828;
+        }
+
+
+        .empty-wishlist{
+            grid-column:1 / -1;
+            background:#fff;
+            border-radius:16px;
+            padding:40px 20px;
+            text-align:center;
+            box-shadow:0 3px 12px rgba(0,0,0,.08);
+        }
+
+        .empty-wishlist i{
+            font-size:46px;
+            color:#bbb;
+            margin-bottom:12px;
+        }
+
+        .empty-wishlist h3{
+            margin:0 0 6px;
+            font-size:18px;
+        }
+
+        .empty-wishlist p{
+            margin:0 0 16px;
+            color:#777;
+            font-size:14px;
+        }
+
+        .browse-products{
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            gap:7px;
+            min-height:42px;
+            padding:0 16px;
+            border-radius:10px;
+            background:#0B7A3E;
+            color:#fff;
+            text-decoration:none;
+            font-weight:700;
+            font-size:14px;
+        }
+
+        .bottom-nav{
+            position:fixed;
+            bottom:0;
+            left:0;
+            right:0;
+            display:flex;
+            justify-content:space-around;
+            align-items:center;
+            background:#fff;
+            padding:8px 3px;
+            box-shadow:0 -2px 12px rgba(0,0,0,.10);
+            z-index:30;
+        }
+
+        .bottom-nav-item{
+            flex:1;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            gap:4px;
+            color:#666;
+            font-size:11px;
+            text-decoration:none;
+        }
+
+        .bottom-nav-item i{
+            font-size:20px;
+        }
+
+        .bottom-nav-item.active{
+            color:#0B7A3E;
+        }
+
+        @media(max-width:420px){
+
+            .wishlist-container{
+                padding:11px;
+            }
+
+            .wishlist-top-card{
+                align-items:flex-start;
+            }
+
+            #wishlistItems{
+                grid-template-columns:1fr 1fr;
+                gap:10px;
+            }
+
+            .wishlist-item img{
+                height:130px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<header class="wishlist-header">
+
+    <a href="index.html" aria-label="Back">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+
+    <h1>My Wishlist</h1>
+
+</header>
+
+<main class="wishlist-container">
+
+    <section class="wishlist-top-card">
+
+        <div class="wishlist-title">
+
+            <h2>Saved Products</h2>
+
+            <p>
+                <span id="wishlist-count">0</span>
+                items
+            </p>
+
+        </div>
+
+        <button
+            type="button"
+            class="clear-wishlist"
+            onclick="clearWishlist()">
+
+            <i class="fas fa-trash"></i>
+            Clear
+
+        </button>
+
+    </section>
+
+    <section id="wishlistItems">
+
+        <div class="empty-wishlist">
+
+            <i class="far fa-heart"></i>
+
+            <h3>Your wishlist is empty</h3>
+
+            <p>Products you save will appear here.</p>
+
+            <a
+                href="product-types.html"
+                class="browse-products">
+
+                <i class="fas fa-bag-shopping"></i>
+                Browse Products
+
+            </a>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<nav class="bottom-nav">
+
+    <a href="index.html" class="bottom-nav-item">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+    </a>
+
+    <a href="product-types.html" class="bottom-nav-item">
+        <i class="fas fa-box"></i>
+        <span>Products</span>
+    </a>
+
+    <a href="cart.html" class="bottom-nav-item">
+        <i class="fas fa-shopping-cart"></i>
+        <span>Cart</span>
+    </a>
+
+    <a href="wishlist.html" class="bottom-nav-item active">
+        <i class="fas fa-heart"></i>
+        <span>Wishlist</span>
+    </a>
+
+    <a href="account.html" class="bottom-nav-item">
+        <i class="fas fa-user"></i>
+        <span>Account</span>
+    </a>
+
+</nav>
+
+<script src="products-data.js?v=4"></script>
+<script src="script_v8.js"></script>
+
+</body>
+
+</html>

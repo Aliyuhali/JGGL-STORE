@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Admin Orders | JGGL-STORE</title>
+
+
+<link
+    rel="stylesheet"
+    href="style_v8.css?v=8"
+>
+
+<link
+    rel="stylesheet"
+    href="admin.css?v=1"
+>
+
+</head>
+
+<body>
+
+<header class="top-header">
+
+    <button
+        type="button"
+        class="back-btn"
+        onclick="history.back()"
+    >
+
+        <i class="fas fa-arrow-left"></i>
+
+        <span>Back</span>
+
+    </button>
+
+    <h2>Admin Orders</h2>
+
+</header>
+
+<main class="admin-orders-page">
+
+    <section class="admin-orders-summary">
+
+        <div class="admin-summary-card">
+
+            <span id="adminTotalOrders">0</span>
+
+            <small>Total Orders</small>
+
+        </div>
+
+        <div class="admin-summary-card">
+
+            <span id="adminPendingOrders">0</span>
+
+            <small>Pending</small>
+
+        </div>
+
+        <div class="admin-summary-card">
+
+            <span id="adminDeliveredOrders">0</span>
+
+            <small>Delivered</small>
+
+        </div>
+
+    </section>
+
+    <section class="admin-orders-section">
+
+        <div class="admin-orders-heading">
+
+            <h3>Manage Orders</h3>
+
+            <button
+                type="button"
+                class="admin-refresh-btn"
+                onclick="loadAdminOrders()"
+            >
+
+                <i class="fas fa-rotate"></i>
+
+                Refresh
+
+            </button>
+
+        </div>
+
+        <div id="adminOrdersContainer">
+
+        </div>
+
+    </section>
+
+</main>
+
+<script src="products-data.js"></script>
+<script src="script_v8.js"></script>
+<script src="admin.js?v=1"></script>
+
+</body>
+
+</html>

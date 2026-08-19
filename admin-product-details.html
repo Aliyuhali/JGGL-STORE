@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Admin Product Details | JGGL-STORE</title>
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="style_v8.css?v=10"
+    >
+
+    <link
+        rel="stylesheet"
+        href="admin.css?v=2"
+    >
+
+</head>
+
+<body>
+
+<header class="top-header">
+
+    <button
+        type="button"
+        class="back-btn"
+        onclick="window.location.href='admin-products.html'"
+    >
+        <i class="fas fa-arrow-left"></i>
+        <span>Back</span>
+    </button>
+
+    <h2>Product Details</h2>
+
+</header>
+
+<main class="admin-product-details-page">
+
+    <section class="admin-product-details-card">
+
+        <div class="admin-product-details-image">
+
+            <img
+                id="adminDetailsImage"
+                src=""
+                alt="Product"
+            >
+
+        </div>
+
+        <div class="admin-product-details-info">
+
+            <h2 id="adminDetailsName">
+                Product Name
+            </h2>
+
+            <p>
+                <strong>Category:</strong>
+                <span id="adminDetailsCategory">-</span>
+            </p>
+
+            <p>
+                <strong>Brand:</strong>
+                <span id="adminDetailsBrand">-</span>
+            </p>
+
+            <p>
+                <strong>Retail Price:</strong>
+                ₦<span id="adminDetailsRetailPrice">0</span>
+            </p>
+
+            <p>
+                <strong>Wholesale Price:</strong>
+                ₦<span id="adminDetailsWholesalePrice">0</span>
+            </p>
+
+            <p>
+                <strong>Bulk Price:</strong>
+                ₦<span id="adminDetailsBulkPrice">0</span>
+            </p>
+
+            <p>
+                <strong>Stock:</strong>
+                <span id="adminDetailsStock">0</span>
+            </p>
+
+        </div>
+
+    </section>
+
+    <section class="admin-product-details-card">
+
+        <h3>Description</h3>
+
+        <p id="adminDetailsDescription">
+            No description available.
+        </p>
+
+    </section>
+
+    <section class="admin-product-details-actions">
+
+        <button
+            type="button"
+            class="admin-edit-product-btn"
+            onclick="editCurrentAdminProduct()"
+        >
+            <i class="fas fa-pen"></i>
+            Edit Product
+        </button>
+
+        <button
+            type="button"
+            class="admin-delete-product-btn"
+            onclick="deleteCurrentAdminProduct()"
+        >
+            <i class="fas fa-trash"></i>
+            Delete Product
+        </button>
+
+    </section>
+
+</main>
+
+<script src="products-data.js"></script>
+<script src="script_v8.js?v=12"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,208 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Product Types | JGGL-STORE</title>
+
+    <link rel="stylesheet" href="style_v8.css">
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+</head>
+
+<body>
+
+<!-- =========================================
+     TOP HEADER
+========================================= -->
+
+
+<header class="top-header product-types-header">
+
+    <button
+        type="button"
+        class="back-btn"
+        onclick="history.back()"
+    >
+        <i class="fas fa-arrow-left"></i>
+        <span data-i18n="back">Back</span>
+    </button>
+
+    <h2
+        id="groupTitle"
+        data-i18n="productTypes"
+    >
+        Product Types
+    </h2>
+
+</header>
+
+
+
+<!-- =========================================
+     MAIN CONTENT
+========================================= -->
+
+<main class="product-types-page">
+
+    <!-- TRENDING PRODUCTS -->
+
+    <section class="trending-products">
+
+        <div class="section-heading">
+
+         <h2 data-i18n="trendingProducts">
+    Trending Products
+</h2>
+    
+
+   </div>
+
+        <div
+            id="trendingProducts"
+            class="trending-products-slider"
+        >
+        </div>
+
+    </section>
+
+
+    <!-- GROUP INFORMATION -->
+
+    <section class="group-section">
+
+        <div class="group-header">
+
+        <h2 id="groupName">
+    Products
+</h2>
+
+ 
+      <p id="groupCount">
+        0 Products
+        </p>
+
+        </div>
+
+        <div
+            id="productsContainer"
+            class="products-grid"
+        >
+        </div>
+
+        <div
+            id="noProductsFound"
+            class="no-products-found"
+        >
+            <i class="fas fa-box-open"></i>
+       <p data-i18n="noProductFound">
+    No product found
+</p>
+
+   </div>
+
+    </section>
+
+</main>
+
+
+<!-- =========================================
+     BOTTOM NAVIGATION
+========================================= -->
+
+<nav class="bottom-nav">
+
+    <a
+        href="index.html"
+        class="bottom-nav-item"
+    >
+        <i class="fas fa-house"></i>
+     
+<span data-i18n="home">Home</span>
+
+    </a>
+
+
+<a
+    href="cart.html"
+    class="bottom-nav-item"
+>
+    <span class="bottom-nav-icon-wrap">
+        <i class="fas fa-shopping-cart"></i>
+        <span
+            id="cart-count"
+            class="bottom-nav-badge"
+        >0</span>
+    </span>
+
+    <span data-i18n="cart">Cart</span>
+</a>
+
+
+<a
+    href="product-types.html"
+    class="bottom-nav-item active"
+>
+    <i class="fas fa-bag-shopping"></i>
+
+  
+<span data-i18n="products">Products</span>
+
+</a>
+
+ 
+ <a
+    href="wishlist.html"
+    class="bottom-nav-item"
+>
+    <span class="bottom-nav-icon-wrap">
+        <i class="fas fa-heart"></i>
+        <span
+            id="wishlist-count"
+            class="bottom-nav-badge"
+        >0</span>
+    </span>
+
+    <span data-i18n="wishlist">Wishlist</span>
+</a>
+
+  
+
+    <a
+        href="account.html"
+        class="bottom-nav-item"
+    >
+       
+ <i class="fas fa-user"></i>
+ 
+<span data-i18n="me">Me</span>
+    </a>
+
+</nav>
+
+
+<!-- ==========================================
+     JAVASCRIPT FILES
+========================================== -->
+
+
+<script src="products-data.js"></script>
+<script src="translations.js"></script>
+<script src="script_v8.js?v=35"></script>
+
+
+
+
+</body>
+</html>

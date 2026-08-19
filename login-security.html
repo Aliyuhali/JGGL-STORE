@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Login & Device Security - JGGL-STORE</title>
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="style_v8.css?v=12"
+    >
+
+</head>
+
+<body>
+
+<header class="details-header">
+
+    <button
+        type="button"
+        class="back-btn"
+        onclick="history.back()"
+    >
+        <i class="fas fa-arrow-left"></i>
+    </button>
+
+    <h2>Login & Device Security</h2>
+
+</header>
+
+<main class="policy-page">
+
+    <section class="policy-card">
+
+        <div class="policy-heading">
+
+            <i class="fas fa-mobile-screen"></i>
+
+            <div>
+                <h3>Account Security</h3>
+
+                <p>
+                    Review your current login and protect your account.
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+    <section class="policy-card">
+
+        <h3>Current Account</h3>
+
+        <p>
+            <strong>Name:</strong>
+            <span id="securityUserName">-</span>
+        </p>
+
+        <p>
+            <strong>Email:</strong>
+            <span id="securityUserEmail">-</span>
+        </p>
+
+        <p>
+            <strong>Phone:</strong>
+            <span id="securityUserPhone">-</span>
+        </p>
+
+    </section>
+
+    <section class="policy-card">
+
+        <h3>Current Login Status</h3>
+
+        <p>
+            <strong>Status:</strong>
+            <span id="securityLoginStatus">
+                Logged In
+            </span>
+        </p>
+
+        <p>
+            This frontend version stores the active login on this
+            device. Full device and session management will be handled
+            by the backend security system.
+        </p>
+
+    </section>
+
+    <section class="policy-card">
+
+        <h3>Security Actions</h3>
+
+        <button
+            type="button"
+            class="primary-btn"
+            onclick="openChangePassword()"
+        >
+            <i class="fas fa-key"></i>
+            Change Password
+        </button>
+
+        <button
+            type="button"
+            class="security-logout-btn"
+            onclick="logoutAllCustomerSessions()"
+        >
+            <i class="fas fa-right-from-bracket"></i>
+            Logout This Device
+        </button>
+
+    </section>
+
+</main>
+
+<nav class="bottom-nav">
+
+    <a href="index.html" class="bottom-nav-item">
+        <i class="fas fa-house"></i>
+        <span>Home</span>
+    </a>
+
+    <a href="product-types.html" class="bottom-nav-item">
+        <i class="fas fa-bag-shopping"></i>
+        <span>Products</span>
+    </a>
+
+    <a href="cart.html" class="bottom-nav-item">
+        <i class="fas fa-cart-shopping"></i>
+        <span>Cart</span>
+    </a>
+
+    <a href="wishlist.html" class="bottom-nav-item">
+        <i class="fas fa-heart"></i>
+        <span>Wishlist</span>
+    </a>
+
+    <a href="account.html" class="bottom-nav-item active">
+        <i class="fas fa-user"></i>
+        <span>Account</span>
+    </a>
+
+</nav>
+
+<script src="products-data.js"></script>
+<script src="script_v8.js?v=13"></script>
+
+</body>
+
+</html>

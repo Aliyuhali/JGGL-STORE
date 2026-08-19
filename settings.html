@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Settings - JGGL-STORE</title>
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+
+<link
+    rel="stylesheet"
+    href="style_v8.css?v=11">
+
+</head>
+
+<body>
+
+<header class="details-header">
+
+    <button
+        type="button"
+        class="back-btn"
+        onclick="history.back()">
+
+        <i class="fas fa-arrow-left"></i>
+
+    </button>
+
+  <h2 data-i18n="settingsTitle">Settings</h2>
+
+</header>
+
+<main>
+
+    <section class="account-section">
+
+        <div class="account-menu">
+
+<a href="edit-profile.html" class="account-menu-item">
+    <i class="fas fa-user-pen"></i>
+
+<span data-i18n="editProfile">Edit Profile</span>
+
+</a>      
+
+
+<a href="notifications.html" class="account-menu-item">
+    <i class="fas fa-bell"></i>
+   
+<span data-i18n="notifications">Notifications</span>
+
+</a>
+
+
+            
+<button
+    type="button"
+    class="account-menu-item"
+    onclick="changeCustomerLanguage()"
+>
+    <i class="fas fa-language"></i>
+
+
+<span data-i18n="language">Language</span>
+
+</button>
+
+
+<button
+    type="button"
+    class="account-menu-item"
+    onclick="toggleDarkMode()"
+>
+    <i class="fas fa-moon"></i>
+
+
+<span data-i18n="darkMode">Dark Mode</span>
+
+
+</button>
+
+
+<button
+    type="button"
+    class="account-menu-item"
+    onclick="openPrivacySettings()"
+>
+    <i class="fas fa-shield-halved"></i>
+
+
+<span data-i18n="privacySecurity">Privacy & Security</span>
+
+</button>
+
+<button
+    type="button"
+    class="account-menu-item"
+    onclick="openAboutJGGLStore()"
+>
+    <i class="fas fa-circle-info"></i>
+
+<span data-i18n="aboutStore">About JGGL-STORE</span>
+
+
+</button>
+
+
+        </div>
+
+    </section>
+
+</main>
+
+<nav class="bottom-nav">
+
+    <a href="index.html" class="bottom-nav-item">
+        <i class="fas fa-house"></i>
+        <span>Home</span>
+    </a>
+
+    <a href="product-types.html" class="bottom-nav-item">
+        <i class="fas fa-bag-shopping"></i>
+        <span>Products</span>
+    </a>
+
+    <a href="cart.html" class="bottom-nav-item">
+        <i class="fas fa-cart-shopping"></i>
+        <span>Cart</span>
+    </a>
+
+    <a href="wishlist.html" class="bottom-nav-item">
+        <i class="fas fa-heart"></i>
+        <span>Wishlist</span>
+    </a>
+
+    <a href="account.html" class="bottom-nav-item active">
+        <i class="fas fa-user"></i>
+        <span>Account</span>
+    </a>
+
+</nav>
+
+
+<script src="products-data.js"></script>
+<script src="translations.js"></script>
+<script src="script_v8.js?v=13"></script>
+
+
+</body>
+
+</html>

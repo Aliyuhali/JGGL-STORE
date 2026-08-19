@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Admin Notifications | JGGL-STORE</title>
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="style_v8.css?v=10"
+    >
+
+    <link
+        rel="stylesheet"
+        href="admin.css?v=2"
+    >
+
+</head>
+
+<body>
+
+<header class="top-header">
+
+    <button
+        type="button"
+        class="back-btn"
+        onclick="window.location.href='admin-dashboard.html'"
+    >
+        <i class="fas fa-arrow-left"></i>
+        <span>Back</span>
+    </button>
+
+    <h2>Admin Notifications</h2>
+
+</header>
+
+<main class="admin-notifications-page">
+
+    <section class="admin-notifications-header">
+
+        <h3>Notifications</h3>
+
+        <button
+            type="button"
+            class="admin-clear-notifications-btn"
+            onclick="clearAdminNotifications()"
+        >
+            <i class="fas fa-trash"></i>
+            Clear All
+        </button>
+
+    </section>
+
+    <section
+        id="adminNotificationsContainer"
+        class="admin-notifications-container"
+    >
+
+        <div class="admin-empty">
+
+            <i class="fas fa-bell-slash"></i>
+
+            <p>No notifications yet.</p>
+
+        </div>
+
+    </section>
+
+</main>
+
+<script src="products-data.js"></script>
+<script src="script_v8.js?v=12"></script>
+
+</body>
+
+</html>

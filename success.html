@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Order Successful | JGGL-STORE</title>
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+
+<div class="logo">
+<img src="logo/logo.png" alt="JGGL Logo">
+
+<h1>JGGL-STORE</h1>
+<p>Janjunawan Galadi Global Limited</p>
+
+</div>
+
+</header>
+
+<section class="success-page">
+
+<h2>🎉 Your Order Has Been Sent Successfully!</h2>
+
+<p>Thank you for shopping with JGGL-STORE.</p>
+
+<h3 id="orderId">Order ID: JGGL-0000</h3>
+
+<p id="orderDate">Date:</p>
+
+<p id="orderTime">Time:</p>
+
+<div class="success-buttons">
+
+<a href="product-types.html">
+<button>
+🛒 Continue Shopping
+</button>
+</a>
+
+<a href="index_v8.html">
+<button>
+🏠 Back to Home
+</button>
+</a>
+
+</div>
+
+</section>
+
+<script>
+
+const orderId = localStorage.getItem("lastOrderId");
+const orderDate = localStorage.getItem("lastOrderDate");
+const orderTime = localStorage.getItem("lastOrderTime");
+
+if(orderId){
+    document.getElementById("orderId").textContent =
+    "Order ID: " + orderId;
+}
+
+if(orderDate){
+    document.getElementById("orderDate").textContent =
+    "Date: " + orderDate;
+}
+
+if(orderTime){
+    document.getElementById("orderTime").textContent =
+    "Time: " + orderTime;
+}
+
+</script>
+
+</body>
+
+</html>

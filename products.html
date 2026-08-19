@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Products | JGGL-STORE</title>
+
+<link rel="stylesheet" href="style_v7.css?v=2">
+
+</head>
+
+<body>
+
+<!-- TOP BAR -->
+
+<div class="top-bar">
+
+<div class="container">
+
+<p>📞 +234 808 925 0443</p>
+
+<p>📍 Nigeria | 🚚 Fast Delivery</p>
+
+</div>
+
+</div>
+
+<!-- HEADER -->
+
+<header class="main-header">
+
+<div class="container header-content">
+
+<div class="brand">
+
+<img src="logo/logo.png" alt="JGGL-STORE Logo">
+
+<div>
+
+<h1>JGGL-STORE</h1>
+
+<p>Janjunawan Galadi Global Limited</p>
+
+</div>
+
+</div>
+
+
+<div class="category-filter">
+
+<select id="categoryFilter" onchange="filterProducts()">
+
+<option value="all">All Categories</option>
+<option value="Food">🍚 Food</option>
+<option value="Drinks">🥤 Drinks</option>
+<option value="Electronics">📱 Electronics</option>
+<option value="Home">🏠 Home</option>
+
+</select>
+
+</div>
+
+<div class="cart-link">
+
+<a href="cart.html">
+
+🛒 Cart (<span id="cartCount">0</span>)
+
+</a>
+
+</div>
+
+</div>
+
+</header>
+
+
+<!-- NAVIGATION -->
+
+<nav class="navigation">
+
+<div class="container">
+
+<a href="index_v8.html">Home</a>
+
+<a href="products.html">Products</a>
+
+<a href="category.html">Categories</a>
+
+<a href="wishlist.html" id="wishlistLink">
+❤️ Wishlist (<span id="wishlist-count">0</span>)
+</a>
+
+<a href="cart.html">Cart</a>
+
+<a href="contact.html">Contact</a>
+
+</div>
+
+</nav>
+
+<div class="smart-search">
+
+    <input
+        type="text"
+        id="searchInput"
+        placeholder="🔍 Search products..."
+        autocomplete="off"
+        onkeyup="searchProduct()">
+
+    <div id="searchSuggestions" class="search-suggestions"></div>
+
+</nav>
+
+<section class="products-page">
+
+<div class="container">
+
+<h2>Our Products</h2>
+
+<p class="section-text">
+
+Browse our quality food items and household products.
+
+</p>
+
+
+<div class="product-grid" id="productsContainer">
+
+
+</div>
+
+
+<section class="reviews">
+
+    <div class="container">
+
+        <h2>⭐ Customer Reviews</h2>
+
+        <p>See what our customers are saying about JGGL-STORE.</p>
+
+    </div>
+
+</section>
+
+<footer class="footer">
+
+<div class="container footer-content">
+
+<div>
+
+<h2>JGGL-STORE</h2>
+
+<p>Janjunawan Galadi Global Limited</p>
+
+<p>Your trusted online supermarket.</p>
+
+</div>
+
+
+<div>
+
+<h3>Quick Links</h3>
+
+
+<a href="index_v8.html">Home</a>
+
+<a href="products.html">Products</a>
+
+<a href="category.html">Categories</a>
+
+^G Help      ^O Write Out ^F
+
+</section>
+
+<footer class="footer">
+
+<div class="container footer-content">
+
+<div>
+
+<h2>JGGL-STORE</h2>
+
+<p>Janjunawan Galadi Global Limited</p>
+
+<p>Your trusted online supermarket.</p>
+
+</div>
+
+
+<div>
+
+<h3>Quick Links</h3>
+
+<a href="index_v8.html">Home</a>
+
+<a href="products.html">Products</a>
+
+<a href="category.html">Categories</a>
+
+<a href="cart.html">Cart</a>
+
+<a href="contact.html">Contact</a>
+
+</div>
+
+
+<div>
+
+<h3>Contact Us</h3>
+
+<p>📞 +234 808 925 0443</p>
+
+<p>📍 Nigeria</p>
+
+</div>
+
+</div>
+
+
+<div class="copyright">
+
+<p>© 2026 Janjunawan Galadi Global Limited.
+ All Rights Reserved.</p>
+
+</div>
+
+</footer>
+
+<!-- PRODUCT DETAILS MODAL -->
+<div id="detailsModal" class="details-modal">
+
+    <div class="details-content">
+
+
+<span class="close-details"
+
+     onclick="closeDetails()">&times;</span>
+
+        <img id="detailsImage"
+             src=""
+             alt="Product Image">
+
+        <h2 id="detailsTitle"></h2>
+
+        <p id="detailsPrice"></p>
+
+<p id="detailsBrand"></p>
+<p id="detailsDescription"></p>
+<p id="detailsStock"></p>
+<p id="detailsRating"></p>
+<p id="detailsDiscount"></p>     
+
+  <button class="btn"
+                onclick="addDetailsToCart()">
+            🛒 Add To Cart
+        </button>
+
+</div>
+
+</div>
+
+<div id="toast" class="toast-notification"></div>
+
+<script src="products-data.js"></script>
+<script src="script_v8.js"></script>
+
+</body>
+</html>

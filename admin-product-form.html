@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Admin Product Form | JGGL-STORE</title>
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="style_v8.css?v=10"
+    >
+
+    <link
+        rel="stylesheet"
+        href="admin.css?v=2"
+    >
+
+</head>
+
+<body>
+
+    <header class="top-header">
+
+        <button
+            type="button"
+            class="back-btn"
+            onclick="window.location.href='admin-products.html'"
+        >
+            <i class="fas fa-arrow-left"></i>
+            <span>Back</span>
+        </button>
+
+        <h2 id="adminProductFormTitle">
+            Add Product
+        </h2>
+
+    </header>
+
+    <main class="admin-product-form-page">
+
+        <form
+            id="adminProductForm"
+            class="admin-product-form"
+            onsubmit="saveAdminProduct(event)"
+        >
+
+            <input
+                type="hidden"
+                id="adminProductId"
+            >
+
+            <section class="admin-product-form-section">
+
+                <h3>Basic Information</h3>
+
+                <div class="admin-form-group">
+
+                    <label for="adminProductName">
+                        Product Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="adminProductName"
+                        placeholder="Enter product name"
+                        required
+                    >
+
+                </div>
+
+                <div class="admin-form-group">
+
+                    <label for="adminProductCategory">
+                        Category
+                    </label>
+
+                    <input
+                        type="text"
+                        id="adminProductCategory"
+                        placeholder="Example: Sugar"
+                        required
+                    >
+
+                </div>
+
+                <div class="admin-form-group">
+
+                    <label for="adminProductBrand">
+                        Brand
+                    </label>
+
+                    <input
+                        type="text"
+                        id="adminProductBrand"
+                        placeholder="Enter brand name"
+                    >
+
+                </div>
+
+                <div class="admin-form-group">
+
+                    <label for="adminProductImage">
+                        Image Path
+                    </label>
+
+                    <input
+                        type="text"
+                        id="adminProductImage"
+                        placeholder="Example: images/sugar.jpg"
+                    >
+
+                </div>
+
+            </section>
+
+            <section class="admin-product-form-section">
+
+                <h3>Prices and Stock</h3>
+
+                <div class="admin-form-group">
+
+                    <label for="adminProductRetailPrice">
+                        Retail Price
+                    </label>
+
+                    <input
+                        type="number"
+                        id="adminProductRetailPrice"
+                        min="0"
+                        placeholder="0"
+                        required
+                    >
+
+                </div>
+
+                <div class="admin-form-group">
+
+                    <label for="adminProductWholesalePrice">
+                        Wholesale Price
+                    </label>
+
+                    <input
+                        type="number"
+                        id="adminProductWholesalePrice"
+                        min="0"
+                        placeholder="0"
+                    >
+
+                </div>
+
+                <div class="admin-form-group">
+
+                    <label for="adminProductBulkPrice">
+                        Bulk Price
+                    </label>
+
+                    <input
+                        type="number"
+                        id="adminProductBulkPrice"
+                        min="0"
+                        placeholder="0"
+                    >
+
+                </div>
+
+                <div class="admin-form-group">
+
+                    <label for="adminProductStock">
+                        Stock
+                    </label>
+
+                    <input
+                        type="number"
+                        id="adminProductStock"
+                        min="0"
+                        placeholder="0"
+                        required
+                    >
+
+                </div>
+
+            </section>
+
+            <section class="admin-product-form-section">
+
+                <h3>Product Details</h3>
+
+                <div class="admin-form-group">
+
+                    <label for="adminProductDescription">
+                        Description
+                    </label>
+
+                    <textarea
+                        id="adminProductDescription"
+                        rows="5"
+                        placeholder="Enter product description"
+                    ></textarea>
+
+                </div>
+
+            </section>
+
+            <button
+                type="submit"
+                class="admin-save-product-btn"
+            >
+                <i class="fas fa-floppy-disk"></i>
+                Save Product
+            </button>
+
+        </form>
+
+    </main>
+
+    <script src="products-data.js"></script>
+    <script src="script_v8.js"></script>
+
+</body>
+
+</html>

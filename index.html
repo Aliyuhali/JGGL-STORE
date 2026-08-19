@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>JGGL-STORE v8</title>
+
+    <!-- Main CSS -->
+ 
+<link rel="stylesheet" href="style_v8.css">
+
+    <!-- Font Awesome Icons -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+</head>
+
+<body>
+
+
+<!-- =========================================
+     TOP HEADER
+========================================= -->
+
+<header class="top-header">
+
+    <div class="top-logo">
+
+        <a href="index_v8.html">
+
+            <img
+                src="logo/logo.png"
+                alt="JGGL-STORE Logo"
+            >
+
+        </a>
+
+    </div>
+
+
+    <div class="top-title">
+
+   <span data-i18n="welcomeStore">
+    Welcome to JGGL-STORE
+</span>
+
+    </div>
+
+
+    <div class="top-actions">
+
+        <button
+            type="button"
+            id="qrBtn"
+            class="top-btn"
+
+            aria-label="Open QR Scanner"
+        >
+
+            <i class="fas fa-qrcode"></i>
+
+        </button>
+
+
+<button
+    type="button"
+    id="notificationBtn"
+    class="top-btn notification-btn"
+    aria-label="Open Notifications"
+    onclick="window.location.href='notifications.html'"
+>
+
+
+            <i class="fas fa-bell"></i>
+
+            <span
+                id="notificationBadge"
+                class="notification-badge"
+            >
+                0
+            </span>
+
+        </button>
+
+    </div>
+
+</header>
+
+
+
+<!-- =========================================
+     MAIN PAGE
+========================================= -->
+
+<main class="home-page">
+
+
+<!-- =========================================
+     SEARCH SECTION
+========================================= -->
+
+  <div class="search-box">
+
+
+<i class="fas fa-search search-icon"></i>
+        <input
+            type="text"
+            id="searchInput"
+placeholder="Live Search Products..."
+data-i18n-placeholder="searchProducts"
+
+            autocomplete="off"
+            oninput="searchProduct()"
+        >
+
+
+        <button
+            type="button"
+            id="cameraSearchBtn"
+            class="search-action-btn"
+            aria-label="Search using camera"
+            onclick="document.getElementById('cameraInput').click()"
+        >
+
+            <i class="fas fa-camera"></i>
+
+        </button>
+
+
+        <input
+            type="file"
+            id="cameraInput"
+            accept="image/*"
+
+            hidden
+            onchange="cameraSearch(event)"
+        >
+
+
+        <button
+            type="button"
+            id="clearSearchBtn"
+            class="clear-search-btn"
+            aria-label="Clear Search"
+            onclick="clearSearch()"
+        >
+
+            <i class="fas fa-xmark"></i>
+
+        </button>
+
+    </div>
+
+
+    <div
+        id="searchSuggestions"
+        class="search-suggestions"
+    ></div>
+
+
+<div
+    id="cameraPreviewBox"
+    class="camera-preview-box"
+    style="display:none;"
+>
+    <img
+        id="cameraPreviewImage"
+        alt="Selected product preview"
+    >
+
+    <button
+        type="button"
+        class="camera-preview-remove"
+        onclick="clearCameraPreview()"
+        aria-label="Remove selected image"
+    >
+        <i class="fas fa-xmark"></i>
+    </button>
+</div>
+
+
+    <!-- SEARCH TOOLS -->
+
+    <div class="search-tools">
+
+        <button
+            type="button"
+            class="search-tool-btn"
+            onclick="showSearchHistory()"
+        >
+
+            <i class="fas fa-clock-rotate-left"></i>
+
+   <span data-i18n="history">
+    History
+</span>
+
+   </button>
+
+      <button
+            type="button"
+            class="search-tool-btn"
+            onclick="showRecentSearches()"
+        >
+
+            <i class="fas fa-clock"></i>
+
+      
+<span data-i18n="recent">
+    Recent
+</span>
+
+
+  </button>
+
+     <select
+            id="categoryFilter"
+            class="category-filter"
+            onchange="searchProduct()"
+        >
+
+   
+<option
+    value="all"
+    data-i18n="allCategories"
+>
+    All Categories
+</option>
+
+         <option value="Food">Food</option>
+
+            <option value="Drinks">Drinks</option>
+
+            <option value="Home">Home</option>
+
+            <option value="Electronics">Electronics</option>
+
+            <option value="Fashion">Fashion</option>
+
+            <option value="Beauty">Beauty</option>
+
+        </select>
+
+    </div>
+
+
+    <!-- SEARCH HISTORY PANEL -->
+
+    <div
+        id="searchHistoryPanel"
+        class="search-history-panel"
+    >
+
+        <div class="search-history-header">
+
+            <h3>Search History</h3>
+
+            <button
+                type="button"
+                onclick="clearSearchHistory()"
+            >
+                Clear
+            </button>
+
+        </div>
+
+        <div id="searchHistoryList"></div>
+
+    </div>
+
+
+      <!-- NO PRODUCT FOUND -->
+
+    <div
+        id="noProductsFound"
+        class="no-products-found"
+    >
+
+        <i class="fas fa-magnifying-glass"></i>
+
+      <p data-i18n="noProductFound">
+    No product found
+</p>
+
+    </div>
+
+</section>
+
+<section class="trending-products">
+
+    <div class="section-heading">
+
+       <h2 data-i18n="trendingProducts">
+    Trending Products
+</h2>
+
+    <a href="product-types.html">
+     
+<span data-i18n="viewAll">
+    View All
+</span>
+
+</a>
+      
+  </div>
+
+    <div
+        id="trendingProducts"
+        class="trending-products-slider"
+    >
+
+        <!-- Trending products will load here -->
+
+    </div>
+
+</section>
+      
+
+
+<!-- =========================================
+     FEATURED PRODUCTS
+========================================= -->
+
+<section class="featured-products">
+
+    <div class="section-heading">
+
+  <h2 data-i18n="featuredProducts">
+    Featured Products
+</h2>
+
+        <a href="product-types.html">
+      
+
+<span data-i18n="viewAll">
+    View All
+</span>
+
+ </a>
+
+    </div>
+
+
+    <div
+        id="productsContainer"
+        class="products-grid"
+    >
+
+        <!-- Products will load here -->
+
+    </div>
+
+</section>
+
+
+</main>
+
+
+
+<!-- =========================================
+     BOTTOM NAVIGATION
+========================================= -->
+
+<nav class="bottom-nav">
+
+
+    <a
+        href="index_v8.html"
+        class="bottom-nav-item active"
+    >
+
+        <i class="fas fa-house"></i>
+
+   <span data-i18n="home">Home</span>
+
+  </a>
+
+ 
+<a href="cart.html" class="bottom-nav-item">
+
+    <div class="bottom-nav-icon-wrap">
+
+        <i class="fas fa-shopping-cart"></i>
+
+        <span
+            id="cart-count"
+            class="bottom-nav-badge"
+        >0</span>
+
+    </div>
+
+    <span data-i18n="cart">Cart</span>
+
+</a>
+
+
+    <a
+        href="product-types.html"
+        class="bottom-nav-item"
+    >
+
+        <i class="fas fa-bag-shopping"></i>
+
+  <span data-i18n="products">Products</span>
+
+  </a>
+
+
+ <a
+    href="wishlist.html"
+    class="bottom-nav-item"
+>
+    <div class="bottom-nav-icon-wrap">
+
+        <i class="fas fa-heart"></i>
+
+        <span
+x            id="wishlist-count"
+            class="bottom-nav-badge"
+        >0</span>
+
+    </div>
+
+    <span data-i18n="wishlist">Wishlist</span>
+</a>
+
+
+    <a
+        href="account.html"
+        class="bottom-nav-item"
+    >
+
+        <i class="fas fa-user"></i>
+
+<span data-i18n="me">Me</span>       
+
+  </a>
+
+</nav>
+
+
+
+<!-- =========================================
+     NOTIFICATION PANEL
+========================================= -->
+
+<div
+    id="notificationPanel"
+    class="notification-panel"
+>
+
+    <div class="notification-panel-header">
+
+        <h3>Notifications</h3>
+
+        <button
+            type="button"
+            onclick="closeNotifications()"
+        >
+
+            <i class="fas fa-xmark"></i>
+
+        </button>
+
+    </div>
+
+
+    <div id="notificationList">
+
+        <p class="empty-notification">
+            No new notifications
+        </p>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================
+     TOAST MESSAGE
+========================================= -->
+
+<div
+    id="toast"
+    class="toast-notification"
+></div>
+
+
+
+
+<div id="qrScannerModal" style="
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.75);
+    z-index:99999;
+    padding:20px;
+">
+    <div style="
+        background:#fff;
+        max-width:420px;
+        margin:40px auto;
+        border-radius:16px;
+        padding:16px;
+    ">
+        <div style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:12px;
+        ">
+            <strong>QR Code Scanner</strong>
+
+            <button
+                type="button"
+                id="closeQrScannerBtn"
+                style="
+                    border:none;
+                    background:transparent;
+                    font-size:24px;
+                "
+            >
+                &times;
+            </button>
+        </div>
+
+        <div id="qr-reader" style="width:100%;"></div>
+
+        <p
+            id="qrScannerResult"
+            style="
+                font-size:13px;
+                margin-top:10px;
+                word-break:break-word;
+            "
+        ></p>
+
+        <input
+            type="file"
+            id="qrGalleryInput"
+            accept="image/*"
+            style="display:none"
+        >
+
+        <button
+            type="button"
+            id="qrGalleryBtn"
+            style="
+                width:100%;
+                margin-top:10px;
+                padding:10px;
+                border:none;
+                border-radius:10px;
+                background:#ffffff;
+                color:#0B7A3E;
+                border:1px solid #0B7A3E;
+                font-weight:700;
+            "
+        >
+            Scan From Gallery
+        </button>
+
+        <button
+            type="button"
+            id="qrTorchBtn"
+            style="
+                width:100%;
+                margin-top:10px;
+                padding:10px;
+                border:none;
+                border-radius:10px;
+                background:#0B7A3E;
+                color:#fff;
+                font-weight:700;
+            "
+        >
+            Turn On Flash
+        </button>
+
+    </div>
+</div>
+
+
+<!-- =========================================
+     JAVASCRIPT FILES
+========================================= -->
+
+<script>
+window.onerror = function(message, source, line, column){
+    const errorBox = document.createElement("div");
+
+    errorBox.style.background = "#b00020";
+    errorBox.style.color = "#ffffff";
+    errorBox.style.padding = "10px";
+    errorBox.style.margin = "10px";
+    errorBox.style.fontSize = "12px";
+    errorBox.style.position = "relative";
+    errorBox.style.zIndex = "99999";
+
+    errorBox.textContent =
+        "JavaScript Error: " +
+        message +
+        " | Line: " +
+        line;
+
+    document.body.prepend(errorBox);
+};
+</script>
+
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+<script src="products-data.js"></script>
+<script src="translations.js"></script>
+<script src="script_v8.js?v=14"></script>
+
+
+<script>
+let jgglQrScanner = null;
+let jgglQrTorchOn = false;
+
+async function openQrScanner(){
+
+    const modal =
+        document.getElementById("qrScannerModal");
+
+    const result =
+        document.getElementById("qrScannerResult");
+
+    if(!modal){
+        return;
+    }
+
+    modal.style.display = "block";
+
+    if(result){
+        result.textContent = "Point camera at a QR code.";
+    }
+
+    try{
+
+        if(jgglQrScanner){
+            try{
+                await jgglQrScanner.stop();
+            }catch(error){}
+            jgglQrScanner.clear();
+        }
+
+        jgglQrScanner =
+            new Html5Qrcode("qr-reader");
+
+        await jgglQrScanner.start(
+            { facingMode: "environment" },
+            {
+                fps: 15,
+                qrbox: {
+                    width: 280,
+                    height: 280
+                },
+                disableFlip: false
+            },
+            function(decodedText){
+
+                if(result){
+                    result.textContent =
+                        "Result: " + decodedText;
+                }
+
+                const rawQr =
+                    String(decodedText).trim();
+
+                const productMatch =
+                    rawQr.match(/^JGGL-PRODUCT:(\d+)$/i);
+
+                const orderMatch =
+                    rawQr.match(/^JGGL-ORDER:(.+)$/i);
+
+                if(orderMatch){
+
+                    const orderNumber =
+                        String(orderMatch[1]).trim();
+
+                    localStorage.setItem(
+                        "selectedOrderId",
+                        orderNumber
+                    );
+
+                    closeQrScanner().then(function(){
+                        window.location.href =
+                            "order-details.html";
+                    });
+
+                    return;
+                }
+
+                const scannedId =
+                    productMatch
+                        ? Number(productMatch[1])
+                        : Number(rawQr);
+
+                const matchedProduct =
+                    PRODUCTS.find(function(product){
+                        return Number(product.id) === scannedId;
+                    });
+
+                if(matchedProduct){
+
+                    localStorage.setItem(
+                        "selectedProductId",
+                        String(matchedProduct.id)
+                    );
+
+                    closeQrScanner().then(function(){
+                        window.location.href =
+                            "product-details.html?v=38";
+                    });
+
+                }
+
+            },
+            function(){}
+        );
+
+        try{
+            const capabilities =
+                jgglQrScanner.getRunningTrackCapabilities();
+
+            const advanced = [];
+
+            if(capabilities.focusMode){
+                advanced.push({
+                    focusMode: "continuous"
+                });
+            }
+
+            if(capabilities.zoom){
+                const minZoom =
+                    Number(capabilities.zoom.min || 1);
+
+                const maxZoom =
+                    Number(capabilities.zoom.max || 1);
+
+                const zoomValue =
+                    Math.min(
+                        maxZoom,
+                        Math.max(minZoom, 2)
+                    );
+
+                advanced.push({
+                    zoom: zoomValue
+                });
+            }
+
+            if(advanced.length){
+                await jgglQrScanner.applyVideoConstraints({
+                    advanced: advanced
+                });
+            }
+
+        }catch(error){
+            console.log(
+                "QR camera enhancement unavailable:",
+                error
+            );
+        }
+
+    }catch(error){
+
+        if(result){
+            result.textContent =
+                "Unable to start camera: " +
+                error;
+        }
+
+    }
+
+}
+
+
+
+async function scanQrFromGallery(file){
+
+    const result =
+        document.getElementById("qrScannerResult");
+
+    if(!file){
+        return;
+    }
+
+    try{
+
+        if(jgglQrScanner){
+
+            try{
+                await jgglQrScanner.stop();
+            }catch(error){}
+
+        }else{
+
+            jgglQrScanner =
+                new Html5Qrcode("qr-reader");
+
+        }
+
+        const decodedText =
+            await jgglQrScanner.scanFile(
+                file,
+                true
+            );
+
+        if(result){
+            result.textContent =
+                "Result: " + decodedText;
+        }
+
+        const rawQr =
+            String(decodedText).trim();
+
+        const productMatch =
+            rawQr.match(/^JGGL-PRODUCT:(\d+)$/i);
+
+        const orderMatch =
+            rawQr.match(/^JGGL-ORDER:(.+)$/i);
+
+        if(orderMatch){
+
+            const orderNumber =
+                String(orderMatch[1]).trim();
+
+            localStorage.setItem(
+                "selectedOrderId",
+                orderNumber
+            );
+
+            setTimeout(function(){
+                window.location.href =
+                    "order-details.html";
+            }, 300);
+
+            return;
+        }
+
+        const scannedId =
+            productMatch
+                ? Number(productMatch[1])
+                : Number(rawQr);
+
+        const matchedProduct =
+            PRODUCTS.find(function(product){
+                return Number(product.id) === scannedId;
+            });
+
+        if(matchedProduct){
+
+            localStorage.setItem(
+                "selectedProductId",
+                String(matchedProduct.id)
+            );
+
+            setTimeout(function(){
+                window.location.href =
+                    "product-details.html?v=38";
+            }, 300);
+
+        }else{
+
+            alert(
+                "QR code was read, but no matching product or order was found."
+            );
+
+        }
+
+    }catch(error){
+
+        if(result){
+            result.textContent =
+                "Unable to read QR image.";
+        }
+
+        console.error(
+            "QR GALLERY ERROR:",
+            error
+        );
+
+    }
+
+}
+
+async function toggleQrTorch(){
+
+    const button =
+        document.getElementById("qrTorchBtn");
+
+    if(!jgglQrScanner){
+        return;
+    }
+
+    try{
+
+        const nextState =
+            !jgglQrTorchOn;
+
+        await jgglQrScanner.applyVideoConstraints({
+            advanced: [
+                {
+                    torch: nextState
+                }
+            ]
+        });
+
+        jgglQrTorchOn = nextState;
+
+        if(button){
+            button.textContent =
+                jgglQrTorchOn
+                    ? "Turn Off Flash"
+                    : "Turn On Flash";
+        }
+
+    }catch(error){
+
+        alert(
+            "Flash is not supported on this camera."
+        );
+
+    }
+
+}
+
+async function closeQrScanner(){
+
+    const modal =
+        document.getElementById("qrScannerModal");
+
+    if(jgglQrScanner){
+
+        try{
+            await jgglQrScanner.stop();
+        }catch(error){}
+
+        try{
+            jgglQrScanner.clear();
+        }catch(error){}
+
+        jgglQrScanner = null;
+    }
+
+    if(modal){
+        modal.style.display = "none";
+    }
+
+}
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        const qrBtn =
+            document.getElementById("qrBtn");
+
+        const closeBtn =
+            document.getElementById(
+                "closeQrScannerBtn"
+            );
+
+        const torchBtn =
+            document.getElementById("qrTorchBtn");
+
+        const galleryBtn =
+            document.getElementById("qrGalleryBtn");
+
+        const galleryInput =
+            document.getElementById("qrGalleryInput");
+
+        if(qrBtn){
+            qrBtn.addEventListener(
+                "click",
+                openQrScanner
+            );
+        }
+
+        if(closeBtn){
+            closeBtn.addEventListener(
+                "click",
+                closeQrScanner
+            );
+        }
+
+        if(torchBtn){
+            torchBtn.addEventListener(
+                "click",
+                toggleQrTorch
+            );
+        }
+
+        if(galleryBtn && galleryInput){
+
+            galleryBtn.addEventListener(
+                "click",
+                function(){
+                    galleryInput.click();
+                }
+            );
+
+            galleryInput.addEventListener(
+                "change",
+                function(event){
+
+                    scanQrFromGallery(
+                        event.target.files[0]
+                    );
+
+                }
+            );
+
+        }
+
+    }
+);
+</script>
+
+</body>
+</html>

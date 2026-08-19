@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Customer Details</title>
+
+    <link
+        rel="stylesheet"
+        href="style_v8.css?v=9">
+
+    <link
+        rel="stylesheet"
+        href="admin.css?v=1">
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+</head>
+
+<body>
+
+<header class="top-header">
+
+    <button
+        type="button"
+        class="back-btn"
+        onclick="history.back()">
+
+        <i class="fas fa-arrow-left"></i>
+
+        <span>Back</span>
+
+    </button>
+
+    <h2>Customer Details</h2>
+
+</header>
+
+<main class="admin-customer-details-page">
+
+
+
+<section class="admin-customer-details-card">
+
+    <div class="admin-customer-details-icon">
+
+        <i class="fas fa-circle-user"></i>
+
+    </div>
+
+    <h2 id="customerDetailsName">
+        Customer Name
+    </h2>
+
+    <div class="admin-customer-details-info">
+
+        <p>
+            <strong>
+                <i class="fas fa-envelope"></i>
+                Email:
+            </strong>
+
+            <span id="customerDetailsEmail">
+                -
+            </span>
+        </p>
+
+        <p>
+            <strong>
+                <i class="fas fa-phone"></i>
+                Phone:
+            </strong>
+
+            <span id="customerDetailsPhone">
+                -
+            </span>
+        </p>
+
+        <p>
+            <strong>
+                <i class="fas fa-calendar"></i>
+                Date Joined:
+            </strong>
+
+            <span id="customerDetailsJoined">
+                -
+            </span>
+        </p>
+
+        <p>
+            <strong>
+                <i class="fas fa-shopping-cart"></i>
+                Total Orders:
+            </strong>
+
+            <span id="customerDetailsOrders">
+                0
+            </span>
+        </p>
+
+        <p>
+            <strong>
+                <i class="fas fa-money-bill-wave"></i>
+                Total Spent:
+            </strong>
+
+            <span id="customerDetailsSpent">
+                ₦0
+            </span>
+        </p>
+
+        <p>
+            <strong>
+                <i class="fas fa-circle-check"></i>
+                Status:
+            </strong>
+
+            <span
+                id="customerDetailsStatus"
+                class="admin-customer-status">
+
+                Active
+
+            </span>
+        </p>
+
+    </div>
+
+</section>
+
+
+<section class="admin-customer-orders">
+
+    <h3>
+
+        <i class="fas fa-box"></i>
+
+        Order History
+
+    </h3>
+
+    <div id="customerOrdersContainer">
+
+        <div class="admin-empty">
+
+            No Orders Yet
+
+        </div>
+
+    </div>
+
+</section>
+
+
+</main>
+
+<script src="script_v8.js"></script>
+
+</body>
+
+</html>

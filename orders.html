@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>My Orders - JGGL-STORE</title>
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <link
+        rel="stylesheet"
+        href="style_v8.css?v=5">
+
+</head>
+
+<body>
+
+<header class="details-header">
+
+    <button
+        type="button"
+        class="back-btn"
+        onclick="history.back()">
+
+        <i class="fas fa-arrow-left"></i>
+
+    </button>
+
+    <h2>My Orders</h2>
+
+</header>
+
+<main>
+
+
+<section class="orders-section">
+
+    <div class="order-status-card">
+        <div class="order-status-title">
+            <i class="fas fa-clock"></i>
+            <h3>Pending Orders</h3>
+        </div>
+
+        <div id="pendingOrders">
+            <p>No pending orders yet.</p>
+        </div>
+    </div>
+
+    <div class="order-status-card">
+        <div class="order-status-title">
+            <i class="fas fa-truck-fast"></i>
+            <h3>Processing</h3>
+        </div>
+
+        <div id="processingOrders">
+            <p>No processing orders yet.</p>
+        </div>
+    </div>
+
+
+<div class="order-status-card">
+
+    <div class="order-status-title">
+
+        <i class="fas fa-truck"></i>
+
+        <h3>Out for Delivery</h3>
+
+    </div>
+
+    <div id="outForDeliveryOrders">
+
+        <p>No orders out for delivery yet.</p>
+
+    </div>
+
+</div>
+
+
+    <div class="order-status-card">
+        <div class="order-status-title">
+            <i class="fas fa-circle-check"></i>
+            <h3>Delivered</h3>
+        </div>
+
+        <div id="deliveredOrders">
+            <p>No delivered orders yet.</p>
+        </div>
+    </div>
+
+    <div class="order-status-card">
+        <div class="order-status-title">
+            <i class="fas fa-circle-xmark"></i>
+            <h3>Cancelled</h3>
+        </div>
+
+        <div id="cancelledOrders">
+            <p>No cancelled orders yet.</p>
+        </div>
+    </div>
+
+</section>
+
+
+</main>
+
+<nav class="bottom-nav">
+
+    <a
+        href="index.html"
+        class="bottom-nav-item">
+
+        <i class="fas fa-house"></i>
+
+        <span>Home</span>
+
+    </a>
+
+    <a
+        href="product-types.html"
+        class="bottom-nav-item">
+
+        <i class="fas fa-bag-shopping"></i>
+
+        <span>Products</span>
+
+    </a>
+
+    <a
+        href="cart.html"
+        class="bottom-nav-item">
+
+        <i class="fas fa-cart-shopping"></i>
+
+        <span>Cart</span>
+
+    </a>
+
+    <a
+        href="wishlist.html"
+        class="bottom-nav-item">
+
+        <i class="fas fa-heart"></i>
+
+        <span>Wishlist</span>
+
+    </a>
+
+    <a
+        href="account.html"
+        class="bottom-nav-item active">
+
+        <i class="fas fa-user"></i>
+
+        <span>Account</span>
+
+    </a>
+
+</nav>
+
+<script src="products-data.js"></script>
+<script src="script_v8.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,1719 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Product Details | JGGL-STORE</title>
+
+
+<link rel="stylesheet" href="style_v8.css?v=25">
+
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+
+<header class="top-header product-details-header">
+
+    <button
+        type="button"
+        class="back-btn"
+        onclick="history.back()"
+        aria-label="Go back"
+    >
+        <i class="fas fa-arrow-left"></i>
+        <span>Back</span>
+    </button>
+
+    <h2>Product Details</h2>
+
+    <div class="product-header-actions">
+
+        <button
+            type="button"
+            class="product-header-icon-btn"
+            onclick="window.location.href='index.html#searchSection'"
+            aria-label="Search products"
+        >
+            <i class="fas fa-magnifying-glass"></i>
+        </button>
+
+        <a
+            href="cart.html"
+            class="product-header-cart-btn"
+            aria-label="Open cart"
+        >
+            <i class="fas fa-cart-shopping"></i>
+
+            <span
+                id="productHeaderCartCount"
+                class="product-header-cart-count"
+            >
+                0
+            </span>
+        </a>
+
+    </div>
+
+</header>
+
+
+
+<main class="product-details-page">
+
+    <section class="compact-product-card">
+
+        <div class="compact-product-summary">
+
+            <div class="compact-product-image-wrap">
+                <img
+                    id="productImage"
+                    src=""
+                    alt="Product"
+                >
+            </div>
+
+            <div class="compact-product-heading">
+                <h2 id="productName">Loading...</h2>
+
+                <p
+                    id="productPrice"
+                    class="product-price"
+                ></p>
+
+                <span
+                    id="productStockStatus"
+                    class="compact-stock-status"
+                ></span>
+            </div>
+
+        </div>
+
+
+        <div class="compact-product-information">
+
+            <div class="compact-info-item">
+                <strong>Category</strong>
+                <span id="productCategory"></span>
+            </div>
+
+            <div class="compact-info-item">
+                <strong>Brand</strong>
+                <span id="productBrand"></span>
+            </div>
+
+            <div class="compact-info-item">
+                <strong>SKU</strong>
+                <span id="productSku"></span>
+            </div>
+
+            <div class="compact-info-item">
+                <strong>Stock</strong>
+                <span id="productStock"></span>
+            </div>
+
+            <div class="compact-info-item">
+                <strong>Rating</strong>
+                <span id="productRating"></span>
+            </div>
+
+            <div class="compact-info-item">
+                <strong>Reviews</strong>
+                <span id="productReviews"></span>
+            </div>
+
+            <div class="compact-info-item compact-info-wide">
+                <strong>Discount</strong>
+                <span id="productDiscount"></span>
+            </div>
+
+        </div>
+
+
+        <div class="compact-description">
+            <strong>Description:</strong>
+            <span id="productDescription"></span>
+        </div>
+
+
+        <section
+            id="productSpecificationsSection"
+            class="compact-specifications"
+            style="display:none;"
+        >
+            <h3>Product Specifications</h3>
+
+            <div
+                id="productSpecificationsList"
+                class="product-specifications-list"
+            ></div>
+        </section>
+
+
+        <section
+            id="productVariantsSection"
+            class="compact-variants"
+            style="display:none;"
+        >
+            <h3>Available Options</h3>
+
+            <div
+                id="productVariantsList"
+                class="product-variants-list"
+            ></div>
+        </section>
+
+
+        <section class="purchase-type-section">
+
+            <h3>Purchase Type</h3>
+
+            <div class="purchase-type-options">
+
+                <button
+                    type="button"
+                    class="purchase-type-btn active"
+                    onclick="selectPurchaseType('retail')"
+                >
+                    Retail
+                </button>
+
+                <button
+                    type="button"
+                    class="purchase-type-btn"
+                    onclick="selectPurchaseType('wholesale')"
+                >
+                    Wholesale
+                </button>
+
+                <button
+                    type="button"
+                    class="purchase-type-btn"
+                    onclick="selectPurchaseType('bulk')"
+                >
+                    Bulk
+                </button>
+
+            </div>
+
+            <div class="compact-price-summary">
+
+                <p>
+                    <strong>Selected Price</strong>
+                    <span id="selectedPurchasePrice"></span>
+                </p>
+
+                <p>
+                    <strong>Minimum Quantity</strong>
+                    <span id="minimumPurchaseQuantity">1</span>
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <div class="details-buttons">
+
+            <button
+                type="button"
+                class="wishlist-btn"
+                onclick="addCurrentProductToWishlist()"
+            >
+                <i class="fas fa-heart"></i>
+                <span>Wishlist</span>
+            </button>
+
+<button
+    type="button"
+    class="share-btn"
+    onclick="showCurrentProductQr()"
+>
+    <i class="fas fa-qrcode"></i>
+    QR
+</button>
+
+<button
+    type="button"
+    class="share-btn"
+    onclick="shareCurrentProduct()"
+>
+
+    <i class="fas fa-share-nodes"></i>
+    Share
+</button>
+   
+  <button             
+   type="button"
+     class="cart-btn"
+      onclick="addCurrentProductToCart()"
+      
+  >
+     <i class="fas fa-cart-plus"></i>
+   <span>Add to Cart</span>
+  </button>
+
+            <button
+                type="button"
+                class="buy-btn"
+                onclick="window.location.href='cart.html'"
+            >
+                <i class="fas fa-bolt"></i>
+                <span>Buy Now</span>
+            </button>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+
+<div
+    id="productQrModal"
+    style="
+        display:none;
+        position:fixed;
+        inset:0;
+        background:rgba(0,0,0,.70);
+        z-index:99999;
+        align-items:center;
+        justify-content:center;
+        padding:20px;
+    "
+>
+    <div
+        style="
+            background:#fff;
+            width:min(92vw,360px);
+            border-radius:18px;
+            padding:18px;
+            text-align:center;
+        "
+    >
+        <div
+            style="
+                display:flex;
+                justify-content:space-between;
+                align-items:center;
+                margin-bottom:14px;
+            "
+        >
+            <strong>Product QR Code</strong>
+
+            <button
+                type="button"
+                onclick="closeCurrentProductQr()"
+                style="
+                    border:none;
+                    background:transparent;
+                    font-size:24px;
+                "
+            >
+                &times;
+            </button>
+        </div>
+
+        <div id="productQrCode"></div>
+
+        <p
+            id="productQrLabel"
+            style="
+                margin-top:12px;
+                font-weight:700;
+            "
+        ></p>
+
+        <button
+            type="button"
+            id="saveProductQrBtn"
+            onclick="saveCurrentProductQr()"
+            style="
+                width:100%;
+                margin-top:12px;
+                padding:11px;
+                border:none;
+                border-radius:10px;
+                background:#0B7A3E;
+                color:#fff;
+                font-weight:700;
+            "
+        >
+            Save QR
+        </button>
+
+        <button
+            type="button"
+            id="shareProductQrBtn"
+            onclick="shareCurrentProductQr()"
+            style="
+                width:100%;
+                margin-top:10px;
+                padding:11px;
+                border:none;
+                border-radius:10px;
+                background:#ffffff;
+                color:#0B7A3E;
+                border:1px solid #0B7A3E;
+                font-weight:700;
+            "
+        >
+            Share QR
+        </button>
+
+
+    </div>
+</div>
+
+<nav class="bottom-nav product-details-bottom-nav">
+
+    <a href="index.html" class="nav-item">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+    </a>
+
+    <a href="cart.html" class="nav-item">
+        <div class="nav-icon-wrap">
+            <i class="fas fa-shopping-cart"></i>            
+
+<span id="cart-count" class="nav-count">0</span>
+
+
+        </div>
+        <span>Cart</span>
+    </a>
+
+    <a href="product-types.html" class="nav-item active">
+        <i class="fas fa-box-open"></i>
+        <span>Products</span>
+    </a>
+
+    <a href="wishlist.html" class="nav-item">
+        <div class="nav-icon-wrap">
+            <i class="fas fa-heart"></i>
+            
+      
+<span id="wishlist-count" class="nav-count">0</span>
+
+
+  </div>
+        <span>Wishlist</span>
+    </a>
+
+    <a href="account.html" class="nav-item">
+        <i class="fas fa-user"></i>
+        <span>Account</span>
+    </a>
+
+</nav>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="products-data.js?v=5"></script>
+
+<script src="script_v8.js?v=35"></script>
+
+<script>
+
+
+currentProduct = null;
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    const productId =
+        Number(localStorage.getItem("selectedProductId"));
+
+    currentProduct = PRODUCTS.find(function(product){
+
+        return product.id === productId;
+
+    });
+
+    if(!currentProduct){
+
+        document.getElementById("productName").textContent =
+            "Product not found";
+
+        return;
+
+    }
+
+    document.getElementById("productImage").src =
+        currentProduct.image;
+
+    document.getElementById("productName").textContent =
+        currentProduct.name;
+
+    document.getElementById("productPrice").textContent =
+        "₦" + Number(currentProduct.price).toLocaleString();
+
+
+
+document.getElementById("productCategory").textContent =
+    currentProduct.group || currentProduct.category || "";
+
+document.getElementById("productBrand").textContent =
+    currentProduct.brand || "";
+
+document.getElementById("productSku").textContent =
+    currentProduct.sku || "";
+
+document.getElementById("productStock").textContent =
+    currentProduct.stock ?? 0;
+
+document.getElementById("productStockStatus").textContent =
+    currentProduct.stockStatus ||
+    (currentProduct.stock > 0 ? "In Stock" : "Out of Stock");
+
+document.getElementById("productRating").textContent =
+    currentProduct.rating
+        ? currentProduct.rating + " / 5"
+        : "No rating";
+
+document.getElementById("productReviews").textContent =
+    Array.isArray(currentProduct.reviews)
+        ? currentProduct.reviews.length
+        : 0;
+
+
+
+document.getElementById("productDiscount").textContent =
+    currentProduct.discount
+        ? currentProduct.discount + "%"
+        : "No discount";
+
+
+
+document.getElementById("productDescription").textContent =
+    currentProduct.description ||
+    "No description available";
+
+
+
+loadProductSpecifications(
+    currentProduct
+);
+
+loadProductVariants(
+    currentProduct
+);
+
+selectPurchaseType("retail");
+
+
+
+});
+
+
+
+let selectedVariantOptions = {};
+let selectedProductVariant = null;
+
+
+
+// ===========================================
+// LOAD PRODUCT VARIANTS
+// ===========================================
+
+function loadProductVariants(product){
+
+    const section =
+        document.getElementById(
+            "productVariantsSection"
+        );
+
+    const list =
+        document.getElementById(
+            "productVariantsList"
+        );
+
+    if(!section || !list){
+        return;
+    }
+
+    const variants =
+        product &&
+        Array.isArray(product.variants)
+            ? product.variants
+            : [];
+
+    list.innerHTML = "";
+
+    if(variants.length === 0){
+
+        section.style.display = "none";
+        return;
+
+    }
+
+    const ignoredKeys = new Set([
+        "id",
+        "label",
+        "price",
+        "retailPrice",
+        "wholesalePrice",
+        "bulkPrice",
+        "priceAdjustment",
+        "stock",
+        "sku",
+        "image"
+    ]);
+
+    const optionKeys = [];
+
+    variants.forEach(function(variant){
+
+        Object.keys(variant).forEach(function(key){
+
+            if(
+                !ignoredKeys.has(key) &&
+                !optionKeys.includes(key)
+            ){
+                optionKeys.push(key);
+            }
+
+        });
+
+    });
+
+    if(optionKeys.length === 0){
+
+        section.style.display = "none";
+        return;
+
+    }
+
+    optionKeys.forEach(function(key){
+
+        const values = [
+            ...new Set(
+                variants
+                    .map(function(variant){
+                        return variant[key];
+                    })
+                    .filter(function(value){
+                        return (
+                            value !== undefined &&
+                            value !== null &&
+                            value !== ""
+                        );
+                    })
+            )
+        ];
+
+        if(values.length === 0){
+            return;
+        }
+
+        const group =
+            document.createElement("div");
+
+        group.className =
+            "product-variant-group";
+
+        const heading =
+            document.createElement("h4");
+
+        heading.textContent =
+            formatSpecificationLabel(key);
+
+        const options =
+            document.createElement("div");
+
+        options.className =
+            "product-variant-options";
+
+        values.forEach(function(value){
+
+            const button =
+                document.createElement("button");
+
+            button.type = "button";
+
+            button.className =
+                "product-variant-option-btn";
+
+            button.textContent =
+                String(value);
+
+            button.dataset.variantKey =
+                key;
+
+            button.dataset.variantValue =
+                String(value);
+
+
+
+button.addEventListener(
+    "click",
+    function(){
+
+        selectProductVariantOption(
+            key,
+            String(value),
+            product,
+            variants
+        );
+
+    }
+);
+
+
+            options.appendChild(button);
+
+        });
+
+        group.appendChild(heading);
+        group.appendChild(options);
+        list.appendChild(group);
+
+    });
+
+
+
+section.style.display =
+    list.children.length > 0
+        ? "block"
+        : "none";
+
+if (variants.length > 0) {
+
+    selectedVariantOptions = {};
+
+    optionKeys.forEach(function (key) {
+
+        if (variants[0][key] !== undefined) {
+            selectedVariantOptions[key] =
+                String(variants[0][key]);
+        }
+
+    });
+
+    selectedProductVariant = variants[0];
+
+    applySelectedProductVariant(
+        product,
+        selectedProductVariant
+    );
+
+    document
+        .querySelectorAll(".product-variant-option-btn")
+        .forEach(function (button) {
+
+            const key = button.dataset.variantKey;
+            const value = button.dataset.variantValue;
+
+            button.classList.toggle(
+                "active",
+                selectedVariantOptions[key] === value
+            );
+
+        });
+
+}
+}
+   
+
+
+
+
+// ===========================================
+// SELECT PRODUCT VARIANT OPTION
+// ===========================================
+
+function selectProductVariantOption(
+    key,
+    value,
+    product,
+    variants
+){
+
+    selectedVariantOptions[key] = value;
+
+    document
+        .querySelectorAll(
+            '.product-variant-option-btn[data-variant-key="' +
+            key +
+            '"]'
+        )
+        .forEach(function(button){
+
+            button.classList.toggle(
+                "active",
+                button.dataset.variantValue ===
+                    value
+            );
+
+        });
+
+    const selectedKeys =
+        Object.keys(selectedVariantOptions);
+
+    selectedProductVariant =
+        variants.find(function(variant){
+
+            return selectedKeys.every(
+                function(optionKey){
+
+                    return String(
+                        variant[optionKey]
+                    ) === String(
+                        selectedVariantOptions[
+                            optionKey
+                        ]
+                    );
+
+                }
+            );
+
+        }) || null;
+
+    if(selectedProductVariant){
+
+        applySelectedProductVariant(
+            product,
+            selectedProductVariant
+        );
+
+    }
+
+}
+
+
+
+
+// ===========================================
+// APPLY SELECTED PRODUCT VARIANT
+// ===========================================
+
+function applySelectedProductVariant(
+    product,
+    variant
+){
+
+    const image =
+        document.getElementById(
+            "productImage"
+        );
+
+    const price =
+        document.getElementById(
+            "productPrice"
+        );
+
+    const sku =
+        document.getElementById(
+            "productSku"
+        );
+
+    const stock =
+        document.getElementById(
+            "productStock"
+        );
+
+    const stockStatus =
+        document.getElementById(
+            "productStockStatus"
+        );
+
+    const variantPrice =
+        variant.price ??
+        variant.retailPrice ??
+        (
+            Number(product.retailPrice || product.price || 0) +
+            Number(variant.priceAdjustment || 0)
+        );
+
+    if(image && variant.image){
+        image.src = variant.image;
+    }
+
+    if(price){
+        price.textContent =
+            "₦" +
+            Number(variantPrice)
+                .toLocaleString();
+    }
+
+    if(sku){
+        sku.textContent =
+            variant.sku ||
+            product.sku ||
+            "";
+    }
+
+    if(stock){
+        stock.textContent =
+            variant.stock ??
+            product.stock ??
+            0;
+    }
+
+    if(stockStatus){
+
+        const availableStock =
+            variant.stock ??
+            product.stock ??
+            0;
+
+        stockStatus.textContent =
+            availableStock > 0
+                ? "In Stock"
+                : "Out of Stock";
+
+    }
+
+    selectedPurchasePrice =
+        Number(variantPrice);
+
+    minimumPurchaseQuantity =
+        purchaseType === "wholesale"
+            ? (
+                variant.wholesaleMinQty ||
+                product.wholesaleMinQty ||
+                5
+            )
+            : purchaseType === "bulk"
+                ? (
+                    variant.bulkMinQty ||
+                    product.bulkMinQty ||
+                    20
+                )
+                : 1;
+
+    const selectedPrice =
+        document.getElementById(
+            "selectedPurchasePrice"
+        );
+
+    const minimumQuantity =
+        document.getElementById(
+            "minimumPurchaseQuantity"
+        );
+
+    if(selectedPrice){
+        selectedPrice.textContent =
+            "₦" +
+            Number(selectedPurchasePrice)
+                .toLocaleString();
+    }
+
+    if(minimumQuantity){
+        minimumQuantity.textContent =
+            minimumPurchaseQuantity;
+    }
+
+}
+
+
+
+
+
+// ===========================================
+// LOAD PRODUCT SPECIFICATIONS
+// ===========================================
+
+
+function loadProductSpecifications(product){
+
+    const section = document.getElementById(
+        "productSpecificationsSection"
+    );
+
+    const list = document.getElementById(
+        "productSpecificationsList"
+    );
+
+    if(!section || !list){
+        return;
+    }
+
+    const specifications =
+        product &&
+        product.specifications &&
+        typeof product.specifications === "object"
+            ? product.specifications
+            : {};
+
+    list.innerHTML = "";
+
+    const iconMap = {
+        model: "fa-mobile-screen-button",
+        display: "fa-mobile-screen",
+        processor: "fa-microchip",
+        ram: "fa-memory",
+        storage: "fa-hard-drive",
+        battery: "fa-battery-full",
+        camera: "fa-camera",
+        operatingSystem: "fa-android",
+        network: "fa-signal",
+        warranty: "fa-shield-halved",
+        weight: "fa-weight-hanging",
+        packSize: "fa-box",
+        ingredients: "fa-wheat-awn",
+        manufacturingDate: "fa-calendar-check",
+        expiryDate: "fa-calendar-xmark",
+        storageInstructions: "fa-warehouse",
+        countryOfOrigin: "fa-earth-africa",
+        volume: "fa-bottle-water",
+        size: "fa-ruler"
+    };
+
+    const category = String(
+        product.category || ""
+    ).toLowerCase();
+
+    let priorityKeys;
+
+    if(
+        category.includes("electronic") ||
+        category.includes("phone")
+    ){
+        priorityKeys = [
+            "display",
+            "ram",
+            "storage",
+            "battery",
+            "camera",
+            "operatingSystem"
+        ];
+    }else if(
+        category.includes("food") ||
+        category.includes("grocery")
+    ){
+        priorityKeys = [
+            "weight",
+            "packSize",
+            "ingredients",
+            "storageInstructions",
+            "countryOfOrigin",
+            "expiryDate"
+        ];
+    }else{
+        priorityKeys = Object.keys(specifications);
+    }
+
+    const selectedKeys = [];
+
+    priorityKeys.forEach(function(key){
+
+        if(
+            specifications[key] !== undefined &&
+            specifications[key] !== null &&
+            specifications[key] !== "" &&
+            selectedKeys.length < 6
+        ){
+            selectedKeys.push(key);
+        }
+
+    });
+
+    Object.keys(specifications).forEach(function(key){
+
+        if(
+            selectedKeys.length < 6 &&
+            !selectedKeys.includes(key) &&
+            specifications[key] !== undefined &&
+            specifications[key] !== null &&
+            specifications[key] !== ""
+        ){
+            selectedKeys.push(key);
+        }
+
+    });
+
+    selectedKeys.forEach(function(key){
+
+        const card = document.createElement("div");
+        card.className = "smart-specification-card";
+
+        const iconWrap = document.createElement("div");
+        iconWrap.className = "smart-specification-icon";
+
+        const icon = document.createElement("i");
+        icon.className =
+            "fas " +
+            (iconMap[key] || "fa-circle-info");
+
+        const content = document.createElement("div");
+        content.className = "smart-specification-content";
+
+        const label = document.createElement("strong");
+        label.textContent =
+            key === "operatingSystem"
+                ? "OS"
+                : formatSpecificationLabel(key);
+
+        const value = document.createElement("span");
+        value.textContent = String(specifications[key]);
+
+        iconWrap.appendChild(icon);
+        content.appendChild(label);
+        content.appendChild(value);
+
+        card.appendChild(iconWrap);
+        card.appendChild(content);
+
+        list.appendChild(card);
+
+    });
+
+    section.style.display =
+        selectedKeys.length > 0
+            ? "block"
+            : "none";
+}
+
+
+// ===========================================
+// FORMAT SPECIFICATION LABEL
+// ===========================================
+
+function formatSpecificationLabel(key){
+
+    return String(key)
+        .replace(/([a-z])([A-Z])/g, "$1 $2")
+        .replace(/[_-]+/g, " ")
+        .replace(/\b\w/g, function(letter){
+            return letter.toUpperCase();
+        });
+
+}
+
+
+
+let purchaseType = "retail";
+let selectedPurchasePrice = 0;
+let minimumPurchaseQuantity = 1;
+
+function selectPurchaseType(type){
+
+    if(!currentProduct){
+        return;
+    }
+
+    purchaseType = type;
+
+    const buttons =
+        document.querySelectorAll(".purchase-type-btn");
+
+    buttons.forEach(function(button){
+
+        button.classList.remove("active");
+
+        if(
+            button.textContent.trim().toLowerCase() === type
+        ){
+            button.classList.add("active");
+        }
+
+    });
+
+    if(type === "wholesale"){
+
+        selectedPurchasePrice =
+            currentProduct.wholesalePrice ||
+            currentProduct.retailPrice ||
+            currentProduct.price;
+
+        minimumPurchaseQuantity =
+            currentProduct.wholesaleMinQty || 5;
+
+    }else if(type === "bulk"){
+
+        selectedPurchasePrice =
+            currentProduct.bulkPrice ||
+            currentProduct.wholesalePrice ||
+            currentProduct.retailPrice ||
+            currentProduct.price;
+
+        minimumPurchaseQuantity =
+            currentProduct.bulkMinQty || 20;
+
+    }else{
+
+        selectedPurchasePrice =
+            currentProduct.retailPrice ||
+            currentProduct.price;
+
+        minimumPurchaseQuantity = 1;
+
+    }
+
+    document.getElementById(
+        "selectedPurchasePrice"
+    ).textContent =
+        "₦" +
+        Number(selectedPurchasePrice)
+            .toLocaleString("en-NG");
+
+    document.getElementById(
+        "minimumPurchaseQuantity"
+    ).textContent =
+        minimumPurchaseQuantity;
+
+    document.getElementById(
+        "productPrice"
+    ).textContent =
+        "₦" +
+        Number(selectedPurchasePrice)
+            .toLocaleString("en-NG");
+
+}
+
+
+
+function addCurrentProductToCart(){
+
+    if(!currentProduct){
+        return;
+    }
+
+    addToCart(
+        currentProduct.name + " (" + purchaseType + ")",
+        selectedPurchasePrice,
+        currentProduct.image,
+        purchaseType,
+        minimumPurchaseQuantity,
+        minimumPurchaseQuantity
+    );
+
+}
+
+
+
+
+
+function showCurrentProductQr(){
+
+    if(!currentProduct){
+        alert("Product not found.");
+        return;
+    }
+
+    const modal =
+        document.getElementById("productQrModal");
+
+    const container =
+        document.getElementById("productQrCode");
+
+    const label =
+        document.getElementById("productQrLabel");
+
+    if(!modal || !container){
+        return;
+    }
+
+    container.innerHTML = "";
+
+    new QRCode(
+        container,
+        {
+            text:
+                "JGGL-PRODUCT:" +
+                String(currentProduct.id),
+            width: 240,
+            height: 240
+        }
+    );
+
+    if(label){
+        label.textContent =
+            currentProduct.name +
+            " — ID " +
+            currentProduct.id;
+    }
+
+    modal.style.display = "flex";
+}
+
+
+
+async function shareCurrentProductQr(){
+
+    if(!currentProduct){
+        alert("Product not found.");
+        return;
+    }
+
+    const container =
+        document.getElementById("productQrCode");
+
+    if(!container){
+        return;
+    }
+
+    const canvas =
+        container.querySelector("canvas");
+
+    if(!canvas){
+        alert("QR image is not ready.");
+        return;
+    }
+
+    const safeName =
+        String(currentProduct.name || "Product")
+            .trim()
+            .replace(/[^a-zA-Z0-9]+/g, "-")
+            .replace(/^-+|-+$/g, "");
+
+    const fileName =
+        "JGGL-" +
+        String(currentProduct.id) +
+        "-" +
+        safeName +
+        "-QR.png";
+
+    canvas.toBlob(async function(blob){
+
+        if(!blob){
+            alert("Unable to share QR code.");
+            return;
+        }
+
+        const file =
+            new File(
+                [blob],
+                fileName,
+                {
+                    type: "image/png"
+                }
+            );
+
+        const shareData = {
+            title: currentProduct.name,
+            text:
+                "JGGL-STORE Product QR\n" +
+                currentProduct.name +
+                "\nProduct ID: " +
+                currentProduct.id,
+            files: [file]
+        };
+
+        try{
+
+            if(
+                navigator.canShare &&
+                navigator.canShare({
+                    files: [file]
+                })
+            ){
+
+                await navigator.share(
+                    shareData
+                );
+
+            }else if(navigator.share){
+
+                await navigator.share({
+                    title: currentProduct.name,
+                    text: shareData.text
+                });
+
+            }else{
+
+                alert(
+                    "Sharing is not supported on this browser."
+                );
+
+            }
+
+        }catch(error){
+
+            if(error.name !== "AbortError"){
+                console.error(
+                    "QR SHARE ERROR:",
+                    error
+                );
+            }
+
+        }
+
+    }, "image/png");
+
+}
+
+async function saveCurrentProductQr(){
+
+    if(!currentProduct){
+        alert("Product not found.");
+        return;
+    }
+
+    const container =
+        document.getElementById("productQrCode");
+
+    if(!container){
+        return;
+    }
+
+    const canvas =
+        container.querySelector("canvas");
+
+    if(!canvas){
+        alert("QR image is not ready.");
+        return;
+    }
+
+    const safeName =
+        String(currentProduct.name || "Product")
+            .trim()
+            .replace(/[^a-zA-Z0-9]+/g, "-")
+            .replace(/^-+|-+$/g, "");
+
+    const fileName =
+        "JGGL-" +
+        String(currentProduct.id) +
+        "-" +
+        safeName +
+        "-QR.png";
+
+    canvas.toBlob(function(blob){
+
+        if(!blob){
+            alert("Unable to save QR code.");
+            return;
+        }
+
+        const url =
+            URL.createObjectURL(blob);
+
+        const link =
+            document.createElement("a");
+
+        link.href = url;
+        link.download = fileName;
+
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        setTimeout(function(){
+            URL.revokeObjectURL(url);
+        }, 1000);
+
+    }, "image/png");
+
+}
+
+function closeCurrentProductQr(){
+
+    const modal =
+        document.getElementById("productQrModal");
+
+    if(modal){
+        modal.style.display = "none";
+    }
+
+}
+
+function addCurrentProductToWishlist(){
+
+    if(!currentProduct){
+        alert("Product not found.");
+        return;
+    }
+
+    let wishlist = [];
+
+    try{
+        wishlist = JSON.parse(
+            localStorage.getItem("wishlist") || "[]"
+        );
+    }catch(error){
+        wishlist = [];
+    }
+
+    const exists = wishlist.some(function(item){
+        return item.name === currentProduct.name;
+    });
+
+    if(!exists){
+
+        wishlist.push({
+            name: currentProduct.name,
+            price: Number(currentProduct.price || 0),
+            image: currentProduct.image
+        });
+
+        localStorage.setItem(
+            "wishlist",
+            JSON.stringify(wishlist)
+        );
+    }
+
+    const badge =
+        document.getElementById("wishlist-count");
+
+    if(badge){
+        badge.textContent = String(wishlist.length);
+    }
+
+    alert(
+        exists
+            ? "Product is already in your Wishlist ❤️"
+            : "Product added to Wishlist ❤️"
+    );
+
+}
+
+
+
+</script>
+
+
+<script>
+
+
+async function shareCurrentProduct(){
+
+    if(!currentProduct){
+        alert("Product information is not available.");
+        return;
+    }
+
+    const price = Number(
+        selectedPurchasePrice ||
+        currentProduct.price ||
+        currentProduct.retailPrice ||
+        0
+    );
+
+    const shareText =
+        "JGGL-STORE PRODUCT" +
+        "\n\nProduct: " +
+        currentProduct.name +
+        "\nPrice: ₦" +
+        price.toLocaleString() +
+        "\nPurchase Type: " +
+        (purchaseType || "retail") +
+        "\n\nAvailable on JGGL-STORE";
+
+    const shareData = {
+        title: currentProduct.name,
+        text: shareText
+    };
+
+    // FIRST: try sharing image + text
+    if(currentProduct.image){
+
+        try{
+
+            const productImageElement =
+                document.getElementById("productImage");
+
+            const imageURL =
+                productImageElement &&
+                productImageElement.src
+                    ? productImageElement.src
+                    : currentProduct.image;
+
+            const imageResponse =
+                await fetch(imageURL);
+
+            if(imageResponse.ok){
+
+                const imageBlob =
+                    await imageResponse.blob();
+
+                const extension =
+                    currentProduct.image
+                        .split(".")
+                        .pop()
+                        .split("?")[0] ||
+                    "png";
+
+                const imageFile =
+                    new File(
+                        [imageBlob],
+                        "jggl-product." + extension,
+                        {
+                            type:
+                                imageBlob.type ||
+                                "image/png"
+                        }
+                    );
+
+                if(
+                    navigator.share &&
+                    navigator.canShare &&
+                    navigator.canShare({
+                        files: [imageFile]
+                    })
+                ){
+
+                    await navigator.share({
+                        title: shareData.title,
+                        text: shareData.text,
+                        files: [imageFile]
+                    });
+
+                    return;
+                }
+
+            }
+
+        }catch(imageError){
+
+            console.error(
+                "PRODUCT IMAGE SHARE ERROR:",
+                imageError
+            );
+
+        }
+
+    }
+
+    // SECOND: fallback to normal text share
+    try{
+
+        if(navigator.share){
+
+            await navigator.share(
+                shareData
+            );
+
+            return;
+        }
+
+    }catch(shareError){
+
+        console.error(
+            "PRODUCT TEXT SHARE ERROR:",
+            shareError
+        );
+
+    }
+
+    // THIRD: final fallback to clipboard
+    if(navigator.clipboard){
+
+        await navigator.clipboard.writeText(
+            shareText
+        );
+
+        alert(
+            "Product information copied successfully."
+        );
+
+    }else{
+
+        alert(shareText);
+
+    }
+
+} 
+
+                  
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    const headerCartCount =
+        document.getElementById("productHeaderCartCount");
+
+    const bottomCartCount =
+
+document.getElementById("cart-count");
+
+
+    function syncProductHeaderCartCount(){
+
+        let cart = [];
+
+        try{
+            cart = JSON.parse(
+                localStorage.getItem("cart") || "[]"
+            );
+        }catch(error){
+            cart = [];
+        }
+
+        const totalQuantity = cart.reduce(
+            function(total, item){
+                return total + Number(item.quantity || 1);
+            },
+            0
+        );
+
+        if(headerCartCount){
+            headerCartCount.textContent =
+                String(totalQuantity);
+        }
+
+        if(bottomCartCount){
+            bottomCartCount.textContent =
+                String(totalQuantity);
+        }
+    }
+
+    syncProductHeaderCartCount();
+
+    window.addEventListener(
+        "storage",
+        syncProductHeaderCartCount
+    );
+
+});
+
+
+
+function syncWishlistBadge(){
+
+    let wishlist = [];
+
+    try{
+        wishlist = JSON.parse(
+            localStorage.getItem("wishlist") || "[]"
+        );
+    }catch(error){
+        wishlist = [];
+    }
+
+    const badge =
+        document.getElementById("wishlist-count");
+
+    if(badge){
+        badge.textContent = String(wishlist.length);
+    }
+}
+
+function refreshWishlistBadge(){
+
+    syncWishlistBadge();
+
+    setTimeout(syncWishlistBadge, 100);
+    setTimeout(syncWishlistBadge, 500);
+}
+
+document.addEventListener(
+    "DOMContentLoaded",
+    refreshWishlistBadge
+);
+
+window.addEventListener(
+    "load",
+    refreshWishlistBadge
+);
+
+window.addEventListener(
+    "pageshow",
+    refreshWishlistBadge
+);
+
+
+
+
+</script>
+
+
+</body>
+</html>

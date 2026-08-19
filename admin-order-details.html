@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Admin Order Details</title>
+
+   
+<link
+    rel="stylesheet"
+    href="style_v8.css?v=4"
+>
+
+    
+<link
+    rel="stylesheet"
+    href="admin.css?v=7"
+>
+
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    >
+</head>
+
+<body>
+
+   <header class="top-header">
+
+        <a
+            href="admin-orders.html"
+            class="admin-back-btn"
+        >
+            <i class="fas fa-arrow-left"></i>
+            Back
+        </a>
+
+        <h1>Order Details</h1>
+
+    </header>
+
+    <main class="admin-order-details-page">
+
+        <section class="admin-order-summary-card">
+
+            <div class="admin-order-details-heading">
+
+                <div>
+                    <small>Order ID</small>
+
+                    <h2 id="adminOrderDetailsId">
+                        -
+                    </h2>
+                </div>
+
+                <span
+                    id="adminOrderDetailsStatus"
+                    class="admin-order-status"
+                >
+                    Pending
+                </span>
+
+            </div>
+
+            <div class="admin-order-info-grid">
+
+                <div class="admin-order-info-item">
+                    <i class="fas fa-calendar-days"></i>
+
+                    <div>
+                        <small>Date</small>
+
+                        <strong id="adminOrderDetailsDate">
+                            -
+                        </strong>
+                    </div>
+                </div>
+
+                <div class="admin-order-info-item">
+      <i class="fas fa-money-bill-wave"></i>
+
+        <div>
+      <small>Total Amount</small>
+
+    <strong id="adminOrderDetailsTotal">
+
+    ₦0
+</strong>
+</div>
+</div>
+
+
+
+<div class="admin-order-summary-grid">
+
+    <div class="admin-order-summary-item">
+        <small>Subtotal</small>
+        <strong id="adminOrderDetailsSubtotal">₦0</strong>
+    </div>
+
+    <div
+        id="adminOrderCouponRow"
+        class="admin-order-summary-item"
+        style="display:none;"
+    >
+        <small>Coupon</small>
+        <strong id="adminOrderDetailsCoupon">—</strong>
+    </div>
+
+    <div
+        id="adminOrderDiscountRow"
+        class="admin-order-summary-item"
+        style="display:none;"
+    >
+        <small>Discount</small>
+        <strong id="adminOrderDetailsDiscount">-₦0</strong>
+    </div>
+
+    <div class="admin-order-summary-item">
+        <small>Shipping State</small>
+        <strong id="adminOrderDetailsShippingState">—</strong>
+    </div>
+
+    <div class="admin-order-summary-item">
+        <small>Shipping Fee</small>
+        <strong id="adminOrderDetailsShippingFee">₦0</strong>
+    </div>
+
+
+<div class="admin-order-summary-item">
+    <small>Payment Method</small>
+    <strong id="adminOrderDetailsPaymentMethod">—</strong>
+</div>
+
+<div class="admin-order-summary-item">
+    <small>Payment Status</small>
+    <strong id="adminOrderDetailsPaymentStatus">—</strong>
+</div>
+
+
+    <div
+        id="adminOrderDeliveryTimeRow"
+        class="admin-order-summary-item"
+        style="display:none;"
+    >
+        <small>Estimated Delivery</small>
+        <strong id="adminOrderDetailsDeliveryTime">—</strong>
+    </div>
+
+</div>
+
+
+
+   </div>
+
+   </section>
+
+        <section class="admin-order-section">
+
+            <h2>
+                <i class="fas fa-user"></i>
+                Customer Information
+            </h2>
+
+            <div class="admin-order-customer-details">
+
+                <p>
+                    <strong>Name:</strong>
+
+                    <span id="adminOrderCustomerName">
+                        -
+                    </span>
+                </p>
+
+                <p>
+                    <strong>Email:</strong>
+
+                    <span id="adminOrderCustomerEmail">
+                        -
+                    </span>
+                </p>
+
+                <p>
+                    <strong>Phone:</strong>
+
+                    <span id="adminOrderCustomerPhone">
+                        -
+                    </span>
+                </p>
+
+                <p>
+                    <strong>Address:</strong>
+
+                    <span id="adminOrderCustomerAddress">
+                        -
+                    </span>
+                </p>
+
+            </div>
+
+        </section>
+
+        <section class="admin-order-section">
+
+            <h2>
+                <i class="fas fa-box"></i>
+                Ordered Items
+            </h2>
+
+            <div id="adminOrderItemsContainer">
+
+                <div class="admin-empty">
+                    No Items Found
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="admin-order-section">
+
+            <h2>
+                <i class="fas fa-money-check-dollar"></i>
+                Update Payment Status
+            </h2>
+
+            <select
+                id="adminPaymentStatusSelect"
+                style="
+                    width:100%;
+                    padding:14px 16px;
+                    margin:10px 0 14px;
+                    border:1px solid #d0d0d0;
+                    border-radius:14px;
+                    background:#fff;
+                    font-size:16px;
+                    color:#222;
+                    min-height:56px;
+                "
+            >
+
+                <option value="Pending">
+                    Pending
+                </option>
+
+                <option value="Paid">
+                    Paid
+                </option>
+
+                <option value="Failed">
+                    Failed
+                </option>
+
+                <option value="Refunded">
+                    Refunded
+                </option>
+
+            </select>
+
+            <button
+                type="button"
+                class="admin-update-order-btn"
+                onclick="updateAdminPaymentStatus()"
+            >
+                Update Payment Status
+            </button>
+
+        </section>
+
+
+        <section class="admin-order-section">
+
+            <h2>
+                <i class="fas fa-rotate"></i>
+                Update Order Status
+            </h2>
+
+            <select id="adminOrderStatusSelect">
+
+                <option value="Pending">
+                    Pending
+                </option>
+
+                <option value="Processing">
+                    Processing
+                </option>
+
+
+<option value="Out for Delivery">
+    Out for Delivery
+</option>
+
+                <option value="Delivered">
+                    Delivered
+                </option>
+
+                <option value="Cancelled">
+                    Cancelled
+                </option>
+
+            </select>
+
+            <button
+                type="button"
+                class="admin-update-order-btn"
+                onclick="updateAdminOrderStatus()"
+            >
+                Update Status
+            </button>
+
+        </section>
+
+    </main>
+
+    <script src="products-data.js"></script>
+    <script src="script_v8.js?v=payment-status-1"></script>
+
+</body>
+
+</html>
+
