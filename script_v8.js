@@ -2980,8 +2980,21 @@ localStorage.setItem(
 
        alert("Login successful.");
 
-        window.location.href =
-            "account.html";
+        const loginRole =
+            String(
+                data.user &&
+                data.user.role
+                    ? data.user.role
+                    : "customer"
+            ).toLowerCase();
+
+        if(loginRole === "admin"){
+            window.location.href =
+                "admin-dashboard.html";
+        }else{
+            window.location.href =
+                "account.html";
+        }
 
     }catch(error){
 
@@ -9204,3 +9217,251 @@ async function updateAdminPaymentStatus(){
 
 }
 
+
+
+// ===========================================
+
+// ADMIN GLOBAL BOTTOM NAVIGATION
+// ===========================================
+
+function buildAdminNavigation(){
+
+    const page =
+        window.location.pathname
+            .split("/")
+            .pop() || "";
+
+    if(
+        !page.startsWith("admin-") ||
+        !page.endsWith(".html")
+    ){
+        return;
+    }
+
+    if(
+        document.getElementById(
+            "jgglAdminBottomNav"
+        )
+    ){
+        return;
+    }
+
+    let activePage = page;
+
+    if(page === "admin-order-details.html"){
+        activePage = "admin-orders.html";
+    }
+
+    if(
+        page === "admin-product-details.html" ||
+        page === "admin-product-form.html"
+    ){
+        activePage = "admin-products.html";
+    }
+
+    if(page === "admin-customer-details.html"){
+        activePage = "admin-customers.html";
+    }
+
+    const morePages = [
+        "admin-notifications.html",
+        "admin-analytics.html",
+        "admin-settings.html"
+    ];
+
+    const nav =
+        document.createElement("nav");
+
+    nav.id = "jgglAdminBottomNav";
+    nav.className = "admin-global-bottom-nav";
+
+    nav.setAttribute(
+        "aria-label",
+        "Admin navigation"
+    );
+
+    const navItems = [
+        {
+            href: "admin-dashboard.html",
+            icon: "fa-house",
+            label: "Dashboard"
+        },
+        {
+            href: "admin-orders.html",
+            icon: "fa-bag-shopping",
+            label: "Orders"
+        },
+        {
+            href: "admin-products.html",
+            icon: "fa-box",
+            label: "Products"
+        },
+        {
+            href: "admin-customers.html",
+            icon: "fa-users",
+            label: "Customers"
+        }
+    ];
+
+    navItems.forEach(function(item){
+
+        const link =
+            document.createElement("a");
+
+        link.href = item.href;
+        link.className =
+            "admin-global-nav-item";
+
+        if(activePage === item.href){
+            link.classList.add("active");
+        }
+
+        link.innerHTML = `
+            <i class="fas ${item.icon}"></i>
+            <span>${item.label}</span>
+        `;
+
+        nav.appendChild(link);
+
+    });
+
+
+    // MORE BUTTON
+    const moreButton =
+        document.createElement("button");
+
+    moreButton.type = "button";
+
+    moreButton.className =
+        "admin-global-nav-item admin-more-btn";
+
+    if(morePages.includes(activePage)){
+        moreButton.classList.add("active");
+    }
+
+    moreButton.innerHTML = `
+        <i class="fas fa-ellipsis"></i>
+        <span>More</span>
+    `;
+
+    nav.appendChild(moreButton);
+
+
+    // MORE MENU
+    const menu =
+        document.createElement("div");
+
+    menu.id = "jgglAdminMoreMenu";
+    menu.className = "admin-more-menu";
+
+    menu.innerHTML = `
+        <div class="admin-more-menu-card">
+
+            <div class="admin-more-menu-header">
+                <strong>Admin Menu</strong>
+
+                <button
+                    type="button"
+                    class="admin-more-close"
+                    aria-label="Close admin menu"
+                >
+                    <i class="fas fa-xmark"></i>
+                </button>
+            </div>
+
+            <a href="admin-notifications.html">
+                <i class="fas fa-bell"></i>
+                <span>Notifications</span>
+            </a>
+
+            <a href="admin-analytics.html">
+                <i class="fas fa-chart-line"></i>
+                <span>Analytics</span>
+            </a>
+
+            <a href="admin-settings.html">
+                <i class="fas fa-gear"></i>
+                <span>Settings</span>
+            </a>
+
+            <a href="index.html">
+                <i class="fas fa-store"></i>
+                <span>Back to Store</span>
+            </a>
+
+            <button
+                type="button"
+                class="admin-more-logout"
+            >
+                <i class="fas fa-right-from-bracket"></i>
+                <span>Logout</span>
+            </button>
+
+        </div>
+    `;
+
+    document.body.appendChild(menu);
+    document.body.appendChild(nav);
+
+
+    function closeAdminMoreMenu(){
+        menu.classList.remove("open");
+    }
+
+    moreButton.addEventListener(
+        "click",
+        function(){
+
+            menu.classList.toggle("open");
+
+        }
+    );
+
+    const closeButton =
+        menu.querySelector(
+            ".admin-more-close"
+        );
+
+    if(closeButton){
+        closeButton.addEventListener(
+            "click",
+            closeAdminMoreMenu
+        );
+    }
+
+    menu.addEventListener(
+        "click",
+        function(event){
+
+            if(event.target === menu){
+                closeAdminMoreMenu();
+            }
+
+        }
+    );
+
+    const logoutButton =
+        menu.querySelector(
+            ".admin-more-logout"
+        );
+
+    if(logoutButton){
+
+        logoutButton.addEventListener(
+            "click",
+            function(){
+                logoutUser();
+            }
+        );
+
+    }
+
+}
+
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+        buildAdminNavigation();
+    }
+);
