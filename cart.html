@@ -833,7 +833,7 @@ async function readCart(){
   
 
 const response = await fetch(
-    "http://127.0.0.1:3000/api/cart/" +
+    "https://jggl-store.onrender.com/api/cart/" +
     encodeURIComponent(savedUser.id),
     {
         headers: getAuthHeaders()
@@ -1206,7 +1206,7 @@ async function updateCartItemQuantity(
     try{
 
         const response = await fetch(
-            "http://127.0.0.1:3000/api/cart/" +
+            "https://jggl-store.onrender.com/api/cart/" +
             encodeURIComponent(user.id) +
             "/items/" +
             encodeURIComponent(item.id),
@@ -1332,7 +1332,7 @@ async function removeCartItem(index){
     try{
 
         const response = await fetch(
-            "http://127.0.0.1:3000/api/cart/" +
+            "https://jggl-store.onrender.com/api/cart/" +
             encodeURIComponent(user.id) +
             "/items/" +
             encodeURIComponent(item.id),
@@ -1403,7 +1403,7 @@ async function clearCurrentCart(){
     try{
 
         const response = await fetch(
-            "http://127.0.0.1:3000/api/cart/" +
+            "https://jggl-store.onrender.com/api/cart/" +
             encodeURIComponent(user.id),
 
 
