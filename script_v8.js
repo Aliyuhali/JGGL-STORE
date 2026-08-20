@@ -8866,7 +8866,9 @@ function loadLoginSecurity(){
 
     if(name){
         name.textContent =
-            user.name || "-";
+            user.full_name ||
+            user.name ||
+            "-";
     }
 
     if(email){

@@ -4767,3 +4767,42 @@ body:has(.product-details-page){
     color:#ffffff;
 }
 
+
+
+/* ==========================================
+   CUSTOMER ACCOUNT MENU — CONSISTENT CARDS
+========================================== */
+
+.account-menu .account-menu-item{
+    width:100%;
+    box-sizing:border-box;
+
+    border:1px solid #eeeeee;
+    outline:none;
+
+    background:#ffffff;
+    color:#222222;
+
+    font-family:inherit;
+    text-align:left;
+
+    cursor:pointer;
+
+    box-shadow:0 3px 10px rgba(0,0,0,.07);
+}
+
+.account-menu button.account-menu-item{
+    appearance:none;
+    -webkit-appearance:none;
+}
+
+.account-menu .account-menu-item:active{
+    transform:scale(.99);
+}
+
+.customer-dark-mode .account-menu .account-menu-item{
+    background:#1e1e1e;
+    color:#f5f5f5;
+    border-color:#333333;
+}
+
