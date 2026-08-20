@@ -1510,11 +1510,12 @@ orderId =
 
 
 
-let whatsappURL =
-    "https://wa.me/2348089250443?text=" +
-    encodeURIComponent(message);
+alert("Your order has been placed successfully.");
 
-alert("Your order has been saved successfully.");
+localStorage.setItem(
+    "selectedOrderId",
+    orderId
+);
 
 cart = [];
 saveCart();
@@ -1522,7 +1523,7 @@ updateCartCount();
 showCart();
 loadCheckout();
 
-window.location.href = whatsappURL;
+window.location.href = "orders.html";
 
 }
 
