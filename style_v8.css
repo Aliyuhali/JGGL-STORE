@@ -4264,3 +4264,506 @@ body:has(.product-details-page){
     line-height:1.4;
     color:#666;
 }
+
+
+/* ==========================================
+   MY ORDERS — MOBILE CARD + HEADER REDESIGN
+========================================== */
+
+/* HEADER */
+.orders-page-header{
+    position:sticky;
+    top:0;
+    z-index:50;
+
+    display:grid;
+    grid-template-columns:42px 1fr 42px;
+    align-items:center;
+
+    min-height:58px;
+    padding:8px 14px;
+
+    background:#ffffff;
+    border-bottom:1px solid #eeeeee;
+    box-shadow:0 2px 8px rgba(0,0,0,.06);
+}
+
+.orders-page-header::after{
+    content:"";
+    width:42px;
+}
+
+.orders-page-header .back-btn{
+    width:40px;
+    height:40px;
+    padding:0;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:12px;
+    background:#ffffff;
+    color:#0B7A3E;
+    font-size:18px;
+
+    box-shadow:0 2px 7px rgba(0,0,0,.10);
+}
+
+.orders-page-header h2{
+    margin:0;
+    padding:0;
+
+    text-align:center;
+    font-size:20px;
+    line-height:1.2;
+    font-weight:700;
+    color:#222222;
+}
+
+
+/* PAGE */
+.orders-section{
+    padding:14px 14px 100px;
+    margin:0;
+    background:#f6f7f8;
+}
+
+
+/* STATUS GROUP
+   Remove the old giant white outer card */
+.orders-section .order-status-card{
+    background:transparent;
+    border-radius:0;
+    padding:0;
+    margin:0 0 22px;
+    box-shadow:none;
+}
+
+
+/* STATUS HEADING */
+.orders-section .order-status-title{
+    display:flex;
+    align-items:center;
+    gap:9px;
+
+    margin:0 2px 10px;
+    padding:0;
+}
+
+.orders-section .order-status-title i{
+    width:34px;
+    height:34px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:50%;
+    background:#0B7A3E;
+    color:#ffffff;
+    font-size:16px;
+}
+
+.orders-section .order-status-title h3{
+    margin:0;
+    font-size:17px;
+    line-height:1.2;
+    font-weight:700;
+    color:#222222;
+}
+
+
+/* INDIVIDUAL ORDER CARD */
+.orders-section .saved-order-card{
+    width:100%;
+    box-sizing:border-box;
+
+    background:#ffffff;
+    border-radius:14px;
+
+    margin:0 0 12px;
+    padding:14px;
+
+    border:1px solid #eeeeee;
+    box-shadow:0 3px 10px rgba(0,0,0,.07);
+
+    cursor:pointer;
+    overflow:hidden;
+}
+
+.orders-section .saved-order-card:active{
+    transform:scale(.99);
+}
+
+
+/* ORDER ID + STATUS */
+.orders-section .saved-order-header{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:8px;
+
+    width:100%;
+    margin-bottom:8px;
+}
+
+.orders-section .saved-order-header strong{
+    flex:1;
+    min-width:0;
+
+    font-size:15px;
+    line-height:1.25;
+    font-weight:800;
+    color:#222222;
+
+    overflow-wrap:anywhere;
+}
+
+.orders-section .saved-order-header .order-status{
+    flex-shrink:0;
+
+    padding:5px 10px;
+    border-radius:999px;
+
+    font-size:12px;
+    line-height:1.2;
+    font-weight:700;
+}
+
+
+/* ORDER TEXT */
+.orders-section .saved-order-card p{
+    margin:5px 0;
+    color:#666666;
+    font-size:14px;
+    line-height:1.35;
+}
+
+.orders-section .saved-order-card p strong{
+    color:#444444;
+}
+
+
+/* ITEMS */
+.orders-section .saved-order-card ul{
+    margin:7px 0;
+    padding-left:20px;
+}
+
+.orders-section .saved-order-card li{
+    margin:4px 0;
+
+    color:#333333;
+    font-size:14px;
+    line-height:1.35;
+
+    overflow-wrap:anywhere;
+}
+
+
+/* EMPTY STATUS MESSAGE */
+.orders-section .order-status-card > div[id$="Orders"] > p{
+    padding:12px 14px;
+
+    background:#ffffff;
+    border-radius:12px;
+    border:1px solid #eeeeee;
+
+    color:#777777;
+    font-size:13px;
+
+    box-shadow:0 2px 7px rgba(0,0,0,.05);
+}
+
+
+/* SMALL MOBILE */
+@media (max-width:420px){
+
+    .orders-page-header{
+        min-height:54px;
+        padding:7px 12px;
+        grid-template-columns:38px 1fr 38px;
+    }
+
+    .orders-page-header::after{
+        width:38px;
+    }
+
+    .orders-page-header .back-btn{
+        width:36px;
+        height:36px;
+        font-size:16px;
+    }
+
+    .orders-page-header h2{
+        font-size:19px;
+    }
+
+    .orders-section{
+        padding:12px 12px 96px;
+    }
+
+    .orders-section .saved-order-card{
+        padding:12px;
+        border-radius:13px;
+    }
+
+    .orders-section .saved-order-header strong{
+        font-size:14px;
+    }
+
+    .orders-section .saved-order-card p,
+    .orders-section .saved-order-card li{
+        font-size:13px;
+    }
+
+    .orders-section .saved-order-header .order-status{
+        font-size:11px;
+        padding:5px 9px;
+    }
+}
+
+
+
+/* ==========================================
+   CUSTOMER SUB-PAGE HEADER + PROFILE UI
+========================================== */
+
+/* ------------------------------------------
+   CONSISTENT CUSTOMER PAGE HEADER
+------------------------------------------ */
+
+.customer-page-header{
+    position:sticky;
+    top:0;
+    z-index:60;
+
+    display:grid;
+    grid-template-columns:42px minmax(0,1fr) 42px;
+    align-items:center;
+
+    width:100%;
+    min-height:58px;
+    box-sizing:border-box;
+
+    padding:8px 14px;
+
+    background:#ffffff;
+    border-bottom:1px solid #eeeeee;
+    box-shadow:0 2px 8px rgba(0,0,0,.06);
+}
+
+.customer-page-header::after{
+    content:"";
+    width:42px;
+    height:1px;
+}
+
+.customer-page-header .back-btn{
+    width:40px;
+    height:40px;
+    padding:0;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border:0;
+    border-radius:12px;
+
+    background:#ffffff;
+    color:#0B7A3E;
+
+    font-size:17px;
+
+    box-shadow:0 2px 7px rgba(0,0,0,.10);
+}
+
+.customer-page-header h1,
+.customer-page-header h2{
+    min-width:0;
+    margin:0;
+    padding:0 6px;
+
+    text-align:center;
+
+    font-size:20px;
+    line-height:1.2;
+    font-weight:750;
+    color:#222222;
+
+    white-space:normal;
+    overflow-wrap:anywhere;
+}
+
+
+/* ------------------------------------------
+   EDIT PROFILE
+------------------------------------------ */
+
+.account-form{
+    gap:14px;
+}
+
+.account-form .account-menu-item{
+    min-height:58px;
+
+    display:grid;
+    grid-template-columns:34px minmax(0,1fr);
+    align-items:center;
+    gap:12px;
+
+    padding:12px 14px;
+
+    background:#ffffff;
+    border:1px solid #eeeeee;
+    border-radius:14px;
+
+    box-shadow:0 3px 10px rgba(0,0,0,.07);
+}
+
+.account-form .account-menu-item i{
+    width:34px;
+    margin:0;
+
+    font-size:22px;
+    text-align:center;
+    color:#0B7A3E;
+}
+
+.account-form .account-menu-item input{
+    width:100%;
+    min-width:0;
+    box-sizing:border-box;
+
+    padding:10px 12px;
+
+    border:1px solid #d9d9d9;
+    border-radius:10px;
+
+    background:#fafafa;
+    color:#222222;
+
+    font-size:15px;
+    line-height:1.3;
+
+    outline:none;
+}
+
+.account-form .account-menu-item input:focus{
+    border-color:#0B7A3E;
+    background:#ffffff;
+    box-shadow:0 0 0 3px rgba(11,122,62,.10);
+}
+
+.account-form .checkout-btn{
+    width:100%;
+    min-height:50px;
+
+    margin-top:4px;
+    padding:12px 16px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:9px;
+
+    border:0;
+    border-radius:13px;
+
+    background:#0B7A3E;
+    color:#ffffff;
+
+    font-size:16px;
+    font-weight:700;
+
+    box-shadow:0 4px 12px rgba(11,122,62,.20);
+}
+
+.account-form .checkout-btn:active{
+    transform:scale(.99);
+}
+
+
+/* ------------------------------------------
+   SMALL MOBILE
+------------------------------------------ */
+
+@media (max-width:420px){
+
+    .customer-page-header{
+        grid-template-columns:38px minmax(0,1fr) 38px;
+
+        min-height:54px;
+        padding:7px 12px;
+    }
+
+    .customer-page-header::after{
+        width:38px;
+    }
+
+    .customer-page-header .back-btn{
+        width:36px;
+        height:36px;
+
+        border-radius:10px;
+        font-size:16px;
+    }
+
+    .customer-page-header h1,
+    .customer-page-header h2{
+        font-size:18px;
+        padding:0 4px;
+    }
+
+    .account-form .account-menu-item{
+        grid-template-columns:30px minmax(0,1fr);
+
+        min-height:54px;
+        padding:10px 12px;
+        gap:10px;
+    }
+
+    .account-form .account-menu-item i{
+        width:30px;
+        font-size:20px;
+    }
+
+    .account-form .account-menu-item input{
+        padding:9px 10px;
+        font-size:14px;
+    }
+
+    .account-form .checkout-btn{
+        min-height:48px;
+        font-size:15px;
+    }
+}
+
+
+/* ==========================================
+   CUSTOMER SUB-PAGE HEADER — GREEN BRAND
+========================================== */
+
+.customer-page-header{
+    background:#0B7A3E;
+    border-bottom:1px solid #095f31;
+    box-shadow:0 2px 8px rgba(0,0,0,.12);
+}
+
+.customer-page-header .back-btn{
+    background:rgba(255,255,255,.14);
+    color:#ffffff;
+    box-shadow:none;
+}
+
+.customer-page-header .back-btn:active{
+    background:rgba(255,255,255,.22);
+}
+
+.customer-page-header h1,
+.customer-page-header h2{
+    color:#ffffff;
+}
+
