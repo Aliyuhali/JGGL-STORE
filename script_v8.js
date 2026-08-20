@@ -4,6 +4,18 @@
 // Main JavaScript File
 // Phase 3
 // ===========================================⁷
+// ===========================================
+// API BASE URL
+// Local development -> Node on port 3000
+// Render production -> same online origin
+// ===========================================
+
+const API_BASE =
+    window.location.hostname === "127.0.0.1" ||
+    window.location.hostname === "localhost"
+        ? "http://127.0.0.1:3000"
+        : window.location.origin;
+
 // Cart Storage
 
 
@@ -61,7 +73,7 @@ async function loadCart(){
 
 
 const response = await fetch(
-    "http://127.0.0.1:3000/api/cart/" +
+    API_BASE + "/api/cart/" +
     encodeURIComponent(user.id),
     {
         headers: getAuthHeaders()
@@ -178,7 +190,7 @@ async function addToCart(
     try{
 
         const response = await fetch(
-            "http://127.0.0.1:3000/api/cart/" +
+            API_BASE + "/api/cart/" +
             encodeURIComponent(user.id) +
             "/items",
             {
@@ -446,7 +458,7 @@ const userId = savedUser.id;
 
         const response =
             await fetch(
-                `http://127.0.0.1:3000/api/cart/${userId}`,
+                `${API_BASE}/api/cart/${userId}`,
 
 
 {
@@ -853,7 +865,7 @@ async function cameraSearch(event){
 
         const response =
             await fetch(
-                "http://127.0.0.1:3000/api/search-by-image",
+                API_BASE + "/api/search-by-image",
                 {
                     method: "POST",
                     body: formData
@@ -1396,7 +1408,7 @@ try{
 
     const response =
         await fetch(
-            "http://127.0.0.1:3000/api/orders",
+            API_BASE + "/api/orders",
             {
                 method: "POST",
 
@@ -2510,7 +2522,7 @@ async function saveProfile(event){
     try{
 
         const response = await fetch(
-            "http://127.0.0.1:3000/api/account/" +
+            API_BASE + "/api/account/" +
             encodeURIComponent(savedUser.id),
             {
                 method: "PUT",
@@ -2605,7 +2617,7 @@ async function loadProfile(){
 
 
 const response = await fetch(
-    "http://127.0.0.1:3000/api/account/" +
+    API_BASE + "/api/account/" +
     encodeURIComponent(savedUser.id),
     {
         headers: getAuthHeaders()
@@ -2905,7 +2917,7 @@ async function loginUser(event){
 
         const response =
             await fetch(
-                "http://127.0.0.1:3000/api/login",
+                API_BASE + "/api/login",
                 {
                     method: "POST",
 
@@ -3067,7 +3079,7 @@ async function registerUser(event){
     try{
 
         const response = await fetch(
-            "http://127.0.0.1:3000/api/register",
+            API_BASE + "/api/register",
             {
                 method: "POST",
 
@@ -3319,7 +3331,7 @@ async function loadOrders(){
 
 
 const response = await fetch(
-    "http://127.0.0.1:3000/api/orders",
+    API_BASE + "/api/orders",
     {
         headers: getAuthHeaders()
     }
@@ -3624,7 +3636,7 @@ async function loadOrderDetails(){
     try{
 
 const response = await fetch(
-    "http://127.0.0.1:3000/api/orders/" +
+    API_BASE + "/api/orders/" +
     encodeURIComponent(orderNumber),
     {
         headers: getAuthHeaders()
@@ -3998,7 +4010,7 @@ async function shareCurrentOrder(){
 
 
 const response = await fetch(
-    "http://127.0.0.1:3000/api/orders/" +
+    API_BASE + "/api/orders/" +
     encodeURIComponent(orderNumber),
     {
         headers: getAuthHeaders()
@@ -4349,7 +4361,7 @@ async function updateNotificationBadge(){
 
 const response =
     await fetch(
-        "http://127.0.0.1:3000/api/notifications",
+        API_BASE + "/api/notifications",
         {
             headers: getAuthHeaders()
         }
@@ -4438,7 +4450,7 @@ async function markNotificationsAsRead(){
 
         const response =
             await fetch(
-                "http://127.0.0.1:3000/api/notifications/read",
+                API_BASE + "/api/notifications/read",
                 {
                     method: "PATCH",
 
@@ -4527,7 +4539,7 @@ async function clearNotifications(){
 
         const response =
             await fetch(
-                "http://127.0.0.1:3000/api/notifications?" +
+                API_BASE + "/api/notifications?" +
                 params.toString(),
                 {
                     method: "DELETE"
@@ -4628,7 +4640,7 @@ async function deleteNotification(id){
 
         const response =
             await fetch(
-                "http://127.0.0.1:3000/api/notifications/" +
+                API_BASE + "/api/notifications/" +
                 encodeURIComponent(id) +
                 "?" +
                 params.toString(),
@@ -4722,7 +4734,7 @@ if(!token){
 
 const response =
     await fetch(
-        "http://127.0.0.1:3000/api/notifications",
+        API_BASE + "/api/notifications",
         {
             headers: {
                 "Authorization":
@@ -4889,7 +4901,7 @@ async function loadAdminOrders(){
 
         const response =
             await fetch(
-                "http://127.0.0.1:3000/api/admin/orders"
+                API_BASE + "/api/admin/orders"
             );
 
         const data =
@@ -5241,7 +5253,7 @@ async function updateAdminOrderStatusFromList(
 
         const response =
             await fetch(
-                "http://127.0.0.1:3000/api/admin/orders/" +
+                API_BASE + "/api/admin/orders/" +
                 encodeURIComponent(orderId) +
                 "/status",
                 {
@@ -5355,7 +5367,7 @@ async function loadAdminDashboard(){
 
         const response =
             await fetch(
-                "http://127.0.0.1:3000/api/admin/orders"
+                API_BASE + "/api/admin/orders"
             );
 
         const data =
@@ -5607,7 +5619,7 @@ try{
 
 const response =
     await fetch(
-        "http://127.0.0.1:3000/api/admin/products"
+        API_BASE + "/api/admin/products"
     );
 
 
@@ -5871,7 +5883,7 @@ if(!confirmDelete){
 
         const response =
             await fetch(
-                "http://127.0.0.1:3000/api/admin/products/" +
+                API_BASE + "/api/admin/products/" +
                 encodeURIComponent(productId),
                 {
                     method: "DELETE"
@@ -5960,7 +5972,7 @@ async function loadAdminCustomers(){
     try{
 
         const response = await fetch(
-            "http://127.0.0.1:3000/api/admin/customers"
+            API_BASE + "/api/admin/customers"
         );
 
         const data = await response.json();
@@ -6193,7 +6205,7 @@ async function deleteAdminCustomer(customerId){
 
         const response =
             await fetch(
-                "http://127.0.0.1:3000/api/admin/customers/" +
+                API_BASE + "/api/admin/customers/" +
                 encodeURIComponent(customerId),
                 {
                     method: "DELETE"
@@ -6264,7 +6276,7 @@ async function loadAdminCustomerDetails(){
     try{
 
         const response = await fetch(
-            "http://127.0.0.1:3000/api/admin/customers/" +
+            API_BASE + "/api/admin/customers/" +
             encodeURIComponent(customerId)
         );
 
@@ -6529,7 +6541,7 @@ async function loadAdminOrderDetails(){
 
         const response =
             await fetch(
-                "http://127.0.0.1:3000/api/admin/orders/" +
+                API_BASE + "/api/admin/orders/" +
                 encodeURIComponent(
                     selectedOrderId
                 )
@@ -7008,7 +7020,7 @@ async function updateAdminOrderStatus(){
 
         const response =
             await fetch(
-                "http://127.0.0.1:3000/api/admin/orders/" +
+                API_BASE + "/api/admin/orders/" +
                 encodeURIComponent(
                     selectedOrderId
                 ) +
@@ -7098,10 +7110,10 @@ async function loadAdminAnalytics(){
             customersResponse
         ] = await Promise.all([
             fetch(
-                "http://127.0.0.1:3000/api/admin/orders"
+                API_BASE + "/api/admin/orders"
             ),
             fetch(
-                "http://127.0.0.1:3000/api/admin/customers"
+                API_BASE + "/api/admin/customers"
             )
         ]);
 
@@ -7504,7 +7516,7 @@ async function loadAdminProductForm(){
 
         const response =
             await fetch(
-                "http://127.0.0.1:3000/api/admin/products/" +
+                API_BASE + "/api/admin/products/" +
                 encodeURIComponent(
                     selectedProductId
                 )
@@ -7705,12 +7717,12 @@ async function saveAdminProduct(event){
     const endpoint =
         isEdit
             ? (
-                "http://127.0.0.1:3000/api/admin/products/" +
+                API_BASE + "/api/admin/products/" +
                 encodeURIComponent(
                     selectedProductId
                 )
             )
-            : "http://127.0.0.1:3000/api/admin/products";
+            : API_BASE + "/api/admin/products";
 
     const method =
         isEdit
@@ -7823,7 +7835,7 @@ function loadAdminProductDetails(){
     }
 
     fetch(
-        "http://127.0.0.1:3000/api/admin/products/" +
+        API_BASE + "/api/admin/products/" +
         encodeURIComponent(selectedProductId)
     )
     .then(function(response){
@@ -8075,7 +8087,7 @@ async function loadAdminNotifications(){
 
         const response =
             await fetch(
-                "http://127.0.0.1:3000/api/admin/notifications"
+                API_BASE + "/api/admin/notifications"
             );
 
         const data =
@@ -8190,7 +8202,7 @@ async function clearAdminNotifications(){
 
         const response =
             await fetch(
-                "http://127.0.0.1:3000/api/admin/notifications",
+                API_BASE + "/api/admin/notifications",
                 {
                     method: "DELETE"
                 }
@@ -8267,7 +8279,7 @@ async function loadAdminSettings(){
 
         const response =
             await fetch(
-                "http://127.0.0.1:3000/api/admin/settings"
+                API_BASE + "/api/admin/settings"
             );
 
         const data =
@@ -8410,7 +8422,7 @@ async function saveAdminSettings(event){
 
         const response =
             await fetch(
-                "http://127.0.0.1:3000/api/admin/settings",
+                API_BASE + "/api/admin/settings",
                 {
                     method: "PUT",
 
@@ -9140,7 +9152,7 @@ async function updateAdminPaymentStatus(){
 
         const response =
             await fetch(
-                "http://127.0.0.1:3000/api/admin/orders/" +
+                API_BASE + "/api/admin/orders/" +
                 encodeURIComponent(
                     selectedOrderId
                 ) +
