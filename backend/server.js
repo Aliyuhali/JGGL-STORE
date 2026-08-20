@@ -144,9 +144,12 @@ const adminLimiter = rateLimit({
 
 
 
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY
-});
+const openai =
+    process.env.OPENAI_API_KEY
+        ? new OpenAI({
+            apiKey: process.env.OPENAI_API_KEY
+        })
+        : null;
 
 const imageUpload = multer({
     storage: multer.memoryStorage(),
@@ -341,6 +344,13 @@ const imageBase64 =
 
 const imageDataUrl =
     `data:${req.file.mimetype};base64,${imageBase64}`;
+
+if(!openai){
+    return res.status(503).json({
+        success: false,
+        message: "AI image search is temporarily unavailable."
+    });
+}
 
 const aiResponse =
     await openai.responses.create({
