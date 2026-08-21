@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Welcome - JGGL-STORE</title>
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="style_v8.css?v=onboarding-final-1"
+    >
+
+</head>
+
+<body class="onboarding-body">
+
+<main class="onboarding-page">
+
+    <section class="onboarding-shell">
+
+        <button
+            type="button"
+            class="onboarding-skip"
+            onclick="skipJGGLOnboarding()"
+        >
+            Skip
+        </button>
+
+
+        <div class="onboarding-brand">
+
+            <img
+                src="logo/logo.png"
+                alt="JGGL-STORE Logo"
+            >
+
+        </div>
+
+
+        <div
+            class="onboarding-slide active"
+            data-onboarding-slide="0"
+        >
+
+            <div class="onboarding-icon">
+                <i class="fas fa-store"></i>
+            </div>
+
+            <h1>Welcome to JGGL-STORE</h1>
+
+            <p>
+                Your trusted online market for everyday products,
+                quality goods and convenient shopping.
+            </p>
+
+        </div>
+
+
+        <div
+            class="onboarding-slide"
+            data-onboarding-slide="1"
+        >
+
+            <div class="onboarding-icon">
+                <i class="fas fa-boxes-stacked"></i>
+            </div>
+
+            <h1>Shop Your Way</h1>
+
+            <p>
+                Choose Retail, Wholesale or Bulk purchasing
+                according to the quantity and price that suits you.
+            </p>
+
+        </div>
+
+
+        <div
+            class="onboarding-slide"
+            data-onboarding-slide="2"
+        >
+
+            <div class="onboarding-icon">
+                <i class="fas fa-shield-halved"></i>
+            </div>
+
+            <h1>Easy & Secure Shopping</h1>
+
+            <p>
+                Browse products, place orders, track your purchases
+                and manage your JGGL-STORE account in one place.
+            </p>
+
+        </div>
+
+
+        <div
+            class="onboarding-dots"
+            aria-label="Onboarding progress"
+        >
+
+            <button
+                type="button"
+                class="onboarding-dot active"
+                data-onboarding-dot="0"
+                onclick="showJGGLOnboardingSlide(0)"
+                aria-label="Slide 1"
+            ></button>
+
+            <button
+                type="button"
+                class="onboarding-dot"
+                data-onboarding-dot="1"
+                onclick="showJGGLOnboardingSlide(1)"
+                aria-label="Slide 2"
+            ></button>
+
+            <button
+                type="button"
+                class="onboarding-dot"
+                data-onboarding-dot="2"
+                onclick="showJGGLOnboardingSlide(2)"
+                aria-label="Slide 3"
+            ></button>
+
+        </div>
+
+
+        <button
+            type="button"
+            id="onboardingNextBtn"
+            class="onboarding-primary-btn"
+            onclick="nextJGGLOnboardingSlide()"
+        >
+            Next
+            <i class="fas fa-arrow-right"></i>
+        </button>
+
+
+        <div
+            id="onboardingFinalActions"
+            class="onboarding-final-actions"
+            hidden
+        >
+
+            <button
+                type="button"
+                class="onboarding-primary-btn"
+                onclick="finishJGGLOnboarding('login')"
+            >
+                <i class="fas fa-right-to-bracket"></i>
+                Login
+            </button>
+
+            <button
+                type="button"
+                class="onboarding-secondary-btn"
+                onclick="finishJGGLOnboarding('register')"
+            >
+                <i class="fas fa-user-plus"></i>
+                Create Account
+            </button>
+
+        </div>
+
+    </section>
+
+</main>
+
+<script src="script_v8.js?v=onboarding-flow-3"></script>
+
+</body>
+</html>

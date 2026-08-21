@@ -14,13 +14,52 @@
 
     <!-- Main CSS -->
  
-<link rel="stylesheet" href="style_v8.css">
+<link rel="stylesheet" href="style_v8.css?v=onboarding-1">
 
     <!-- Font Awesome Icons -->
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     >
+
+
+<script>
+/* ==========================================
+   JGGL FIRST VISIT ONBOARDING GATE
+========================================== */
+(function(){
+
+    const onboardingCompleted =
+        localStorage.getItem(
+            "jgglOnboardingCompleted"
+        ) === "true";
+
+    const loggedIn =
+        localStorage.getItem(
+            "jgglLoggedIn"
+        ) === "true";
+
+    const token =
+        localStorage.getItem(
+            "jgglAuthToken"
+        );
+
+    const user =
+        localStorage.getItem(
+            "jgglUser"
+        );
+
+    if(
+        !onboardingCompleted &&
+        !(loggedIn && token && user)
+    ){
+        window.location.replace(
+            "onboarding.html"
+        );
+    }
+
+})();
+</script>
 
 </head>
 

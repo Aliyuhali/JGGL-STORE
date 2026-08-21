@@ -449,7 +449,7 @@ const savedUser =
 
 if(!savedUser || !savedUser.id){
     alert("Please login again.");
-    window.location.href = "login.html";
+    window.location.href = "login.html?view=auth-flow-2";
     return;
 }
 
@@ -1466,7 +1466,7 @@ if(
     localStorage.removeItem("jgglAuthToken");
     localStorage.removeItem("jgglUser");
 
-    window.location.href = "login.html";
+    window.location.href = "login.html?view=auth-flow-2";
     return;
 }
 
@@ -2476,7 +2476,7 @@ async function saveProfile(event){
         alert("Please login again.");
 
         window.location.href =
-            "login.html";
+            "login.html?view=auth-flow-2";
 
         return;
     }
@@ -2609,7 +2609,7 @@ async function loadProfile(){
         alert("Please login again.");
 
         window.location.href =
-            "login.html";
+            "login.html?view=auth-flow-2";
 
         return;
     }
@@ -2648,7 +2648,7 @@ if(
     );
 
     window.location.href =
-        "login.html";
+        "login.html?view=auth-flow-2";
 
     return;
 }
@@ -2842,8 +2842,25 @@ function checkAdminAccess(){
         String(user.role || "").toLowerCase()
             !== "admin"
     ){
+        const currentPage =
+            window.location.pathname
+                .split("/")
+                .pop();
+
+        if(
+            currentPage &&
+            currentPage !== "login.html" &&
+            currentPage !== "register.html"
+        ){
+            localStorage.setItem(
+                "jgglLoginRedirect",
+                currentPage +
+                window.location.search
+            );
+        }
+
         window.location.href =
-            "login.html";
+            "login.html?view=auth-flow-2";
 
         return false;
     }
@@ -2977,6 +2994,11 @@ localStorage.setItem(
     JSON.stringify(data.user)
 );
 
+localStorage.setItem(
+    "jgglOnboardingCompleted",
+    "true"
+);
+
 
 
        alert("Login successful.");
@@ -2990,11 +3012,38 @@ localStorage.setItem(
             ).toLowerCase();
 
         if(loginRole === "admin"){
+
+            localStorage.removeItem(
+                "jgglLoginRedirect"
+            );
+
             window.location.href =
                 "admin-dashboard.html";
+
         }else{
-            window.location.href =
-                "account.html";
+
+            const savedRedirect =
+                localStorage.getItem(
+                    "jgglLoginRedirect"
+                );
+
+            localStorage.removeItem(
+                "jgglLoginRedirect"
+            );
+
+            if(
+                savedRedirect &&
+                !savedRedirect.includes("login.html") &&
+                !savedRedirect.includes("register.html") &&
+                !savedRedirect.startsWith("admin-")
+            ){
+                window.location.href =
+                    savedRedirect;
+            }else{
+                window.location.href =
+                    "index.html";
+            }
+
         }
 
     }catch(error){
@@ -3127,12 +3176,17 @@ async function registerUser(event){
             return;
         }
 
+        localStorage.setItem(
+            "jgglOnboardingCompleted",
+            "true"
+        );
+
         alert(
             "Account created successfully. Please login."
         );
 
         window.location.replace(
-            "login.html"
+            "login.html?view=auth-flow-2"
         );
 
     }catch(error){
@@ -3222,7 +3276,7 @@ function checkLogin(){
         );
 
         window.location.href =
-            "login.html";
+            "login.html?view=auth-flow-2";
 
         return false;
     }
@@ -3335,7 +3389,7 @@ async function loadOrders(){
         alert("Please login again.");
 
         window.location.href =
-            "login.html";
+            "login.html?view=auth-flow-2";
 
         return;
     }
@@ -3668,7 +3722,7 @@ if(
     localStorage.removeItem("jgglAuthToken");
     localStorage.removeItem("jgglUser");
 
-    window.location.href = "login.html";
+    window.location.href = "login.html?view=auth-flow-2";
     return;
 }
 
@@ -8720,44 +8774,53 @@ function openChangePassword(){
 // CHANGE CUSTOMER PASSWORD
 // ===========================================
 
-function changePassword(event){
+async function changePassword(event){
 
     event.preventDefault();
 
-    const currentPassword =
+    const currentPasswordInput =
         document.getElementById(
             "currentPassword"
-        ).value;
-
-    const newPassword =
-        document.getElementById(
-            "newPassword"
-        ).value;
-
-    const confirmPassword =
-        document.getElementById(
-            "confirmPassword"
-        ).value;
-
-    const user = JSON.parse(
-        localStorage.getItem("jgglUser")
-    ) || {};
-
-    if(!user.password){
-
-        alert(
-            "No saved password was found for this account."
         );
 
+    const newPasswordInput =
+        document.getElementById(
+            "newPassword"
+        );
+
+    const confirmPasswordInput =
+        document.getElementById(
+            "confirmPassword"
+        );
+
+    if(
+        !currentPasswordInput ||
+        !newPasswordInput ||
+        !confirmPasswordInput
+    ){
+        alert(
+            "Password form is not complete."
+        );
         return;
     }
 
-    if(currentPassword !== user.password){
+    const currentPassword =
+        currentPasswordInput.value;
 
+    const newPassword =
+        newPasswordInput.value;
+
+    const confirmPassword =
+        confirmPasswordInput.value;
+
+    if(
+        !currentPassword ||
+        !newPassword ||
+        !confirmPassword
+    ){
         alert(
-            "Current password is incorrect."
+            "Please complete all password fields."
         );
-
         return;
     }
 
@@ -8788,22 +8851,93 @@ function changePassword(event){
         return;
     }
 
-    user.password = newPassword;
+    try{
 
-    localStorage.setItem(
-        "jgglUser",
-        JSON.stringify(user)
-    );
+        const response =
+            await fetch(
+                API_BASE + "/api/account/password",
+                {
+                    method: "PUT",
+                    headers:
+                        getAuthHeaders(),
 
-    alert(
-        "Password changed successfully."
-    );
+                    body: JSON.stringify({
+                        currentPassword:
+                            currentPassword,
+                        newPassword:
+                            newPassword
+                    })
+                }
+            );
 
-    window.location.href =
-        "privacy-security.html";
+        const data =
+            await response.json();
 
+        if(
+            response.status === 401 ||
+            response.status === 403
+        ){
+
+            localStorage.removeItem(
+                "jgglLoggedIn"
+            );
+
+            localStorage.removeItem(
+                "jgglAuthToken"
+            );
+
+            localStorage.removeItem(
+                "jgglUser"
+            );
+
+            alert(
+                data.message ||
+                "Your session has expired. Please login again."
+            );
+
+            window.location.href =
+                "login.html";
+
+            return;
+        }
+
+        if(
+            !response.ok ||
+            !data.success
+        ){
+
+            alert(
+                data.message ||
+                "Unable to change password."
+            );
+
+            return;
+        }
+
+        currentPasswordInput.value = "";
+        newPasswordInput.value = "";
+        confirmPasswordInput.value = "";
+
+        alert(
+            data.message ||
+            "Password changed successfully."
+        );
+
+        window.location.href =
+            "login-security.html";
+
+    }catch(error){
+
+        console.error(
+            "CHANGE PASSWORD ERROR:",
+            error
+        );
+
+        alert(
+            "Network error while changing password."
+        );
+    }
 }
-
 
 
 // ===========================================
@@ -8912,7 +9046,7 @@ localStorage.removeItem(
     );
 
     window.location.href =
-        "login.html";
+        "login.html?view=auth-flow-2";
 
 }
 
@@ -9466,5 +9600,198 @@ document.addEventListener(
     "DOMContentLoaded",
     function(){
         buildAdminNavigation();
+    }
+);
+
+// ===========================================
+// TOGGLE LOGIN PASSWORD VISIBILITY
+// ===========================================
+
+function toggleLoginPassword(){
+
+    const passwordInput =
+        document.getElementById("loginPassword");
+
+    const passwordIcon =
+        document.getElementById("loginPasswordIcon");
+
+    if(!passwordInput){
+        return;
+    }
+
+    if(passwordInput.type === "password"){
+
+        passwordInput.type = "text";
+
+        if(passwordIcon){
+            passwordIcon.className =
+                "fas fa-eye-slash";
+        }
+
+    }else{
+
+        passwordInput.type = "password";
+
+        if(passwordIcon){
+            passwordIcon.className =
+                "fas fa-eye";
+        }
+
+    }
+
+}
+
+
+// ===========================================
+// JGGL FIRST VISIT ONBOARDING
+// ===========================================
+
+let jgglOnboardingSlide = 0;
+
+
+function showJGGLOnboardingSlide(index){
+
+    const slides =
+        document.querySelectorAll(
+            "[data-onboarding-slide]"
+        );
+
+    const dots =
+        document.querySelectorAll(
+            "[data-onboarding-dot]"
+        );
+
+    if(!slides.length){
+        return;
+    }
+
+    const safeIndex =
+        Math.max(
+            0,
+            Math.min(
+                Number(index) || 0,
+                slides.length - 1
+            )
+        );
+
+    jgglOnboardingSlide =
+        safeIndex;
+
+    slides.forEach(function(slide, slideIndex){
+
+        slide.classList.toggle(
+            "active",
+            slideIndex === safeIndex
+        );
+
+    });
+
+    dots.forEach(function(dot, dotIndex){
+
+        dot.classList.toggle(
+            "active",
+            dotIndex === safeIndex
+        );
+
+    });
+
+    const nextButton =
+        document.getElementById(
+            "onboardingNextBtn"
+        );
+
+    const finalActions =
+        document.getElementById(
+            "onboardingFinalActions"
+        );
+
+    const isLast =
+        safeIndex === slides.length - 1;
+
+    if(nextButton){
+        nextButton.hidden = isLast;
+    }
+
+    if(finalActions){
+        finalActions.hidden = !isLast;
+    }
+
+}
+
+
+function nextJGGLOnboardingSlide(){
+
+    const slides =
+        document.querySelectorAll(
+            "[data-onboarding-slide]"
+        );
+
+    if(!slides.length){
+        return;
+    }
+
+    const nextIndex =
+        Math.min(
+            jgglOnboardingSlide + 1,
+            slides.length - 1
+        );
+
+    showJGGLOnboardingSlide(
+        nextIndex
+    );
+
+}
+
+
+function completeJGGLOnboarding(){
+
+    localStorage.setItem(
+        "jgglOnboardingCompleted",
+        "true"
+    );
+
+}
+
+
+function finishJGGLOnboarding(destination){
+
+    completeJGGLOnboarding();
+
+    if(destination === "register"){
+
+        window.location.href =
+            "register.html?view=auth-flow-2";
+
+        return;
+    }
+
+    window.location.href =
+        "login.html?view=auth-flow-2";
+
+}
+
+
+function skipJGGLOnboarding(){
+
+    completeJGGLOnboarding();
+
+    window.location.href =
+        "login.html?view=auth-flow-2";
+
+}
+
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        if(
+            window.location.pathname.endsWith(
+                "onboarding.html"
+            )
+        ){
+            showJGGLOnboardingSlide(0);
+        }
+
     }
 );

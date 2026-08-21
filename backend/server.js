@@ -1280,6 +1280,161 @@ return res.json({
 
 
 // ===========================================
+// CHANGE CUSTOMER PASSWORD
+// ===========================================
+
+app.put(
+    "/api/account/password",
+    authenticateToken,
+    authLimiter,
+    async function(req, res){
+
+        try{
+
+            const userId =
+                Number(
+                    req.user &&
+                    req.user.userId
+                );
+
+            const currentPassword =
+                String(
+                    req.body.currentPassword || ""
+                );
+
+            const newPassword =
+                String(
+                    req.body.newPassword || ""
+                );
+
+            if(!userId){
+
+                return res.status(401).json({
+                    success: false,
+                    message:
+                        "Authenticated user was not found."
+                });
+            }
+
+            if(!currentPassword || !newPassword){
+
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        "Current password and new password are required."
+                });
+            }
+
+            if(newPassword.length < 6){
+
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        "New password must contain at least 6 characters."
+                });
+            }
+
+            if(currentPassword === newPassword){
+
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        "New password must be different from the current password."
+                });
+            }
+
+            const result =
+                await pool.query(
+                    `
+                    SELECT
+                        id,
+                        password_hash,
+                        is_active
+                    FROM users
+                    WHERE id = $1
+                    LIMIT 1
+                    `,
+                    [userId]
+                );
+
+            if(result.rows.length === 0){
+
+                return res.status(404).json({
+                    success: false,
+                    message:
+                        "User account was not found."
+                });
+            }
+
+            const user =
+                result.rows[0];
+
+            if(user.is_active === false){
+
+                return res.status(403).json({
+                    success: false,
+                    message:
+                        "This account is inactive."
+                });
+            }
+
+            const passwordMatches =
+                await bcrypt.compare(
+                    currentPassword,
+                    user.password_hash
+                );
+
+            if(!passwordMatches){
+
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        "Current password is incorrect."
+                });
+            }
+
+            const newPasswordHash =
+                await bcrypt.hash(
+                    newPassword,
+                    12
+                );
+
+            await pool.query(
+                `
+                UPDATE users
+                SET password_hash = $1
+                WHERE id = $2
+                `,
+                [
+                    newPasswordHash,
+                    userId
+                ]
+            );
+
+            return res.json({
+                success: true,
+                message:
+                    "Password changed successfully."
+            });
+
+        }catch(error){
+
+            console.error(
+                "CHANGE PASSWORD ERROR:",
+                error
+            );
+
+            return res.status(500).json({
+                success: false,
+                message:
+                    "Unable to change password."
+            });
+        }
+    }
+);
+
+
+// ===========================================
 // GET ACCOUNT PROFILE
 // ===========================================
 

@@ -4806,3 +4806,500 @@ body:has(.product-details-page){
     border-color:#333333;
 }
 
+
+
+/* ==========================================
+   JGGL AUTH VIEW — PRE ONBOARDING
+========================================== */
+
+.auth-page-body{
+    min-height:100vh;
+    background:
+        linear-gradient(
+            180deg,
+            #0B7A3E 0,
+            #0B7A3E 190px,
+            #f5f7f6 190px,
+            #f5f7f6 100%
+        );
+}
+
+.auth-page-body main{
+    width:100%;
+}
+
+.auth-page-body .customer-page-header{
+    position:relative;
+    background:#0B7A3E;
+    border-bottom:0;
+    box-shadow:none;
+}
+
+.auth-page-body .customer-page-header .back-btn{
+    background:rgba(255,255,255,.14);
+}
+
+.auth-page-body .auth-section{
+    width:calc(100% - 28px);
+    max-width:430px;
+    box-sizing:border-box;
+
+    margin:10px auto 28px;
+    padding:22px 18px 24px;
+
+    background:#ffffff;
+    border-radius:22px;
+
+    box-shadow:
+        0 12px 34px rgba(0,0,0,.12);
+}
+
+.auth-page-body .auth-logo{
+    margin-bottom:20px;
+}
+
+.auth-page-body .auth-logo img{
+    width:110px;
+    max-width:42%;
+    margin:0 auto 10px;
+}
+
+.auth-page-body .auth-logo h2{
+    margin:0 0 5px;
+    font-size:25px;
+    line-height:1.2;
+    color:#111111;
+}
+
+.auth-page-body .auth-logo p{
+    font-size:14px;
+    color:#666666;
+}
+
+.auth-page-body .auth-form{
+    gap:13px;
+}
+
+.auth-page-body .auth-input-group{
+    min-height:52px;
+
+    border:1px solid #dedede;
+    border-radius:13px;
+
+    background:#fafafa;
+}
+
+.auth-page-body .auth-input-group:focus-within{
+    background:#ffffff;
+    border-color:#0B7A3E;
+
+    box-shadow:
+        0 0 0 3px rgba(11,122,62,.10);
+}
+
+.auth-page-body .auth-input-group input{
+    font-size:15px;
+    color:#222222;
+}
+
+.auth-page-body .auth-primary-btn{
+    min-height:52px;
+    margin-top:2px;
+
+    border-radius:13px;
+
+    box-shadow:
+        0 5px 14px rgba(11,122,62,.20);
+}
+
+.auth-page-body .auth-options{
+    font-size:13px;
+}
+
+.auth-page-body .auth-switch{
+    margin:18px 0 0;
+    font-size:14px;
+}
+
+@media (max-width:420px){
+
+    .auth-page-body{
+        background:
+            linear-gradient(
+                180deg,
+                #0B7A3E 0,
+                #0B7A3E 165px,
+                #f5f7f6 165px,
+                #f5f7f6 100%
+            );
+    }
+
+    .auth-page-body .auth-section{
+        width:calc(100% - 24px);
+        margin:6px auto 22px;
+        padding:18px 15px 20px;
+
+        border-radius:19px;
+    }
+
+    .auth-page-body .auth-logo img{
+        width:95px;
+        margin-bottom:8px;
+    }
+
+    .auth-page-body .auth-logo h2{
+        font-size:22px;
+    }
+
+    .auth-page-body .auth-input-group{
+        min-height:50px;
+    }
+
+    .auth-page-body .auth-primary-btn{
+        min-height:50px;
+        font-size:16px;
+    }
+}
+
+
+
+/* ==========================================
+   JGGL FIRST VISIT ONBOARDING UI
+========================================== */
+
+.onboarding-body{
+    margin:0;
+    min-height:100vh;
+
+    background:
+        linear-gradient(
+            180deg,
+            #0B7A3E 0,
+            #0B7A3E 44%,
+            #f5f7f6 44%,
+            #f5f7f6 100%
+        );
+}
+
+.onboarding-page{
+    min-height:100vh;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    box-sizing:border-box;
+
+    padding:
+        max(18px, env(safe-area-inset-top))
+        14px
+        max(18px, env(safe-area-inset-bottom));
+}
+
+.onboarding-shell{
+    position:relative;
+
+    width:100%;
+    max-width:430px;
+    min-height:610px;
+
+    box-sizing:border-box;
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+
+    padding:20px 18px 24px;
+
+    background:#ffffff;
+
+    border-radius:24px;
+
+    box-shadow:
+        0 14px 40px rgba(0,0,0,.16);
+}
+
+.onboarding-skip{
+    position:absolute;
+    top:16px;
+    right:16px;
+
+    border:0;
+    background:transparent;
+
+    color:#0B7A3E;
+
+    font-size:14px;
+    font-weight:700;
+
+    cursor:pointer;
+}
+
+.onboarding-brand{
+    min-height:118px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.onboarding-brand img{
+    width:120px;
+    max-width:42%;
+    display:block;
+}
+
+.onboarding-slide{
+    display:none;
+
+    flex:1;
+
+    width:100%;
+
+    box-sizing:border-box;
+
+    text-align:center;
+
+    padding:20px 8px 12px;
+}
+
+.onboarding-slide.active{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+}
+
+.onboarding-icon{
+    width:92px;
+    height:92px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    margin-bottom:22px;
+
+    border-radius:50%;
+
+    background:
+        rgba(11,122,62,.10);
+
+    color:#0B7A3E;
+
+    font-size:38px;
+}
+
+.onboarding-slide h1{
+    margin:0 0 12px;
+
+    color:#17211b;
+
+    font-size:26px;
+    line-height:1.2;
+}
+
+.onboarding-slide p{
+    max-width:330px;
+
+    margin:0;
+
+    color:#667068;
+
+    font-size:15px;
+    line-height:1.65;
+}
+
+.onboarding-dots{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    gap:7px;
+
+    margin:12px 0 20px;
+}
+
+.onboarding-dot{
+    width:9px;
+    height:9px;
+
+    padding:0;
+
+    border:0;
+    border-radius:999px;
+
+    background:#cfd5d1;
+
+    cursor:pointer;
+
+    transition:
+        width .2s ease,
+        background .2s ease;
+}
+
+.onboarding-dot.active{
+    width:28px;
+    background:#0B7A3E;
+}
+
+.onboarding-primary-btn,
+.onboarding-secondary-btn{
+    width:100%;
+    min-height:52px;
+
+    box-sizing:border-box;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    gap:9px;
+
+    border-radius:13px;
+
+    font-size:16px;
+    font-weight:700;
+
+    cursor:pointer;
+}
+
+.onboarding-primary-btn{
+    border:0;
+
+    background:#0B7A3E;
+    color:#ffffff;
+
+    box-shadow:
+        0 5px 14px rgba(11,122,62,.20);
+}
+
+.onboarding-secondary-btn{
+    border:1px solid #0B7A3E;
+
+    background:#ffffff;
+    color:#0B7A3E;
+}
+
+.onboarding-primary-btn:active,
+.onboarding-secondary-btn:active{
+    transform:scale(.99);
+}
+
+.onboarding-final-actions{
+    width:100%;
+
+    display:flex;
+    flex-direction:column;
+
+    gap:10px;
+}
+
+.onboarding-final-actions[hidden]{
+    display:none;
+}
+
+
+@media (max-width:420px){
+
+    .onboarding-page{
+        align-items:stretch;
+        padding:10px 12px;
+    }
+
+    .onboarding-shell{
+        min-height:calc(100vh - 20px);
+
+        padding:18px 15px 20px;
+
+        border-radius:20px;
+    }
+
+    .onboarding-brand{
+        min-height:102px;
+    }
+
+    .onboarding-brand img{
+        width:100px;
+    }
+
+    .onboarding-icon{
+        width:82px;
+        height:82px;
+
+        margin-bottom:18px;
+
+        font-size:34px;
+    }
+
+    .onboarding-slide{
+        padding-top:12px;
+    }
+
+    .onboarding-slide h1{
+        font-size:23px;
+    }
+
+    .onboarding-slide p{
+        font-size:14px;
+    }
+
+    .onboarding-dots{
+        margin-bottom:16px;
+    }
+
+}
+
+
+/* ==========================================
+   ONBOARDING FINAL SLIDE VISIBILITY FIX
+========================================== */
+
+/* Respect HTML hidden attribute */
+#onboardingNextBtn[hidden]{
+    display:none !important;
+}
+
+#onboardingFinalActions[hidden]{
+    display:none !important;
+}
+
+/* Final slide actions */
+#onboardingFinalActions:not([hidden]){
+    display:flex;
+    flex-direction:column;
+    width:100%;
+    gap:10px;
+}
+
+/* Keep final slide inside mobile screen */
+@media (max-width:420px){
+
+    .onboarding-slide[data-onboarding-slide="2"].active{
+        justify-content:center;
+        padding-top:4px;
+        padding-bottom:4px;
+    }
+
+    .onboarding-slide[data-onboarding-slide="2"] .onboarding-icon{
+        width:74px;
+        height:74px;
+        margin-bottom:14px;
+        font-size:31px;
+    }
+
+    .onboarding-slide[data-onboarding-slide="2"] h1{
+        margin-bottom:9px;
+        font-size:22px;
+    }
+
+    .onboarding-slide[data-onboarding-slide="2"] p{
+        line-height:1.5;
+    }
+
+    #onboardingFinalActions .onboarding-primary-btn,
+    #onboardingFinalActions .onboarding-secondary-btn{
+        min-height:48px;
+    }
+}
+
