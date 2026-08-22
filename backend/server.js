@@ -484,6 +484,122 @@ const result = await pool.query(`
 
 
 
+
+// ===========================================
+// GET SINGLE PUBLIC PRODUCT + VARIANTS
+// Live inventory source for Product Details.
+// ===========================================
+
+app.get("/api/products/:id", async function(req, res){
+
+    try{
+
+        const productId =
+            String(req.params.id || "").trim();
+
+        const productResult =
+            await pool.query(
+                `
+                SELECT
+                    id,
+                    frontend_id,
+                    product_name,
+                    category,
+                    product_group,
+                    brand,
+                    sku,
+                    description,
+                    image_url,
+                    retail_price,
+                    wholesale_price,
+                    bulk_price,
+                    minimum_wholesale_quantity,
+                    minimum_bulk_quantity,
+                    stock_quantity,
+                    reserved_stock,
+                    reorder_level,
+                    stock_status,
+                    rating,
+                    discount,
+                    specifications,
+                    related_frontend_ids,
+                    is_active
+                FROM products
+                WHERE
+                    is_active = TRUE
+                    AND (
+                        id::text = $1
+                        OR frontend_id::text = $1
+                    )
+                LIMIT 1
+                `,
+                [productId]
+            );
+
+        if(productResult.rows.length === 0){
+
+            return res.status(404).json({
+                success: false,
+                message: "Product not found."
+            });
+
+        }
+
+        const product =
+            productResult.rows[0];
+
+        const variantsResult =
+            await pool.query(
+                `
+                SELECT
+                    id,
+                    product_id,
+                    variant_name,
+                    sku,
+                    color,
+                    storage,
+                    ram,
+                    weight,
+                    pack_size,
+                    retail_price,
+                    wholesale_price,
+                    bulk_price,
+                    stock_quantity,
+                    image_url,
+                    specifications,
+                    is_active
+                FROM product_variants
+                WHERE
+                    product_id = $1
+                    AND is_active = TRUE
+                ORDER BY id ASC
+                `,
+                [product.id]
+            );
+
+        return res.json({
+            success: true,
+            product: product,
+            variants: variantsResult.rows
+        });
+
+    }catch(error){
+
+        console.error(
+            "GET SINGLE PUBLIC PRODUCT ERROR:",
+            error
+        );
+
+        return res.status(500).json({
+            success: false,
+            message: "Unable to load product."
+        });
+
+    }
+
+});
+
+
 // ===========================================
 // PROTECT ALL ADMIN API ROUTES
 // ===========================================
@@ -2068,9 +2184,17 @@ app.get(
                     ]
                 );
 
+            const unreadCount =
+                result.rows.filter(
+                    function(notification){
+                        return notification.is_read !== true;
+                    }
+                ).length;
+
             return res.json({
                 success: true,
                 count: result.rows.length,
+                unreadCount: unreadCount,
                 notifications: result.rows
             });
 
@@ -2382,17 +2506,28 @@ app.get(
                         n.title,
                         n.message,
                         n.is_read,
+                        n.admin_is_read,
+                        n.admin_is_dismissed,
                         n.created_at,
                         o.order_number
                     FROM notifications n
                     LEFT JOIN orders o
                         ON o.id = n.order_id
+                    WHERE n.admin_is_dismissed = FALSE
                     ORDER BY n.created_at DESC
                 `);
+
+            const unreadCount =
+                result.rows.filter(
+                    function(notification){
+                        return notification.admin_is_read !== true;
+                    }
+                ).length;
 
             return res.json({
                 success: true,
                 count: result.rows.length,
+                unreadCount: unreadCount,
                 notifications: result.rows
             });
 
@@ -2416,7 +2551,57 @@ app.get(
 
 
 // ===========================================
+// MARK ALL ADMIN NOTIFICATIONS AS READ
+// ===========================================
+
+app.patch(
+    "/api/admin/notifications/read-all",
+    async function(req, res){
+
+        try{
+
+            const result =
+                await pool.query(
+                    `
+                    UPDATE notifications
+                    SET admin_is_read = TRUE
+                    WHERE
+                        admin_is_dismissed = FALSE
+                        AND admin_is_read = FALSE
+                    RETURNING id
+                    `
+                );
+
+            return res.json({
+                success: true,
+                updatedCount:
+                    result.rows.length,
+                message:
+                    "Admin notifications marked as read."
+            });
+
+        }catch(error){
+
+            console.error(
+                "MARK ADMIN NOTIFICATIONS READ ERROR:",
+                error
+            );
+
+            return res.status(500).json({
+                success: false,
+                message:
+                    "Unable to mark admin notifications as read."
+            });
+
+        }
+
+    }
+);
+
+
+// ===========================================
 // CLEAR ADMIN NOTIFICATIONS
+// Admin clear must NOT delete customer records.
 // ===========================================
 
 app.delete(
@@ -2428,7 +2613,11 @@ app.delete(
             const result =
                 await pool.query(
                     `
-                    DELETE FROM notifications
+                    UPDATE notifications
+                    SET
+                        admin_is_read = TRUE,
+                        admin_is_dismissed = TRUE
+                    WHERE admin_is_dismissed = FALSE
                     RETURNING id
                     `
                 );
@@ -2438,7 +2627,7 @@ app.delete(
                 deletedCount:
                     result.rows.length,
                 message:
-                    "Notifications cleared successfully."
+                    "Admin notifications cleared successfully."
             });
 
         }catch(error){
@@ -2451,7 +2640,7 @@ app.delete(
             return res.status(500).json({
                 success: false,
                 message:
-                    "Unable to clear notifications."
+                    "Unable to clear admin notifications."
             });
 
         }
@@ -2890,6 +3079,47 @@ app.put("/api/admin/orders/:id/status", async function(req, res){
 
         }
 
+        const currentOrderResult =
+            await pool.query(
+                `
+                SELECT *
+                FROM orders
+                WHERE
+                    id::text = $1
+                    OR order_number = $1
+                LIMIT 1
+                `,
+                [
+                    String(orderId)
+                ]
+            );
+
+        if(currentOrderResult.rows.length === 0){
+
+            return res.status(404).json({
+                success: false,
+                message: "Order not found."
+            });
+
+        }
+
+        const currentOrder =
+            currentOrderResult.rows[0];
+
+        if(currentOrder.status === newStatus){
+
+            return res.status(200).json({
+                success: true,
+                unchanged: true,
+                message:
+                    "Order status is already " +
+                    newStatus +
+                    ".",
+                order: currentOrder
+            });
+
+        }
+
         const result =
             await pool.query(
                 `
@@ -2907,15 +3137,6 @@ app.put("/api/admin/orders/:id/status", async function(req, res){
                     String(orderId)
                 ]
             );
-
-        if(result.rows.length === 0){
-
-            return res.status(404).json({
-                success: false,
-                message: "Order not found."
-            });
-
-        }
 
 
 
@@ -3206,6 +3427,130 @@ if(
 
         await client.query("BEGIN");
 
+        // ===========================================
+        // NORMALIZE PRODUCT / VARIANT DATABASE IDS
+        // ===========================================
+
+        let resolvedProductId = null;
+        let resolvedVariantId = null;
+
+        const requestedProductId =
+            Number(productId || 0);
+
+        if(
+            Number.isInteger(requestedProductId) &&
+            requestedProductId > 0
+        ){
+
+            const productLookup =
+                await client.query(
+                    `
+                    SELECT id
+                    FROM products
+                    WHERE
+                        id = $1
+                        OR frontend_id = $1
+                    LIMIT 1
+                    `,
+                    [requestedProductId]
+                );
+
+            if(productLookup.rows.length === 0){
+
+                await client.query("ROLLBACK");
+
+                return res.status(409).json({
+                    success: false,
+                    message:
+                        "Product is no longer available."
+                });
+
+            }
+
+            resolvedProductId =
+                productLookup.rows[0].id;
+
+        }
+
+        const requestedVariantId =
+            Number(variantId || 0);
+
+        if(
+            Number.isInteger(requestedVariantId) &&
+            requestedVariantId > 0
+        ){
+
+            const variantLookup =
+                await client.query(
+                    `
+                    SELECT
+                        id,
+                        product_id,
+                        stock_quantity,
+                        is_active
+                    FROM product_variants
+                    WHERE id = $1
+                    LIMIT 1
+                    `,
+                    [requestedVariantId]
+                );
+
+            if(variantLookup.rows.length === 0){
+
+                await client.query("ROLLBACK");
+
+                return res.status(409).json({
+                    success: false,
+                    message:
+                        "Selected product option is unavailable."
+                });
+
+            }
+
+            const variant =
+                variantLookup.rows[0];
+
+            if(
+                variant.is_active !== true ||
+                Number(variant.stock_quantity || 0) <= 0
+            ){
+
+                await client.query("ROLLBACK");
+
+                return res.status(409).json({
+                    success: false,
+                    message:
+                        "Selected product option is out of stock."
+                });
+
+            }
+
+            if(
+                resolvedProductId &&
+                Number(variant.product_id) !==
+                Number(resolvedProductId)
+            ){
+
+                await client.query("ROLLBACK");
+
+                return res.status(409).json({
+                    success: false,
+                    message:
+                        "Selected option does not belong to this product."
+                });
+
+            }
+
+            resolvedVariantId =
+                variant.id;
+
+            if(!resolvedProductId){
+                resolvedProductId =
+                    variant.product_id;
+            }
+
+        }
+
         const cartResult =
             await client.query(
                 `
@@ -3273,8 +3618,8 @@ if(
                 `,
                 [
                     cartId,
-                    productId || null,
-                    variantId || null,
+                    resolvedProductId,
+                    resolvedVariantId,
                     cleanProduct,
                     image
                         ? String(image).trim()
@@ -3925,6 +4270,394 @@ console.log("STEP 1: BEGIN OK");
         const orderNumber =
             "JGGL-" + Date.now();
 
+        // ===========================================
+        // INVENTORY: VALIDATE + LOCK ORDER PRODUCTS
+        // ===========================================
+
+        const inventoryItems = [];
+
+        for(const item of items){
+
+            const requestedQuantity =
+                Number(item.quantity);
+
+            if(
+                !Number.isInteger(requestedQuantity) ||
+                requestedQuantity <= 0
+            ){
+                const inventoryError =
+                    new Error("Invalid product quantity.");
+
+                inventoryError.statusCode = 400;
+                throw inventoryError;
+            }
+
+            const requestedProductId =
+                Number(
+                    item.productId ||
+                    item.product_id ||
+                    0
+                );
+
+            let productResult;
+
+            if(
+                Number.isInteger(requestedProductId) &&
+                requestedProductId > 0
+            ){
+
+                productResult =
+                    await client.query(
+                        `
+                        SELECT
+                            id,
+                            frontend_id,
+                            product_name,
+                            retail_price,
+                            wholesale_price,
+                            bulk_price,
+                            minimum_wholesale_quantity,
+                            minimum_bulk_quantity,
+                            stock_quantity,
+                            reserved_stock,
+                            reorder_level,
+                            stock_status,
+                            is_active
+                        FROM products
+                        WHERE
+                            id = $1
+                            OR frontend_id = $1
+                        LIMIT 1
+                        FOR UPDATE
+                        `,
+                        [requestedProductId]
+                    );
+
+            }else{
+
+                productResult =
+                    await client.query(
+                        `
+                        SELECT
+                            id,
+                            frontend_id,
+                            product_name,
+                            retail_price,
+                            wholesale_price,
+                            bulk_price,
+                            minimum_wholesale_quantity,
+                            minimum_bulk_quantity,
+                            stock_quantity,
+                            reserved_stock,
+                            reorder_level,
+                            stock_status,
+                            is_active
+                        FROM products
+                        WHERE LOWER(product_name) =
+                              LOWER($1)
+                        LIMIT 1
+                        FOR UPDATE
+                        `,
+                        [
+                            String(
+                                item.product || ""
+                            ).trim()
+                        ]
+                    );
+
+            }
+
+            if(productResult.rows.length === 0){
+
+                const inventoryError =
+                    new Error(
+                        "Product not found or no longer available: " +
+                        String(item.product || "Unknown product")
+                    );
+
+                inventoryError.statusCode = 409;
+                throw inventoryError;
+            }
+
+            const product =
+                productResult.rows[0];
+
+            if(product.is_active !== true){
+
+                const inventoryError =
+                    new Error(
+                        product.product_name +
+                        " is currently unavailable."
+                    );
+
+                inventoryError.statusCode = 409;
+                throw inventoryError;
+            }
+
+            const availableStock =
+                Math.max(
+                    0,
+                    Number(product.stock_quantity || 0) -
+                    Number(product.reserved_stock || 0)
+                );
+
+            if(availableStock <= 0){
+
+                const inventoryError =
+                    new Error(
+                        product.product_name +
+                        " is out of stock."
+                    );
+
+                inventoryError.statusCode = 409;
+                throw inventoryError;
+            }
+
+            if(requestedQuantity > availableStock){
+
+                const inventoryError =
+                    new Error(
+                        product.product_name +
+                        " has only " +
+                        availableStock +
+                        " item(s) available."
+                    );
+
+                inventoryError.statusCode = 409;
+                throw inventoryError;
+            }
+
+            const purchaseType =
+                String(
+                    item.purchaseType ||
+                    item.purchase_type ||
+                    "retail"
+                )
+                    .trim()
+                    .toLowerCase();
+
+            let serverPrice =
+                Number(product.retail_price || 0);
+
+            let minimumQuantity = 1;
+
+            if(purchaseType === "wholesale"){
+
+                serverPrice =
+                    Number(
+                        product.wholesale_price ||
+                        product.retail_price ||
+                        0
+                    );
+
+                minimumQuantity =
+                    Math.max(
+                        1,
+                        Number(
+                            product.minimum_wholesale_quantity ||
+                            1
+                        )
+                    );
+
+            }else if(purchaseType === "bulk"){
+
+                serverPrice =
+                    Number(
+                        product.bulk_price ||
+                        product.wholesale_price ||
+                        product.retail_price ||
+                        0
+                    );
+
+                minimumQuantity =
+                    Math.max(
+                        1,
+                        Number(
+                            product.minimum_bulk_quantity ||
+                            1
+                        )
+                    );
+
+            }
+
+            if(requestedQuantity < minimumQuantity){
+
+                const inventoryError =
+                    new Error(
+                        product.product_name +
+                        " requires minimum quantity " +
+                        minimumQuantity +
+                        " for " +
+                        purchaseType +
+                        " purchase."
+                    );
+
+                inventoryError.statusCode = 409;
+                throw inventoryError;
+            }
+
+            const requestedVariantId =
+                Number(
+                    item.variantId ||
+                    item.variant_id ||
+                    0
+                );
+
+            let selectedVariant = null;
+
+            if(
+                Number.isInteger(requestedVariantId) &&
+                requestedVariantId > 0
+            ){
+
+                const variantResult =
+                    await client.query(
+                        `
+                        SELECT
+                            id,
+                            product_id,
+                            variant_name,
+                            retail_price,
+                            wholesale_price,
+                            bulk_price,
+                            stock_quantity,
+                            is_active
+                        FROM product_variants
+                        WHERE
+                            id = $1
+                            AND product_id = $2
+                        LIMIT 1
+                        FOR UPDATE
+                        `,
+                        [
+                            requestedVariantId,
+                            product.id
+                        ]
+                    );
+
+                if(variantResult.rows.length === 0){
+
+                    const inventoryError =
+                        new Error(
+                            product.product_name +
+                            " selected variant is not available."
+                        );
+
+                    inventoryError.statusCode = 409;
+                    throw inventoryError;
+                }
+
+                selectedVariant =
+                    variantResult.rows[0];
+
+                if(selectedVariant.is_active !== true){
+
+                    const inventoryError =
+                        new Error(
+                            product.product_name +
+                            " selected variant is unavailable."
+                        );
+
+                    inventoryError.statusCode = 409;
+                    throw inventoryError;
+                }
+
+                const variantStock =
+                    Math.max(
+                        0,
+                        Number(
+                            selectedVariant.stock_quantity || 0
+                        )
+                    );
+
+                if(variantStock <= 0){
+
+                    const inventoryError =
+                        new Error(
+                            product.product_name +
+                            " selected variant is out of stock."
+                        );
+
+                    inventoryError.statusCode = 409;
+                    throw inventoryError;
+                }
+
+                if(requestedQuantity > variantStock){
+
+                    const inventoryError =
+                        new Error(
+                            product.product_name +
+                            " selected variant has only " +
+                            variantStock +
+                            " item(s) available."
+                        );
+
+                    inventoryError.statusCode = 409;
+                    throw inventoryError;
+                }
+
+                if(purchaseType === "wholesale"){
+
+                    serverPrice =
+                        Number(
+                            selectedVariant.wholesale_price ||
+                            product.wholesale_price ||
+                            product.retail_price ||
+                            0
+                        );
+
+                }else if(purchaseType === "bulk"){
+
+                    serverPrice =
+                        Number(
+                            selectedVariant.bulk_price ||
+                            product.bulk_price ||
+                            product.wholesale_price ||
+                            product.retail_price ||
+                            0
+                        );
+
+                }else{
+
+                    serverPrice =
+                        Number(
+                            selectedVariant.retail_price ||
+                            product.retail_price ||
+                            0
+                        );
+
+                }
+
+            }
+
+            inventoryItems.push({
+                productId:
+                    product.id,
+                variantId:
+                    selectedVariant
+                        ? selectedVariant.id
+                        : null,
+                variantName:
+                    selectedVariant
+                        ? selectedVariant.variant_name
+                        : null,
+                productName:
+                    product.product_name,
+                quantity:
+                    requestedQuantity,
+                unitPrice:
+                    serverPrice,
+                purchaseType:
+                    purchaseType,
+                reorderLevel:
+                    Math.max(
+                        0,
+                        Number(product.reorder_level || 0)
+                    )
+            });
+
+        }
+
         const orderResult =
             await client.query(
                 `
@@ -3984,29 +4717,168 @@ console.log("STEP 2: ORDER INSERTED");
         const orderId =
             orderResult.rows[0].id;
 
-        for(const item of items){
-
+        for(const item of inventoryItems){
 
             await client.query(
                 `
                 INSERT INTO order_items (
                     order_id,
+                    product_id,
+                    variant_id,
                     product_name,
+                    variant_name,
                     quantity,
                     unit_price,
                     subtotal
                 )
-                VALUES ($1,$2,$3,$4,$5)
+                VALUES (
+                    $1,$2,$3,$4,$5,$6,$7,$8
+                )
                 `,
                 [
                     orderId,
-                    item.product,
-                    Number(item.quantity),
-                    Number(item.price),
-                    Number(item.price) *
-                    Number(item.quantity)
+                    item.productId,
+                    item.variantId,
+                    item.productName,
+                    item.variantName,
+                    item.quantity,
+                    item.unitPrice,
+                    item.unitPrice *
+                    item.quantity
                 ]
             );
+
+            if(item.variantId){
+
+                await client.query(
+                    `
+                    UPDATE product_variants
+                    SET
+                        stock_quantity =
+                            stock_quantity - $1,
+                        updated_at =
+                            CURRENT_TIMESTAMP
+                    WHERE id = $2
+                    `,
+                    [
+                        item.quantity,
+                        item.variantId
+                    ]
+                );
+
+            }
+
+            const updatedStockResult =
+                await client.query(
+                    `
+                    UPDATE products
+                    SET
+                        stock_quantity =
+                            stock_quantity - $1,
+
+                        stock_status =
+                            CASE
+                                WHEN stock_quantity - $1 <= 0
+                                    THEN 'Out of Stock'
+
+                                WHEN reorder_level > 0
+                                     AND stock_quantity - $1 <= reorder_level
+                                    THEN 'Low Stock'
+
+                                ELSE 'In Stock'
+                            END,
+
+                        updated_at =
+                            CURRENT_TIMESTAMP
+                    WHERE id = $2
+                    RETURNING
+                        id,
+                        product_name,
+                        stock_quantity,
+                        reorder_level,
+                        stock_status
+                    `,
+                    [
+                        item.quantity,
+                        item.productId
+                    ]
+                );
+
+            const updatedProduct =
+                updatedStockResult.rows[0];
+
+            console.log(
+                "INVENTORY UPDATED:",
+                updatedProduct.product_name,
+                "stock:",
+                updatedProduct.stock_quantity,
+                "status:",
+                updatedProduct.stock_status
+            );
+
+            if(
+                updatedProduct.stock_status === "Low Stock" ||
+                updatedProduct.stock_status === "Out of Stock"
+            ){
+
+                const inventoryTitle =
+                    updatedProduct.stock_status === "Out of Stock"
+                        ? "Product Out of Stock"
+                        : "Low Stock Alert";
+
+                const inventoryMessage =
+                    updatedProduct.product_name +
+                    " now has " +
+                    updatedProduct.stock_quantity +
+                    " item(s) remaining.";
+
+                const duplicateCheck =
+                    await client.query(
+                        `
+                        SELECT id
+                        FROM notifications
+                        WHERE
+                            customer_id IS NULL
+                            AND order_id IS NULL
+                            AND title = $1
+                            AND message = $2
+                            AND is_read = FALSE
+                        LIMIT 1
+                        `,
+                        [
+                            inventoryTitle,
+                            inventoryMessage
+                        ]
+                    );
+
+                if(duplicateCheck.rows.length === 0){
+
+                    await client.query(
+                        `
+                        INSERT INTO notifications (
+                            customer_id,
+                            order_id,
+                            title,
+                            message,
+                            is_read
+                        )
+                        VALUES (
+                            NULL,
+                            NULL,
+                            $1,
+                            $2,
+                            FALSE
+                        )
+                        `,
+                        [
+                            inventoryTitle,
+                            inventoryMessage
+                        ]
+                    );
+
+                }
+
+            }
 
         }
 
@@ -4061,7 +4933,9 @@ console.error(
 );
 
 
-        res.status(500).json({
+        res.status(
+            Number(error.statusCode) || 500
+        ).json({
             success: false,
 
 

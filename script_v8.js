@@ -134,7 +134,9 @@ async function addToCart(
     image,
     purchaseType = "retail",
     quantity = 1,
-    minimumQuantity = 1
+    minimumQuantity = 1,
+    productId = null,
+    variantId = null
 ){
 
     const user = getCartUser();
@@ -171,7 +173,11 @@ async function addToCart(
                 purchaseType: purchaseType,
                 quantity: Number(quantity) || 1,
                 minimumQuantity:
-                    Number(minimumQuantity) || 1
+                    Number(minimumQuantity) || 1,
+                productId:
+                    productId || null,
+                variantId:
+                    variantId || null
             });
 
         }
@@ -208,13 +214,53 @@ headers: getAuthHeaders(),
                     quantity:
                         Number(quantity) || 1,
                     minimumQuantity:
-                        Number(minimumQuantity) || 1
+                        Number(minimumQuantity) || 1,
+                    productId:
+                        productId || null,
+                    variantId:
+                        variantId || null
                 })
             }
         );
 
         const data =
             await response.json();
+
+        if(
+            response.status === 401 ||
+            response.status === 403
+        ){
+
+            localStorage.removeItem(
+                "jgglLoggedIn"
+            );
+
+            localStorage.removeItem(
+                "jgglAuthToken"
+            );
+
+            localStorage.removeItem(
+                "jgglUser"
+            );
+
+            localStorage.removeItem(
+                "cart"
+            );
+
+            cart = [];
+
+            updateCartCount();
+
+            alert(
+                data.message ||
+                "Your login session has expired. Please login again."
+            );
+
+            window.location.href =
+                "login.html?view=auth-flow-2";
+
+            return;
+        }
 
         if(!response.ok || !data.success){
 
@@ -1431,7 +1477,15 @@ headers: getAuthHeaders(),
                             price:
                                 Number(item.price),
                             quantity:
-                                Number(item.quantity)
+                                Number(item.quantity),
+                            productId:
+                                item.product_id ||
+                                item.productId ||
+                                null,
+                            variantId:
+                                item.variant_id ||
+                                item.variantId ||
+                                null
                         };
                     }),
 
@@ -1700,7 +1754,17 @@ function loadWishlist(){
             addToCart(
                 item.name,
                 Number(item.price),
-                item.image
+                item.image,
+                item.purchaseType || "retail",
+                1,
+                1,
+                item.productId ||
+                item.product_id ||
+                item.id ||
+                null,
+                item.variantId ||
+                item.variant_id ||
+                null
             );
 
         });
@@ -5201,7 +5265,7 @@ async function loadAdminOrders(){
                         type="button"
                         class="admin-view-order-btn"
                     >
-                        <i class="fas fa-eye"></i>
+                        <span class="admin-view-eye" aria-hidden="true">👁️</span>
                         View Order
                     </button>
 
@@ -8135,6 +8199,191 @@ document.addEventListener(
 
 
 // ===========================================
+// ADMIN GENERAL NOTIFICATION BELL
+// ===========================================
+
+function isAdminPage(){
+
+    return (
+        window.location.pathname.includes("admin-")
+    );
+
+}
+
+function ensureAdminNotificationBell(){
+
+    if(!isAdminPage()){
+        return;
+    }
+
+    const header =
+        document.querySelector(".top-header");
+
+    if(!header){
+        return;
+    }
+
+    if(
+        document.getElementById(
+            "adminGeneralNotificationBell"
+        )
+    ){
+        return;
+    }
+
+    const button =
+        document.createElement("button");
+
+    button.type = "button";
+    button.id =
+        "adminGeneralNotificationBell";
+
+    button.className =
+        "admin-general-bell";
+
+    button.setAttribute(
+        "aria-label",
+        "Admin notifications"
+    );
+
+    button.innerHTML = `
+        <span
+            class="admin-general-bell-icon"
+            aria-hidden="true"
+        >
+            🔔
+        </span>
+
+        <span
+            id="adminGeneralBellBadge"
+            class="admin-general-bell-badge"
+            hidden
+        >
+            0
+        </span>
+    `;
+
+    button.addEventListener(
+        "click",
+        async function(){
+
+            try{
+
+                await fetch(
+                    API_BASE +
+                    "/api/admin/notifications/read-all",
+                    {
+                        method: "PATCH",
+                        headers: getAuthHeaders()
+                    }
+                );
+
+            }catch(error){
+
+                console.error(
+                    "ADMIN BELL READ ERROR:",
+                    error
+                );
+
+            }
+
+            window.location.href =
+                "admin-notifications.html";
+
+        }
+    );
+
+    header.appendChild(button);
+
+    updateAdminGeneralBell();
+
+}
+
+async function updateAdminGeneralBell(){
+
+    const badge =
+        document.getElementById(
+            "adminGeneralBellBadge"
+        );
+
+    if(!badge){
+        return;
+    }
+
+    try{
+
+        const response =
+            await fetch(
+                API_BASE +
+                "/api/admin/notifications",
+                {
+                    headers: getAuthHeaders()
+                }
+            );
+
+        const data =
+            await response.json();
+
+        if(
+            !response.ok ||
+            !data.success
+        ){
+            return;
+        }
+
+        const count =
+            Number(data.unreadCount || 0);
+
+        badge.textContent =
+            count > 99
+                ? "99+"
+                : String(count);
+
+        badge.hidden =
+            count <= 0;
+
+    }catch(error){
+
+        console.error(
+            "ADMIN GENERAL BELL ERROR:",
+            error
+        );
+
+    }
+
+}
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        if(!isAdminPage()){
+            return;
+        }
+
+        ensureAdminNotificationBell();
+
+        window.setInterval(
+            updateAdminGeneralBell,
+            30000
+        );
+
+    }
+);
+
+window.addEventListener(
+    "pageshow",
+    function(){
+
+        if(isAdminPage()){
+            updateAdminGeneralBell();
+        }
+
+    }
+);
+
+
+// ===========================================
 // LOAD ADMIN NOTIFICATIONS
 // ===========================================
 
@@ -8155,7 +8404,10 @@ async function loadAdminNotifications(){
 
         const response =
             await fetch(
-                API_BASE + "/api/admin/notifications"
+                API_BASE + "/api/admin/notifications",
+                {
+                    headers: getAuthHeaders()
+                }
             );
 
         const data =
@@ -8272,7 +8524,8 @@ async function clearAdminNotifications(){
             await fetch(
                 API_BASE + "/api/admin/notifications",
                 {
-                    method: "DELETE"
+                    method: "DELETE",
+                    headers: getAuthHeaders()
                 }
             );
 

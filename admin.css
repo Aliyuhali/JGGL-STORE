@@ -1566,3 +1566,68 @@ body:has(.admin-global-bottom-nav){
     }
 
 }
+
+/* ===========================================
+   ADMIN GENERAL NOTIFICATION BELL
+   =========================================== */
+
+.top-header{
+    position: relative;
+}
+
+.admin-general-bell{
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 42px;
+    height: 42px;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 20;
+}
+
+.admin-general-bell-icon{
+    font-size: 24px;
+    line-height: 1;
+}
+
+.admin-general-bell-badge{
+    position: absolute;
+    top: 1px;
+    right: 0;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 999px;
+    background: #dc3545;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 18px;
+    text-align: center;
+}
+
+.admin-general-bell-badge[hidden]{
+    display: none;
+}
+
+.top-header h1,
+.top-header h2{
+    padding-left: 4px;
+    padding-right: 48px;
+}
+
+/* ADMIN ORDERS — VIEW EYE */
+
+.admin-view-order-btn .admin-view-eye{
+    font-size: 20px;
+    line-height: 1;
+    margin-right: 6px;
+    vertical-align: middle;
+}

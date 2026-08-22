@@ -427,92 +427,320 @@
 
 currentProduct = null;
 
-document.addEventListener("DOMContentLoaded", function(){
+document.addEventListener(
+    "DOMContentLoaded",
+    async function(){
 
-    const productId =
-        Number(localStorage.getItem("selectedProductId"));
+        const productId =
+            Number(
+                localStorage.getItem(
+                    "selectedProductId"
+                )
+            );
 
-    currentProduct = PRODUCTS.find(function(product){
+        if(!productId){
+            return;
+        }
 
-        return product.id === productId;
+        try{
 
-    });
+            const response =
+                await fetch(
+                    API_BASE +
+                    "/api/products/" +
+                    encodeURIComponent(productId)
+                );
 
-    if(!currentProduct){
+            const data =
+                await response.json();
 
-        document.getElementById("productName").textContent =
-            "Product not found";
+            if(
+                !response.ok ||
+                !data.success ||
+                !data.product
+            ){
 
-        return;
+                throw new Error(
+                    data.message ||
+                    "Unable to load product."
+                );
+
+            }
+
+            const dbProduct =
+                data.product;
+
+            const variants =
+                Array.isArray(data.variants)
+                    ? data.variants
+                    : [];
+
+            currentProduct = {
+                id:
+                    dbProduct.frontend_id ||
+                    dbProduct.id,
+
+                databaseId:
+                    dbProduct.id,
+
+                name:
+                    dbProduct.product_name,
+
+                group:
+                    dbProduct.product_group ||
+                    dbProduct.category,
+
+                category:
+                    dbProduct.category,
+
+                brand:
+                    dbProduct.brand || "",
+
+                sku:
+                    dbProduct.sku || "",
+
+                description:
+                    dbProduct.description || "",
+
+                image:
+                    dbProduct.image_url || "",
+
+                price:
+                    Number(
+                        dbProduct.retail_price || 0
+                    ),
+
+                retailPrice:
+                    Number(
+                        dbProduct.retail_price || 0
+                    ),
+
+                wholesalePrice:
+                    Number(
+                        dbProduct.wholesale_price || 0
+                    ),
+
+                bulkPrice:
+                    Number(
+                        dbProduct.bulk_price || 0
+                    ),
+
+                wholesaleMinQty:
+                    Number(
+                        dbProduct.minimum_wholesale_quantity ||
+                        1
+                    ),
+
+                bulkMinQty:
+                    Number(
+                        dbProduct.minimum_bulk_quantity ||
+                        1
+                    ),
+
+                stock:
+                    Math.max(
+                        0,
+                        Number(
+                            dbProduct.stock_quantity || 0
+                        ) -
+                        Number(
+                            dbProduct.reserved_stock || 0
+                        )
+                    ),
+
+                reorderLevel:
+                    Number(
+                        dbProduct.reorder_level || 0
+                    ),
+
+                stockStatus:
+                    dbProduct.stock_status || "",
+
+                rating:
+                    dbProduct.rating || 0,
+
+                discount:
+                    dbProduct.discount || 0,
+
+                specifications:
+                    dbProduct.specifications || {},
+
+                related:
+                    dbProduct.related_frontend_ids || [],
+
+                variants:
+                    variants.map(
+                        function(variant){
+
+                            return {
+                                id:
+                                    variant.id,
+
+                                productId:
+                                    variant.product_id,
+
+                                label:
+                                    variant.variant_name ||
+                                    "",
+
+                                sku:
+                                    variant.sku || "",
+
+                                color:
+                                    variant.color || undefined,
+
+                                storage:
+                                    variant.storage || undefined,
+
+                                ram:
+                                    variant.ram || undefined,
+
+                                weight:
+                                    variant.weight || undefined,
+
+                                packSize:
+                                    variant.pack_size || undefined,
+
+                                retailPrice:
+                                    variant.retail_price !== null
+                                        ? Number(
+                                            variant.retail_price
+                                        )
+                                        : undefined,
+
+                                wholesalePrice:
+                                    variant.wholesale_price !== null
+                                        ? Number(
+                                            variant.wholesale_price
+                                        )
+                                        : undefined,
+
+                                bulkPrice:
+                                    variant.bulk_price !== null
+                                        ? Number(
+                                            variant.bulk_price
+                                        )
+                                        : undefined,
+
+                                stock:
+                                    Number(
+                                        variant.stock_quantity ||
+                                        0
+                                    ),
+
+                                image:
+                                    variant.image_url || "",
+
+                                specifications:
+                                    variant.specifications || {}
+                            };
+
+                        }
+                    )
+            };
+
+            const productImage =
+                document.getElementById(
+                    "productImage"
+                );
+
+            if(productImage){
+                productImage.src =
+                    currentProduct.image;
+
+                productImage.alt =
+                    currentProduct.name;
+            }
+
+            document.getElementById(
+                "productName"
+            ).textContent =
+                currentProduct.name;
+
+            document.getElementById(
+                "productPrice"
+            ).textContent =
+                "₦" +
+                Number(
+                    currentProduct.price
+                ).toLocaleString("en-NG");
+
+            document.getElementById(
+                "productCategory"
+            ).textContent =
+                currentProduct.group ||
+                currentProduct.category ||
+                "";
+
+            document.getElementById(
+                "productBrand"
+            ).textContent =
+                currentProduct.brand || "";
+
+            document.getElementById(
+                "productSku"
+            ).textContent =
+                currentProduct.sku || "";
+
+            document.getElementById(
+                "productRating"
+            ).textContent =
+                currentProduct.rating
+                    ? currentProduct.rating + " / 5"
+                    : "No rating";
+
+            document.getElementById(
+                "productReviews"
+            ).textContent = "0";
+
+            document.getElementById(
+                "productDiscount"
+            ).textContent =
+                currentProduct.discount
+                    ? currentProduct.discount + "%"
+                    : "No discount";
+
+            document.getElementById(
+                "productDescription"
+            ).textContent =
+                currentProduct.description ||
+                "No description available";
+
+            loadProductSpecifications(
+                currentProduct
+            );
+
+            loadProductVariants(
+                currentProduct
+            );
+
+            selectPurchaseType(
+                "retail"
+            );
+
+            updateCurrentProductAvailability();
+
+        }catch(error){
+
+            console.error(
+                "LIVE PRODUCT DETAILS ERROR:",
+                error
+            );
+
+            const name =
+                document.getElementById(
+                    "productName"
+                );
+
+            if(name){
+                name.textContent =
+                    "Unable to load product";
+            }
+
+        }
 
     }
-
-    document.getElementById("productImage").src =
-        currentProduct.image;
-
-    document.getElementById("productName").textContent =
-        currentProduct.name;
-
-    document.getElementById("productPrice").textContent =
-        "₦" + Number(currentProduct.price).toLocaleString();
-
-
-
-document.getElementById("productCategory").textContent =
-    currentProduct.group || currentProduct.category || "";
-
-document.getElementById("productBrand").textContent =
-    currentProduct.brand || "";
-
-document.getElementById("productSku").textContent =
-    currentProduct.sku || "";
-
-document.getElementById("productStock").textContent =
-    currentProduct.stock ?? 0;
-
-document.getElementById("productStockStatus").textContent =
-    currentProduct.stockStatus ||
-    (currentProduct.stock > 0 ? "In Stock" : "Out of Stock");
-
-document.getElementById("productRating").textContent =
-    currentProduct.rating
-        ? currentProduct.rating + " / 5"
-        : "No rating";
-
-document.getElementById("productReviews").textContent =
-    Array.isArray(currentProduct.reviews)
-        ? currentProduct.reviews.length
-        : 0;
-
-
-
-document.getElementById("productDiscount").textContent =
-    currentProduct.discount
-        ? currentProduct.discount + "%"
-        : "No discount";
-
-
-
-document.getElementById("productDescription").textContent =
-    currentProduct.description ||
-    "No description available";
-
-
-
-loadProductSpecifications(
-    currentProduct
 );
-
-loadProductVariants(
-    currentProduct
-);
-
-selectPurchaseType("retail");
-
-
-
-});
-
 
 
 let selectedVariantOptions = {};
@@ -557,6 +785,7 @@ function loadProductVariants(product){
 
     const ignoredKeys = new Set([
         "id",
+        "productId",
         "label",
         "price",
         "retailPrice",
@@ -565,7 +794,8 @@ function loadProductVariants(product){
         "priceAdjustment",
         "stock",
         "sku",
-        "image"
+        "image",
+        "specifications"
     ]);
 
     const optionKeys = [];
@@ -861,16 +1091,30 @@ function applySelectedProductVariant(
     if(stockStatus){
 
         const availableStock =
-            variant.stock ??
-            product.stock ??
-            0;
+            Number(
+                variant.stock ??
+                product.stock ??
+                0
+            );
+
+        const reorderLevel =
+            Number(
+                product.reorderLevel || 0
+            );
 
         stockStatus.textContent =
-            availableStock > 0
-                ? "In Stock"
-                : "Out of Stock";
+            availableStock <= 0
+                ? "Out of Stock"
+                : (
+                    reorderLevel > 0 &&
+                    availableStock <= reorderLevel
+                        ? "Low Stock"
+                        : "In Stock"
+                );
 
     }
+
+    updateCurrentProductAvailability();
 
     selectedPurchasePrice =
         Number(variantPrice);
@@ -1095,6 +1339,164 @@ let purchaseType = "retail";
 let selectedPurchasePrice = 0;
 let minimumPurchaseQuantity = 1;
 
+
+function getCurrentAvailableStock(){
+
+    if(selectedProductVariant){
+
+        return Math.max(
+            0,
+            Number(
+                selectedProductVariant.stock || 0
+            )
+        );
+
+    }
+
+    if(!currentProduct){
+        return 0;
+    }
+
+    return Math.max(
+        0,
+        Number(
+            currentProduct.stock || 0
+        )
+    );
+
+}
+
+
+function updateCurrentProductAvailability(){
+
+    if(!currentProduct){
+        return;
+    }
+
+    const availableStock =
+        getCurrentAvailableStock();
+
+    const reorderLevel =
+        Math.max(
+            0,
+            Number(
+                currentProduct.reorderLevel || 0
+            )
+        );
+
+    const stock =
+        document.getElementById(
+            "productStock"
+        );
+
+    const status =
+        document.getElementById(
+            "productStockStatus"
+        );
+
+    const addButton =
+        document.querySelector(
+            ".cart-btn"
+        );
+
+    const buyButton =
+        document.querySelector(
+            ".buy-btn"
+        );
+
+    if(stock){
+        stock.textContent =
+            String(availableStock);
+    }
+
+    let statusText =
+        "In Stock";
+
+    if(availableStock <= 0){
+
+        statusText =
+            "Out of Stock";
+
+    }else if(
+        reorderLevel > 0 &&
+        availableStock <= reorderLevel
+    ){
+
+        statusText =
+            "Low Stock";
+
+    }
+
+    if(status){
+
+        status.textContent =
+            statusText;
+
+        status.dataset.status =
+            statusText
+                .toLowerCase()
+                .replace(/\s+/g, "-");
+
+    }
+
+    const unavailable =
+        availableStock <= 0;
+
+    if(addButton){
+
+        addButton.disabled =
+            unavailable;
+
+        addButton.setAttribute(
+            "aria-disabled",
+            unavailable
+                ? "true"
+                : "false"
+        );
+
+        const label =
+            addButton.querySelector("span");
+
+        if(label){
+
+            label.textContent =
+                unavailable
+                    ? "Out of Stock"
+                    : "Add to Cart";
+
+        }
+
+    }
+
+    if(buyButton){
+
+        buyButton.disabled =
+            unavailable;
+
+        buyButton.setAttribute(
+            "aria-disabled",
+            unavailable
+                ? "true"
+                : "false"
+        );
+
+        const label =
+            buyButton.querySelector("span");
+
+        if(label){
+
+            label.textContent =
+                unavailable
+                    ? "Unavailable"
+                    : "Buy Now";
+
+        }
+
+    }
+
+}
+
+
 function selectPurchaseType(type){
 
     if(!currentProduct){
@@ -1178,13 +1580,53 @@ function addCurrentProductToCart(){
         return;
     }
 
+    const availableStock =
+        getCurrentAvailableStock();
+
+    if(availableStock <= 0){
+
+        alert(
+            currentProduct.name +
+            " is currently out of stock."
+        );
+
+        updateCurrentProductAvailability();
+        return;
+    }
+
+    if(
+        minimumPurchaseQuantity >
+        availableStock
+    ){
+
+        alert(
+            "Only " +
+            availableStock +
+            " item(s) are currently available."
+        );
+
+        return;
+    }
+
     addToCart(
-        currentProduct.name + " (" + purchaseType + ")",
+        currentProduct.name +
+        " (" +
+        purchaseType +
+        ")",
         selectedPurchasePrice,
-        currentProduct.image,
+        (
+            selectedProductVariant &&
+            selectedProductVariant.image
+        )
+            ? selectedProductVariant.image
+            : currentProduct.image,
         purchaseType,
         minimumPurchaseQuantity,
-        minimumPurchaseQuantity
+        minimumPurchaseQuantity,
+        currentProduct.id,
+        selectedProductVariant
+            ? selectedProductVariant.id
+            : null
     );
 
 }

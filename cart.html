@@ -774,6 +774,14 @@
            CFR-1 CART SYSTEM
         ========================================== */
 
+let cart = [];
+
+const CART_API_BASE =
+    window.location.hostname === "127.0.0.1" ||
+    window.location.hostname === "localhost"
+        ? "http://127.0.0.1:3000"
+        : window.location.origin;
+
 function getAuthHeaders(){
 
     const token =
@@ -833,7 +841,8 @@ async function readCart(){
   
 
 const response = await fetch(
-    "https://jggl-store.onrender.com/api/cart/" +
+    CART_API_BASE +
+    "/api/cart/" +
     encodeURIComponent(savedUser.id),
     {
         headers: getAuthHeaders()
@@ -844,6 +853,42 @@ const response = await fetch(
 
       const data =
             await response.json();
+
+        if(
+            response.status === 401 ||
+            response.status === 403
+        ){
+
+            cart = [];
+
+            localStorage.removeItem(
+                "cart"
+            );
+
+            localStorage.removeItem(
+                "jgglLoggedIn"
+            );
+
+            localStorage.removeItem(
+                "jgglAuthToken"
+            );
+
+            localStorage.removeItem(
+                "jgglUser"
+            );
+
+            updateGlobalCartCount();
+
+            alert(
+                data.message ||
+                "Your login session has expired. Please login again."
+            );
+
+            window.location.href =
+                "login.html?view=auth-flow-2";
+
+            return;
+        }
 
         if(
             !response.ok ||
@@ -859,13 +904,67 @@ const response = await fetch(
 
         cart =
             Array.isArray(data.items)
-                ? data.items
+                ? data.items.map(function(item){
+
+                    return {
+                        id:
+                            item.id,
+
+                        productId:
+                            item.product_id ||
+                            item.productId ||
+                            null,
+
+                        variantId:
+                            item.variant_id ||
+                            item.variantId ||
+                            null,
+
+                        product:
+                            item.product ||
+                            item.product_name ||
+                            item.name ||
+                            "Product",
+
+                        image:
+                            item.image ||
+                            item.image_url ||
+                            item.imageUrl ||
+                            "",
+
+                        purchaseType:
+                            item.purchaseType ||
+                            item.purchase_type ||
+                            "retail",
+
+                        quantity:
+                            Number(item.quantity || 1),
+
+                        minimumQuantity:
+                            Number(
+                                item.minimumQuantity ||
+                                item.minimum_quantity ||
+                                1
+                            ),
+
+                        price:
+                            Number(
+                                item.price ||
+                                item.unit_price ||
+                                item.unitPrice ||
+                                0
+                            )
+                    };
+
+                })
                 : [];
 
         localStorage.setItem(
             "cart",
             JSON.stringify(cart)
         );
+
+        updateGlobalCartCount();
 
     }catch(error){
 
@@ -874,7 +973,28 @@ const response = await fetch(
             error
         );
 
-        cart = [];
+        try{
+
+            const savedCart =
+                localStorage.getItem("cart");
+
+            const parsedCart =
+                savedCart
+                    ? JSON.parse(savedCart)
+                    : [];
+
+            if(Array.isArray(parsedCart)){
+                cart = parsedCart;
+            }
+
+        }catch(localError){
+
+            console.error(
+                "Unable to restore cached cart:",
+                localError
+            );
+
+        }
 
     }
 
@@ -1160,7 +1280,7 @@ function getItemImage(item){
             });
 
 
-            saveCart();
+            updateGlobalCartCount();
             updateTotals();
 
         }
@@ -1206,7 +1326,7 @@ async function updateCartItemQuantity(
     try{
 
         const response = await fetch(
-            "https://jggl-store.onrender.com/api/cart/" +
+            CART_API_BASE + "/api/cart/" +
             encodeURIComponent(user.id) +
             "/items/" +
             encodeURIComponent(item.id),
@@ -1332,7 +1452,7 @@ async function removeCartItem(index){
     try{
 
         const response = await fetch(
-            "https://jggl-store.onrender.com/api/cart/" +
+            CART_API_BASE + "/api/cart/" +
             encodeURIComponent(user.id) +
             "/items/" +
             encodeURIComponent(item.id),
@@ -1403,7 +1523,7 @@ async function clearCurrentCart(){
     try{
 
         const response = await fetch(
-            "https://jggl-store.onrender.com/api/cart/" +
+            CART_API_BASE + "/api/cart/" +
             encodeURIComponent(user.id),
 
 
@@ -2006,9 +2126,10 @@ document.addEventListener(
 
         await readCart();
 
+        renderCart();
+
         loadAppliedCartCoupon();
         loadShippingEstimate();
-        renderCart();
 
     }
 );
