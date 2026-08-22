@@ -1708,3 +1708,70 @@ body:has(.admin-global-bottom-nav){
     }
 
 }
+
+/* ===========================================
+   ADMIN UI SMALL FIXES
+   =========================================== */
+
+.admin-general-bell{
+    width:34px;
+    height:34px;
+    right:12px;
+}
+
+.admin-general-bell-icon{
+    font-size:19px;
+    color:#0B7A3E;
+}
+
+.admin-general-bell-badge{
+    top:-2px;
+    right:-2px;
+    min-width:16px;
+    height:16px;
+    line-height:16px;
+    font-size:10px;
+    padding:0 4px;
+}
+
+.admin-customer-details-info p{
+    min-width:0;
+}
+
+.admin-customer-email{
+    overflow-wrap:anywhere;
+    word-break:break-word;
+    min-width:0;
+    max-width:100%;
+}
+
+/* Dashboard sales cards */
+.dashboard-cards{
+    display:grid;
+    grid-template-columns:repeat(2, minmax(0, 1fr));
+    gap:14px;
+}
+
+.dashboard-card{
+    min-width:0;
+}
+
+@media(max-width:600px){
+    .dashboard-cards{
+        grid-template-columns:1fr 1fr;
+        gap:12px;
+    }
+
+    .dashboard-card{
+        padding:18px 10px;
+    }
+
+    .dashboard-card h3{
+        font-size:26px;
+        overflow-wrap:anywhere;
+    }
+
+    .dashboard-card p{
+        font-size:15px;
+    }
+}

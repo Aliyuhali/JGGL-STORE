@@ -5490,6 +5490,26 @@ async function loadAdminDashboard(){
             "dashboardTotalSales"
         );
 
+    const dailySales =
+        document.getElementById(
+            "dashboardDailySales"
+        );
+
+    const weeklySales =
+        document.getElementById(
+            "dashboardWeeklySales"
+        );
+
+    const monthlySales =
+        document.getElementById(
+            "dashboardMonthlySales"
+        );
+
+    const yearlySales =
+        document.getElementById(
+            "dashboardYearlySales"
+        );
+
     const recentOrdersContainer =
         document.getElementById(
             "dashboardRecentOrders"
@@ -5556,6 +5576,113 @@ async function loadAdminDashboard(){
                         );
 
                 }, 0);
+
+        const now = new Date();
+
+        const startOfToday =
+            new Date(
+                now.getFullYear(),
+                now.getMonth(),
+                now.getDate()
+            );
+
+        const startOfWeek =
+            new Date(startOfToday);
+
+        startOfWeek.setDate(
+            startOfToday.getDate() -
+            startOfToday.getDay()
+        );
+
+        const startOfMonth =
+            new Date(
+                now.getFullYear(),
+                now.getMonth(),
+                1
+            );
+
+        const startOfYear =
+            new Date(
+                now.getFullYear(),
+                0,
+                1
+            );
+
+        function calculateSalesFrom(startDate){
+
+            return orders
+                .filter(function(order){
+
+                    if(order.status === "Cancelled"){
+                        return false;
+                    }
+
+                    const orderDate =
+                        new Date(
+                            order.created_at ||
+                            order.order_date ||
+                            order.date
+                        );
+
+                    return (
+                        !Number.isNaN(orderDate.getTime()) &&
+                        orderDate >= startDate
+                    );
+
+                })
+                .reduce(function(total, order){
+
+                    return total +
+                        Number(
+                            order.total_amount ||
+                            order.total ||
+                            0
+                        );
+
+                }, 0);
+        }
+
+        const dailySalesTotal =
+            calculateSalesFrom(startOfToday);
+
+        const weeklySalesTotal =
+            calculateSalesFrom(startOfWeek);
+
+        const monthlySalesTotal =
+            calculateSalesFrom(startOfMonth);
+
+        const yearlySalesTotal =
+            calculateSalesFrom(startOfYear);
+
+        if(totalSales){
+            totalSales.textContent =
+                "₦" +
+                salesTotal.toLocaleString();
+        }
+
+        if(dailySales){
+            dailySales.textContent =
+                "₦" +
+                dailySalesTotal.toLocaleString();
+        }
+
+        if(weeklySales){
+            weeklySales.textContent =
+                "₦" +
+                weeklySalesTotal.toLocaleString();
+        }
+
+        if(monthlySales){
+            monthlySales.textContent =
+                "₦" +
+                monthlySalesTotal.toLocaleString();
+        }
+
+        if(yearlySales){
+            yearlySales.textContent =
+                "₦" +
+                yearlySalesTotal.toLocaleString();
+        }
 
         if(totalOrders){
             totalOrders.textContent =
