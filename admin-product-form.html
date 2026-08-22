@@ -178,7 +178,7 @@
                 <div class="admin-form-group">
 
                     <label for="adminProductStock">
-                        Stock
+                        Stock Quantity
                     </label>
 
                     <input
@@ -188,6 +188,26 @@
                         placeholder="0"
                         required
                     >
+
+                </div>
+
+                <div class="admin-form-group">
+
+                    <label for="adminProductReorderLevel">
+                        Low Stock Alert Level
+                    </label>
+
+                    <input
+                        type="number"
+                        id="adminProductReorderLevel"
+                        min="0"
+                        placeholder="Example: 5"
+                    >
+
+                    <small>
+                        Admin will receive a Low Stock alert
+                        when quantity reaches this level.
+                    </small>
 
                 </div>
 

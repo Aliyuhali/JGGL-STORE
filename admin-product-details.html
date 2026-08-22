@@ -92,11 +92,43 @@
             </p>
 
             <p>
-                <strong>Stock:</strong>
+                <strong>Stock Quantity:</strong>
                 <span id="adminDetailsStock">0</span>
             </p>
 
+            <p>
+                <strong>Low Stock Alert Level:</strong>
+                <span id="adminDetailsReorderLevel">0</span>
+            </p>
+
+            <p>
+                <strong>Stock Status:</strong>
+                <span
+                    id="adminDetailsStockStatus"
+                    class="admin-stock-status-badge"
+                >
+                    -
+                </span>
+            </p>
+
         </div>
+
+    </section>
+
+    <section
+        class="admin-product-details-card"
+        id="adminProductVariantsSection"
+        style="display:none;"
+    >
+
+        <h3>
+            Product Variants Inventory
+        </h3>
+
+        <div
+            id="adminProductVariantsList"
+            class="admin-variant-stock-list"
+        ></div>
 
     </section>
 

@@ -1631,3 +1631,80 @@ body:has(.admin-global-bottom-nav){
     margin-right: 6px;
     vertical-align: middle;
 }
+
+/* ===========================================
+   ADMIN INVENTORY STATUS
+   =========================================== */
+
+.admin-stock-status-badge{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-height:24px;
+    padding:3px 9px;
+    border-radius:999px;
+    font-size:11px;
+    font-weight:800;
+    white-space:nowrap;
+}
+
+.admin-stock-status-badge.in-stock{
+    background:#e8f6ee;
+    color:#0B7A3E;
+}
+
+.admin-stock-status-badge.low-stock{
+    background:#fff5d9;
+    color:#8a6200;
+}
+
+.admin-stock-status-badge.out-of-stock{
+    background:#fde8ea;
+    color:#b4232f;
+}
+
+.admin-variant-stock-list{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.admin-variant-stock-row{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto auto;
+    align-items:center;
+    gap:10px;
+    padding:10px;
+    border:1px solid #e1e7e3;
+    border-radius:12px;
+    background:#fff;
+}
+
+.admin-variant-stock-row strong{
+    display:block;
+}
+
+.admin-variant-stock-row small{
+    display:block;
+    margin-top:2px;
+    color:#6f7772;
+}
+
+.admin-variant-stock-quantity{
+    font-size:12px;
+    white-space:nowrap;
+}
+
+@media (max-width:420px){
+
+    .admin-variant-stock-row{
+        grid-template-columns:1fr auto;
+    }
+
+    .admin-variant-stock-row
+    .admin-stock-status-badge{
+        grid-column:1 / -1;
+        justify-self:start;
+    }
+
+}

@@ -5782,6 +5782,15 @@ const response =
                         product.stock_quantity
                     ),
 
+                reorderLevel:
+                    Number(
+                        product.reorder_level || 0
+                    ),
+
+                stockStatus:
+                    product.stock_status ||
+                    "In Stock",
+
                 group:
                     product.product_group,
 
@@ -5845,6 +5854,19 @@ alert(error.message);
         const productStock =
             Number(product.stock) || 0;
 
+        const reorderLevel =
+            Number(product.reorderLevel) || 0;
+
+        const productStockStatus =
+            productStock <= 0
+                ? "Out of Stock"
+                : (
+                    reorderLevel > 0 &&
+                    productStock <= reorderLevel
+                        ? "Low Stock"
+                        : "In Stock"
+                );
+
         const productImage =
             product.image || "";
 
@@ -5880,6 +5902,24 @@ alert(error.message);
                 <p>
                     <strong>Stock:</strong>
                     ${productStock}
+                </p>
+
+                <p>
+                    <strong>Status:</strong>
+                    <span
+                        class="admin-stock-status-badge ${
+                            productStockStatus
+                                .toLowerCase()
+                                .replace(/\s+/g, "-")
+                        }"
+                    >
+                        ${productStockStatus}
+                    </span>
+                </p>
+
+                <p>
+                    <strong>Alert Level:</strong>
+                    ${reorderLevel}
                 </p>
 
                 <p>
@@ -7730,6 +7770,16 @@ async function loadAdminProductForm(){
             product.stock_quantity ||
             0;
 
+        const reorderInput =
+            document.getElementById(
+                "adminProductReorderLevel"
+            );
+
+        if(reorderInput){
+            reorderInput.value =
+                product.reorder_level || 0;
+        }
+
         document.getElementById(
             "adminProductDescription"
         ).value =
@@ -7833,6 +7883,13 @@ async function saveAdminProduct(event){
             Number(
                 document.getElementById(
                     "adminProductStock"
+                ).value || 0
+            ),
+
+        reorderLevel:
+            Number(
+                document.getElementById(
+                    "adminProductReorderLevel"
                 ).value || 0
             ),
 
@@ -8036,6 +8093,16 @@ function loadAdminProductDetails(){
                 "adminDetailsStock"
             );
 
+        const reorderLevel =
+            document.getElementById(
+                "adminDetailsReorderLevel"
+            );
+
+        const stockStatus =
+            document.getElementById(
+                "adminDetailsStockStatus"
+            );
+
         const description =
             document.getElementById(
                 "adminDetailsDescription"
@@ -8095,6 +8162,144 @@ function loadAdminProductDetails(){
                 Number(
                     product.stock_quantity || 0
                 ).toLocaleString();
+        }
+
+        if(reorderLevel){
+            reorderLevel.textContent =
+                Number(
+                    product.reorder_level || 0
+                ).toLocaleString();
+        }
+
+        if(stockStatus){
+
+            const quantity =
+                Number(
+                    product.stock_quantity || 0
+                );
+
+            const alertLevel =
+                Number(
+                    product.reorder_level || 0
+                );
+
+            const status =
+                quantity <= 0
+                    ? "Out of Stock"
+                    : (
+                        alertLevel > 0 &&
+                        quantity <= alertLevel
+                            ? "Low Stock"
+                            : "In Stock"
+                    );
+
+            stockStatus.textContent =
+                status;
+
+            stockStatus.className =
+                "admin-stock-status-badge " +
+                status
+                    .toLowerCase()
+                    .replace(/\s+/g, "-");
+        }
+
+        const variants =
+            Array.isArray(data.variants)
+                ? data.variants
+                : [];
+
+        const variantsSection =
+            document.getElementById(
+                "adminProductVariantsSection"
+            );
+
+        const variantsList =
+            document.getElementById(
+                "adminProductVariantsList"
+            );
+
+        if(variantsSection && variantsList){
+
+            variantsList.innerHTML = "";
+
+            if(variants.length === 0){
+
+                variantsSection.style.display =
+                    "none";
+
+            }else{
+
+                variantsSection.style.display =
+                    "block";
+
+                variants.forEach(
+                    function(variant){
+
+                        const row =
+                            document.createElement(
+                                "div"
+                            );
+
+                        row.className =
+                            "admin-variant-stock-row";
+
+                        const quantity =
+                            Number(
+                                variant.stock_quantity || 0
+                            );
+
+                        const status =
+                            quantity <= 0
+                                ? "Out of Stock"
+                                : "In Stock";
+
+                        row.innerHTML = `
+                            <div>
+                                <strong>
+                                    ${
+                                        variant.variant_name ||
+                                        variant.sku ||
+                                        "Variant"
+                                    }
+                                </strong>
+
+                                <small>
+                                    ${
+                                        variant.sku ||
+                                        ""
+                                    }
+                                </small>
+                            </div>
+
+                            <div
+                                class="admin-variant-stock-quantity"
+                            >
+                                Qty:
+                                <strong>
+                                    ${quantity}
+                                </strong>
+                            </div>
+
+                            <span
+                                class="admin-stock-status-badge ${
+                                    status
+                                        .toLowerCase()
+                                        .replace(/\s+/g, "-")
+                                }"
+                            >
+                                ${status}
+                            </span>
+                        `;
+
+                        variantsList.appendChild(
+                            row
+                        );
+
+                    }
+                );
+
+            }
+
         }
 
         if(description){

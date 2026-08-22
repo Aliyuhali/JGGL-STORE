@@ -636,6 +636,7 @@ image_url,
       wholesale_price,
                 bulk_price,
                 stock_quantity,
+                reorder_level,
                 stock_status,
                 is_active
             FROM products
@@ -688,6 +689,7 @@ app.get("/api/admin/products/:id", async function(req, res){
                 wholesale_price,
                 bulk_price,
                 stock_quantity,
+                reorder_level,
                 stock_status,
                 description,
                 rating,
@@ -709,9 +711,41 @@ app.get("/api/admin/products/:id", async function(req, res){
 
         }
 
+        const product =
+            result.rows[0];
+
+        const variantsResult =
+            await pool.query(
+                `
+                SELECT
+                    id,
+                    product_id,
+                    variant_name,
+                    sku,
+                    color,
+                    storage,
+                    ram,
+                    weight,
+                    pack_size,
+                    retail_price,
+                    wholesale_price,
+                    bulk_price,
+                    stock_quantity,
+                    image_url,
+                    is_active
+                FROM product_variants
+                WHERE
+                    product_id = $1
+                    AND is_active = TRUE
+                ORDER BY id ASC
+                `,
+                [product.id]
+            );
+
         res.status(200).json({
             success: true,
-            product: result.rows[0]
+            product: product,
+            variants: variantsResult.rows
         });
 
     }catch(error){
@@ -746,6 +780,7 @@ app.post("/api/admin/products", async function(req, res){
             wholesalePrice,
             bulkPrice,
             stock,
+            reorderLevel,
             description
         } = req.body;
 
@@ -818,13 +853,14 @@ const sku =
                 wholesale_price,
                 bulk_price,
                 stock_quantity,
+                reorder_level,
                 stock_status,
                 is_active
             )
             VALUES (
                 $1, $2, $3, $4, $5, $6,
                 $7, $8, $9, $10, $11,
-                $12, $13, TRUE
+                $12, $13, $14, TRUE
             )
             RETURNING *
             `,
@@ -845,9 +881,21 @@ const sku =
                 Number(wholesalePrice || 0),
                 Number(bulkPrice || 0),
                 Number(stock || 0),
-                Number(stock || 0) > 0
-                    ? "In Stock"
-                    : "Out of Stock"
+
+                Math.max(
+                    0,
+                    Number(reorderLevel || 0)
+                ),
+
+                Number(stock || 0) <= 0
+                    ? "Out of Stock"
+                    : (
+                        Number(reorderLevel || 0) > 0 &&
+                        Number(stock || 0) <=
+                            Number(reorderLevel || 0)
+                            ? "Low Stock"
+                            : "In Stock"
+                    )
             ]
         );
 
@@ -907,6 +955,7 @@ app.put("/api/admin/products/:id", async function(req, res){
             wholesalePrice,
             bulkPrice,
             stock,
+            reorderLevel,
             description
         } = req.body;
 
@@ -925,6 +974,12 @@ app.put("/api/admin/products/:id", async function(req, res){
         const stockQuantity =
             Number(stock || 0);
 
+        const reorderLevelValue =
+            Math.max(
+                0,
+                Number(reorderLevel || 0)
+            );
+
         const result = await pool.query(
             `
             UPDATE products
@@ -938,12 +993,13 @@ app.put("/api/admin/products/:id", async function(req, res){
                 wholesale_price = $7,
                 bulk_price = $8,
                 stock_quantity = $9,
-                stock_status = $10,
-                description = $11,
+                reorder_level = $10,
+                stock_status = $11,
+                description = $12,
                 updated_at = CURRENT_TIMESTAMP
             WHERE
-                id::text = $12
-                OR frontend_id::text = $12
+                id::text = $13
+                OR frontend_id::text = $13
             RETURNING *
             `,
             [
@@ -960,12 +1016,22 @@ app.put("/api/admin/products/:id", async function(req, res){
                 Number(wholesalePrice || 0),
                 Number(bulkPrice || 0),
                 stockQuantity,
-                stockQuantity > 0
-                    ? "In Stock"
-                    : "Out of Stock",
+
+                reorderLevelValue,
+
+                stockQuantity <= 0
+                    ? "Out of Stock"
+                    : (
+                        reorderLevelValue > 0 &&
+                        stockQuantity <= reorderLevelValue
+                            ? "Low Stock"
+                            : "In Stock"
+                    ),
+
                 description
                     ? String(description).trim()
                     : null,
+
                 String(productId)
             ]
         );
@@ -4842,7 +4908,8 @@ console.log("STEP 2: ORDER INSERTED");
                             AND order_id IS NULL
                             AND title = $1
                             AND message = $2
-                            AND is_read = FALSE
+                            AND admin_is_read = FALSE
+                            AND admin_is_dismissed = FALSE
                         LIMIT 1
                         `,
                         [
