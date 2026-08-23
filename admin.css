@@ -1856,3 +1856,35 @@ body:has(.admin-global-bottom-nav){
     font-size:18px !important;
     color:#0B7A3E !important;
 }
+
+/* CUSTOMER DETAILS — FINAL MOBILE ROW FIX */
+@media(max-width:600px){
+
+    .admin-customer-details-info p{
+        display:flex;
+        align-items:center;
+        gap:10px;
+        min-width:0;
+    }
+
+    .admin-customer-details-info p strong{
+        flex:0 0 auto;
+    }
+
+    .admin-customer-email{
+        flex:1 1 auto;
+        min-width:0;
+        font-size:14px;
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
+        word-break:normal;
+        overflow-wrap:normal;
+    }
+
+    .admin-customer-status{
+        flex:0 0 auto;
+        width:auto;
+        max-width:max-content;
+    }
+}
