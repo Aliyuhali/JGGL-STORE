@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>New Purchase Order | JGGL-STORE</title>
+
+    <link
+        rel="stylesheet"
+        href="style_v8.css?v=9"
+    >
+
+    <link
+        rel="stylesheet"
+        href="admin.css?v=admin-purchase-1"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    >
+
+</head>
+
+<body>
+
+<header class="top-header">
+
+    <a
+        href="admin-purchase-orders.html"
+        class="admin-back-btn"
+    >
+        <i class="fas fa-arrow-left"></i>
+        Back
+    </a>
+
+    <h1>New Purchase Order</h1>
+
+</header>
+
+<main class="admin-order-details-page">
+
+    <section class="admin-order-section">
+
+        <h2>
+            <i class="fas fa-truck-field"></i>
+            Supplier
+        </h2>
+
+        <label for="purchaseSupplierSelect">
+            Supplier
+        </label>
+
+        <select id="purchaseSupplierSelect">
+            <option value="">Select supplier</option>
+        </select>
+
+        <button
+            type="button"
+            class="admin-refresh-btn"
+            onclick="showAddSupplierForm()"
+        >
+            <i class="fas fa-plus"></i>
+            Add Supplier
+        </button>
+
+        <div
+            id="purchaseAddSupplierBox"
+            class="purchase-add-supplier-box"
+            hidden
+        >
+
+            <input
+                id="newSupplierName"
+                type="text"
+                placeholder="Supplier name"
+            >
+
+            <input
+                id="newSupplierContact"
+                type="text"
+                placeholder="Contact person"
+            >
+
+            <input
+                id="newSupplierPhone"
+                type="tel"
+                placeholder="Phone"
+            >
+
+            <input
+                id="newSupplierEmail"
+                type="email"
+                placeholder="Email"
+            >
+
+            <input
+                id="newSupplierAddress"
+                type="text"
+                placeholder="Address"
+            >
+
+            <button
+                type="button"
+                class="admin-update-order-btn"
+                onclick="createAdminSupplierFromForm()"
+            >
+                Save Supplier
+            </button>
+
+        </div>
+
+    </section>
+
+    <section class="admin-order-section">
+
+        <h2>
+            <i class="fas fa-boxes-stacked"></i>
+            Purchase Items
+        </h2>
+
+        <div class="purchase-item-entry">
+
+            <label for="purchaseProductSelect">
+                Product
+            </label>
+
+            <select id="purchaseProductSelect">
+                <option value="">Select product</option>
+            </select>
+
+            <label for="purchaseItemQuantity">
+                Quantity
+            </label>
+
+            <input
+                id="purchaseItemQuantity"
+                type="number"
+                min="1"
+                value="1"
+            >
+
+            <label for="purchaseItemUnitCost">
+                Unit Cost
+            </label>
+
+            <input
+                id="purchaseItemUnitCost"
+                type="number"
+                min="0"
+                step="0.01"
+                placeholder="0"
+            >
+
+            <button
+                type="button"
+                class="admin-update-order-btn"
+                onclick="addPurchaseOrderItemFromForm()"
+            >
+                <i class="fas fa-plus"></i>
+                Add Item
+            </button>
+
+        </div>
+
+        <div id="purchaseFormItemsContainer">
+
+            <div class="admin-empty">
+                No items added yet.
+            </div>
+
+        </div>
+
+    </section>
+
+    <section class="admin-order-section">
+
+        <h2>
+            <i class="fas fa-calculator"></i>
+            Costs
+        </h2>
+
+        <label for="purchaseDiscountAmount">
+            Discount
+        </label>
+
+        <input
+            id="purchaseDiscountAmount"
+            type="number"
+            min="0"
+            step="0.01"
+            value="0"
+            oninput="updatePurchaseFormTotals()"
+        >
+
+        <label for="purchaseAdditionalCost">
+            Additional Cost
+        </label>
+
+        <input
+            id="purchaseAdditionalCost"
+            type="number"
+            min="0"
+            step="0.01"
+            value="0"
+            oninput="updatePurchaseFormTotals()"
+        >
+
+        <label for="purchaseExpectedDate">
+            Expected Date
+        </label>
+
+        <input
+            id="purchaseExpectedDate"
+            type="date"
+        >
+
+        <label for="purchaseNotes">
+            Notes
+        </label>
+
+        <textarea
+            id="purchaseNotes"
+            rows="3"
+            placeholder="Optional notes"
+        ></textarea>
+
+        <div class="purchase-form-total-box">
+
+            <div>
+                <span>Subtotal</span>
+                <strong id="purchaseFormSubtotal">
+                    ₦0
+                </strong>
+            </div>
+
+            <div>
+                <span>Total Cost</span>
+                <strong id="purchaseFormTotal">
+                    ₦0
+                </strong>
+            </div>
+
+        </div>
+
+    </section>
+
+    <section class="admin-order-section">
+
+        <button
+            type="button"
+            class="admin-update-order-btn"
+            onclick="submitAdminPurchaseOrder()"
+        >
+            <i class="fas fa-check"></i>
+            Create Purchase Order
+        </button>
+
+    </section>
+
+</main>
+
+<script src="products-data.js"></script>
+<script src="script_v8.js?v=admin-purchase-1"></script>
+
+</body>
+</html>

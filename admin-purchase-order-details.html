@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Purchase Order Details | JGGL-STORE</title>
+
+    <link
+        rel="stylesheet"
+        href="style_v8.css?v=9"
+    >
+
+    <link
+        rel="stylesheet"
+        href="admin.css?v=admin-purchase-1"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    >
+
+</head>
+
+<body>
+
+<header class="top-header">
+
+    <a
+        href="admin-purchase-orders.html"
+        class="admin-back-btn"
+    >
+        <i class="fas fa-arrow-left"></i>
+        Back
+    </a>
+
+    <h1>Purchase Order</h1>
+
+</header>
+
+<main class="admin-order-details-page">
+
+    <section class="admin-order-summary-card">
+
+        <div class="admin-order-details-heading">
+
+            <div>
+
+                <small>Purchase Order</small>
+
+                <h2 id="purchaseOrderDetailsNumber">
+                    -
+                </h2>
+
+            </div>
+
+            <span
+                id="purchaseOrderDetailsStatus"
+                class="admin-order-status"
+            >
+                Pending
+            </span>
+
+        </div>
+
+        <div class="admin-order-info-grid">
+
+            <div class="admin-order-info-item">
+
+                <i class="fas fa-calendar-days"></i>
+
+                <div>
+                    <small>Date</small>
+                    <strong id="purchaseOrderDetailsDate">
+                        -
+                    </strong>
+                </div>
+
+            </div>
+
+            <div class="admin-order-info-item">
+
+                <i class="fas fa-money-bill-wave"></i>
+
+                <div>
+                    <small>Total Cost</small>
+                    <strong id="purchaseOrderDetailsTotal">
+                        ₦0
+                    </strong>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="admin-order-summary-grid">
+
+            <div class="admin-order-summary-item">
+                <small>Subtotal</small>
+                <strong id="purchaseOrderDetailsSubtotal">
+                    ₦0
+                </strong>
+            </div>
+
+            <div class="admin-order-summary-item">
+                <small>Discount</small>
+                <strong id="purchaseOrderDetailsDiscount">
+                    ₦0
+                </strong>
+            </div>
+
+            <div class="admin-order-summary-item">
+                <small>Additional Cost</small>
+                <strong id="purchaseOrderDetailsAdditionalCost">
+                    ₦0
+                </strong>
+            </div>
+
+            <div class="admin-order-summary-item">
+                <small>Payment Status</small>
+                <strong id="purchaseOrderDetailsPaymentStatus">
+                    Unpaid
+                </strong>
+            </div>
+
+        </div>
+
+    </section>
+
+    <section class="admin-order-section">
+
+        <h2>
+            <i class="fas fa-truck-field"></i>
+            Supplier Information
+        </h2>
+
+        <div class="admin-order-customer-details">
+
+            <p>
+                <strong>Supplier:</strong>
+                <span id="purchaseSupplierName">-</span>
+            </p>
+
+            <p>
+                <strong>Contact:</strong>
+                <span id="purchaseSupplierContact">-</span>
+            </p>
+
+            <p>
+                <strong>Phone:</strong>
+                <span id="purchaseSupplierPhone">-</span>
+            </p>
+
+            <p>
+                <strong>Email:</strong>
+                <span id="purchaseSupplierEmail">-</span>
+            </p>
+
+            <p>
+                <strong>Address:</strong>
+                <span id="purchaseSupplierAddress">-</span>
+            </p>
+
+        </div>
+
+    </section>
+
+    <section class="admin-order-section">
+
+        <h2>
+            <i class="fas fa-boxes-stacked"></i>
+            Purchase Items
+        </h2>
+
+        <div id="purchaseOrderItemsContainer">
+
+            <div class="admin-empty">
+                Loading items...
+            </div>
+
+        </div>
+
+    </section>
+
+    <section class="admin-order-section">
+
+        <h2>
+            <i class="fas fa-note-sticky"></i>
+            Notes
+        </h2>
+
+        <p id="purchaseOrderDetailsNotes">
+            No notes.
+        </p>
+
+    </section>
+
+    <section
+        id="purchaseReceiveStockSection"
+        class="admin-order-section"
+    >
+
+        <h2>
+            <i class="fas fa-box-open"></i>
+            Receive Stock
+        </h2>
+
+        <p class="purchase-receive-help">
+            Confirm only after the goods have physically arrived.
+        </p>
+
+        <button
+            id="purchaseReceiveStockBtn"
+            type="button"
+            class="admin-purchase-receive-btn"
+            onclick="receiveAdminPurchaseOrderStock()"
+        >
+            <i class="fas fa-boxes-packing"></i>
+            Receive Stock
+        </button>
+
+    </section>
+
+</main>
+
+<script src="products-data.js"></script>
+<script src="script_v8.js?v=admin-purchase-1"></script>
+
+</body>
+</html>

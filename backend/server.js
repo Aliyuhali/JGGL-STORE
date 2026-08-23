@@ -5025,6 +5025,817 @@ message:
 
 
 
+// ===========================================
+// PURCHASE ORDERS MODULE
+// ===========================================
+
+
+// ===========================================
+// ADMIN SUPPLIERS
+// ===========================================
+
+app.get("/api/admin/suppliers", async function(req, res){
+
+    try{
+
+        const result = await pool.query(`
+            SELECT
+                id,
+                supplier_name,
+                contact_person,
+                phone,
+                email,
+                address,
+                notes,
+                is_active,
+                created_at,
+                updated_at
+            FROM suppliers
+            WHERE is_active = TRUE
+            ORDER BY supplier_name ASC
+        `);
+
+        return res.json({
+            success: true,
+            suppliers: result.rows
+        });
+
+    }catch(error){
+
+        console.error(
+            "GET ADMIN SUPPLIERS ERROR:",
+            error
+        );
+
+        return res.status(500).json({
+            success: false,
+            message: "Unable to load suppliers."
+        });
+    }
+
+});
+
+
+app.post("/api/admin/suppliers", async function(req, res){
+
+    try{
+
+        const supplierName =
+            String(
+                req.body.supplierName ||
+                req.body.supplier_name ||
+                ""
+            ).trim();
+
+        const contactPerson =
+            String(
+                req.body.contactPerson ||
+                req.body.contact_person ||
+                ""
+            ).trim();
+
+        const phone =
+            String(req.body.phone || "").trim();
+
+        const email =
+            String(req.body.email || "")
+                .trim()
+                .toLowerCase();
+
+        const address =
+            String(req.body.address || "").trim();
+
+        const notes =
+            String(req.body.notes || "").trim();
+
+        if(!supplierName){
+
+            return res.status(400).json({
+                success: false,
+                message: "Supplier name is required."
+            });
+        }
+
+        const result = await pool.query(
+            `
+            INSERT INTO suppliers (
+                supplier_name,
+                contact_person,
+                phone,
+                email,
+                address,
+                notes
+            )
+            VALUES ($1,$2,$3,$4,$5,$6)
+            RETURNING *
+            `,
+            [
+                supplierName,
+                contactPerson || null,
+                phone || null,
+                email || null,
+                address || null,
+                notes || null
+            ]
+        );
+
+        return res.status(201).json({
+            success: true,
+            message: "Supplier added successfully.",
+            supplier: result.rows[0]
+        });
+
+    }catch(error){
+
+        console.error(
+            "CREATE ADMIN SUPPLIER ERROR:",
+            error
+        );
+
+        return res.status(500).json({
+            success: false,
+            message: "Unable to add supplier."
+        });
+    }
+
+});
+
+
+// ===========================================
+// ADMIN PURCHASE ORDERS
+// ===========================================
+
+app.get("/api/admin/purchase-orders", async function(req, res){
+
+    try{
+
+        const result = await pool.query(`
+            SELECT
+                po.id,
+                po.purchase_order_number,
+                po.supplier_id,
+                s.supplier_name,
+                po.status,
+                po.payment_status,
+                po.subtotal,
+                po.discount_amount,
+                po.additional_cost,
+                po.total_cost,
+                po.order_date,
+                po.expected_date,
+                po.received_at,
+                po.notes,
+                po.created_at,
+                po.updated_at
+            FROM purchase_orders po
+            LEFT JOIN suppliers s
+                ON s.id = po.supplier_id
+            ORDER BY po.order_date DESC, po.id DESC
+        `);
+
+        return res.json({
+            success: true,
+            purchaseOrders: result.rows
+        });
+
+    }catch(error){
+
+        console.error(
+            "GET ADMIN PURCHASE ORDERS ERROR:",
+            error
+        );
+
+        return res.status(500).json({
+            success: false,
+            message: "Unable to load purchase orders."
+        });
+    }
+
+});
+
+
+app.post("/api/admin/purchase-orders", async function(req, res){
+
+    const client = await pool.connect();
+
+    try{
+
+        const supplierId =
+            Number(req.body.supplierId);
+
+        const items =
+            Array.isArray(req.body.items)
+                ? req.body.items
+                : [];
+
+        const discountAmount =
+            Math.max(
+                0,
+                Number(req.body.discountAmount || 0)
+            );
+
+        const additionalCost =
+            Math.max(
+                0,
+                Number(req.body.additionalCost || 0)
+            );
+
+        const expectedDate =
+            req.body.expectedDate
+                ? String(req.body.expectedDate)
+                : null;
+
+        const notes =
+            String(req.body.notes || "").trim();
+
+        if(
+            !Number.isInteger(supplierId) ||
+            supplierId <= 0
+        ){
+
+            return res.status(400).json({
+                success: false,
+                message: "A valid supplier is required."
+            });
+        }
+
+        if(items.length === 0){
+
+            return res.status(400).json({
+                success: false,
+                message: "At least one purchase item is required."
+            });
+        }
+
+        await client.query("BEGIN");
+
+        const supplierResult =
+            await client.query(
+                `
+                SELECT id
+                FROM suppliers
+                WHERE id = $1
+                  AND is_active = TRUE
+                LIMIT 1
+                `,
+                [supplierId]
+            );
+
+        if(supplierResult.rows.length === 0){
+
+            await client.query("ROLLBACK");
+
+            return res.status(404).json({
+                success: false,
+                message: "Supplier not found."
+            });
+        }
+
+        const cleanItems = [];
+        let subtotal = 0;
+
+        for(const rawItem of items){
+
+            const productId =
+                Number(rawItem.productId);
+
+            const variantId =
+                rawItem.variantId
+                    ? Number(rawItem.variantId)
+                    : null;
+
+            const quantity =
+                Number(rawItem.quantity);
+
+            const unitCost =
+                Number(rawItem.unitCost);
+
+            if(
+                !Number.isInteger(productId) ||
+                productId <= 0 ||
+                !Number.isInteger(quantity) ||
+                quantity <= 0 ||
+                !Number.isFinite(unitCost) ||
+                unitCost < 0
+            ){
+
+                await client.query("ROLLBACK");
+
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        "Each item must have a valid product, quantity and unit cost."
+                });
+            }
+
+            const productResult =
+                await client.query(
+                    `
+                    SELECT
+                        id,
+                        product_name
+                    FROM products
+                    WHERE id = $1
+                    LIMIT 1
+                    `,
+                    [productId]
+                );
+
+            if(productResult.rows.length === 0){
+
+                await client.query("ROLLBACK");
+
+                return res.status(404).json({
+                    success: false,
+                    message:
+                        "Purchase product not found: " +
+                        productId
+                });
+            }
+
+            let variantName = null;
+
+            if(variantId){
+
+                const variantResult =
+                    await client.query(
+                        `
+                        SELECT
+                            id,
+                            product_id,
+                            variant_name
+                        FROM product_variants
+                        WHERE id = $1
+                        LIMIT 1
+                        `,
+                        [variantId]
+                    );
+
+                if(
+                    variantResult.rows.length === 0 ||
+                    Number(
+                        variantResult.rows[0].product_id
+                    ) !== productId
+                ){
+
+                    await client.query("ROLLBACK");
+
+                    return res.status(400).json({
+                        success: false,
+                        message:
+                            "Invalid product variant."
+                    });
+                }
+
+                variantName =
+                    variantResult.rows[0].variant_name ||
+                    null;
+            }
+
+            const lineTotal =
+                quantity * unitCost;
+
+            subtotal += lineTotal;
+
+            cleanItems.push({
+                productId: productId,
+                variantId: variantId,
+                productName:
+                    productResult.rows[0].product_name,
+                variantName: variantName,
+                quantity: quantity,
+                unitCost: unitCost,
+                lineTotal: lineTotal
+            });
+        }
+
+        const totalCost =
+            Math.max(
+                0,
+                subtotal -
+                discountAmount +
+                additionalCost
+            );
+
+        const purchaseOrderNumber =
+            "PO-" +
+            Date.now() +
+            "-" +
+            Math.floor(
+                1000 + Math.random() * 9000
+            );
+
+        const orderResult =
+            await client.query(
+                `
+                INSERT INTO purchase_orders (
+                    purchase_order_number,
+                    supplier_id,
+                    status,
+                    payment_status,
+                    subtotal,
+                    discount_amount,
+                    additional_cost,
+                    total_cost,
+                    expected_date,
+                    notes,
+                    created_by
+                )
+                VALUES (
+                    $1,$2,'Pending','Unpaid',
+                    $3,$4,$5,$6,$7,$8,$9
+                )
+                RETURNING *
+                `,
+                [
+                    purchaseOrderNumber,
+                    supplierId,
+                    subtotal,
+                    discountAmount,
+                    additionalCost,
+                    totalCost,
+                    expectedDate,
+                    notes || null,
+                    req.user.userId
+                ]
+            );
+
+        const purchaseOrder =
+            orderResult.rows[0];
+
+        for(const item of cleanItems){
+
+            await client.query(
+                `
+                INSERT INTO purchase_order_items (
+                    purchase_order_id,
+                    product_id,
+                    variant_id,
+                    product_name,
+                    variant_name,
+                    quantity,
+                    unit_cost,
+                    line_total
+                )
+                VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
+                `,
+                [
+                    purchaseOrder.id,
+                    item.productId,
+                    item.variantId,
+                    item.productName,
+                    item.variantName,
+                    item.quantity,
+                    item.unitCost,
+                    item.lineTotal
+                ]
+            );
+        }
+
+        await client.query("COMMIT");
+
+        return res.status(201).json({
+            success: true,
+            message:
+                "Purchase order created successfully.",
+            purchaseOrder: purchaseOrder
+        });
+
+    }catch(error){
+
+        await client.query("ROLLBACK");
+
+        console.error(
+            "CREATE ADMIN PURCHASE ORDER ERROR:",
+            error
+        );
+
+        return res.status(500).json({
+            success: false,
+            message:
+                "Unable to create purchase order."
+        });
+
+    }finally{
+
+        client.release();
+    }
+
+});
+
+
+app.get("/api/admin/purchase-orders/:id", async function(req, res){
+
+    try{
+
+        const purchaseOrderId =
+            String(req.params.id || "").trim();
+
+        const orderResult =
+            await pool.query(
+                `
+                SELECT
+                    po.*,
+                    s.supplier_name,
+                    s.contact_person,
+                    s.phone AS supplier_phone,
+                    s.email AS supplier_email,
+                    s.address AS supplier_address
+                FROM purchase_orders po
+                LEFT JOIN suppliers s
+                    ON s.id = po.supplier_id
+                WHERE
+                    po.id::text = $1
+                    OR po.purchase_order_number = $1
+                LIMIT 1
+                `,
+                [purchaseOrderId]
+            );
+
+        if(orderResult.rows.length === 0){
+
+            return res.status(404).json({
+                success: false,
+                message: "Purchase order not found."
+            });
+        }
+
+        const purchaseOrder =
+            orderResult.rows[0];
+
+        const itemsResult =
+            await pool.query(
+                `
+                SELECT
+                    id,
+                    product_id,
+                    variant_id,
+                    product_name,
+                    variant_name,
+                    quantity,
+                    received_quantity,
+                    unit_cost,
+                    line_total,
+                    created_at,
+                    updated_at
+                FROM purchase_order_items
+                WHERE purchase_order_id = $1
+                ORDER BY id ASC
+                `,
+                [purchaseOrder.id]
+            );
+
+        return res.json({
+            success: true,
+            purchaseOrder: purchaseOrder,
+            items: itemsResult.rows
+        });
+
+    }catch(error){
+
+        console.error(
+            "GET ADMIN PURCHASE ORDER DETAILS ERROR:",
+            error
+        );
+
+        return res.status(500).json({
+            success: false,
+            message:
+                "Unable to load purchase order details."
+        });
+    }
+
+});
+
+// ===========================================
+// RECEIVE PURCHASE ORDER STOCK
+// ===========================================
+
+app.put("/api/admin/purchase-orders/:id/receive", async function(req, res){
+
+    const client = await pool.connect();
+
+    try{
+
+        const purchaseOrderId =
+            String(req.params.id || "").trim();
+
+        await client.query("BEGIN");
+
+        const orderResult =
+            await client.query(
+                `
+                SELECT *
+                FROM purchase_orders
+                WHERE
+                    id::text = $1
+                    OR purchase_order_number = $1
+                FOR UPDATE
+                LIMIT 1
+                `,
+                [purchaseOrderId]
+            );
+
+        if(orderResult.rows.length === 0){
+
+            await client.query("ROLLBACK");
+
+            return res.status(404).json({
+                success: false,
+                message: "Purchase order not found."
+            });
+        }
+
+        const purchaseOrder =
+            orderResult.rows[0];
+
+        if(purchaseOrder.status === "Cancelled"){
+
+            await client.query("ROLLBACK");
+
+            return res.status(400).json({
+                success: false,
+                message:
+                    "Cancelled purchase orders cannot be received."
+            });
+        }
+
+        if(purchaseOrder.status === "Received"){
+
+            await client.query("ROLLBACK");
+
+            return res.status(409).json({
+                success: false,
+                message:
+                    "This purchase order has already been received."
+            });
+        }
+
+        const itemsResult =
+            await client.query(
+                `
+                SELECT *
+                FROM purchase_order_items
+                WHERE purchase_order_id = $1
+                ORDER BY id ASC
+                FOR UPDATE
+                `,
+                [purchaseOrder.id]
+            );
+
+        if(itemsResult.rows.length === 0){
+
+            await client.query("ROLLBACK");
+
+            return res.status(400).json({
+                success: false,
+                message:
+                    "This purchase order has no items."
+            });
+        }
+
+        for(const item of itemsResult.rows){
+
+            const quantity =
+                Number(item.quantity || 0);
+
+            const alreadyReceived =
+                Number(
+                    item.received_quantity || 0
+                );
+
+            const remainingQuantity =
+                quantity - alreadyReceived;
+
+            if(remainingQuantity <= 0){
+                continue;
+            }
+
+            if(item.variant_id){
+
+                await client.query(
+                    `
+                    UPDATE product_variants
+                    SET
+                        stock_quantity =
+                            stock_quantity + $1,
+                        updated_at =
+                            CURRENT_TIMESTAMP
+                    WHERE id = $2
+                    `,
+                    [
+                        remainingQuantity,
+                        item.variant_id
+                    ]
+                );
+            }
+
+            const productUpdateResult =
+                await client.query(
+                    `
+                    UPDATE products
+                    SET
+                        stock_quantity =
+                            stock_quantity + $1,
+
+                        stock_status =
+                            CASE
+                                WHEN stock_quantity + $1 <= 0
+                                    THEN 'Out of Stock'
+
+                                WHEN reorder_level > 0
+                                     AND stock_quantity + $1 <= reorder_level
+                                    THEN 'Low Stock'
+
+                                ELSE 'In Stock'
+                            END,
+
+                        updated_at =
+                            CURRENT_TIMESTAMP
+
+                    WHERE id = $2
+
+                    RETURNING
+                        id,
+                        product_name,
+                        stock_quantity,
+                        reorder_level,
+                        stock_status
+                    `,
+                    [
+                        remainingQuantity,
+                        item.product_id
+                    ]
+                );
+
+            if(productUpdateResult.rows.length === 0){
+
+                throw new Error(
+                    "Purchase product not found while receiving stock."
+                );
+            }
+
+            await client.query(
+                `
+                UPDATE purchase_order_items
+                SET
+                    received_quantity = quantity,
+                    updated_at = CURRENT_TIMESTAMP
+                WHERE id = $1
+                `,
+                [item.id]
+            );
+        }
+
+        const updatedOrderResult =
+            await client.query(
+                `
+                UPDATE purchase_orders
+                SET
+                    status = 'Received',
+                    received_at = CURRENT_TIMESTAMP,
+                    updated_at = CURRENT_TIMESTAMP
+                WHERE id = $1
+                RETURNING *
+                `,
+                [purchaseOrder.id]
+            );
+
+        await client.query("COMMIT");
+
+        return res.json({
+            success: true,
+            message:
+                "Purchase order received and stock updated successfully.",
+            purchaseOrder:
+                updatedOrderResult.rows[0]
+        });
+
+    }catch(error){
+
+        await client.query("ROLLBACK");
+
+        console.error(
+            "RECEIVE PURCHASE ORDER ERROR:",
+            error
+        );
+
+        return res.status(500).json({
+            success: false,
+            message:
+                "Unable to receive purchase order."
+        });
+
+    }finally{
+
+        client.release();
+    }
+
+});
+
+
+
+
 // API endpoint da bai wanzu ba.
 app.use("/api", function(req, res){
     res.status(404).json({

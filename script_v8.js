@@ -9995,6 +9995,9 @@ function buildAdminNavigation(){
     const morePages = [
         "admin-notifications.html",
         "admin-analytics.html",
+        "admin-purchase-orders.html",
+        "admin-purchase-order-form.html",
+        "admin-purchase-order-details.html",
         "admin-settings.html"
     ];
 
@@ -10106,6 +10109,11 @@ function buildAdminNavigation(){
             <a href="admin-analytics.html">
                 <i class="fas fa-chart-line"></i>
                 <span>Analytics</span>
+            </a>
+
+            <a href="admin-purchase-orders.html">
+                <i class="fas fa-cart-flatbed"></i>
+                <span>Purchase Orders</span>
             </a>
 
             <a href="admin-settings.html">
@@ -10387,3 +10395,1661 @@ document.addEventListener(
 
     }
 );
+
+// ===========================================
+// LOAD ADMIN PURCHASE ORDERS
+// ===========================================
+
+async function loadAdminPurchaseOrders(){
+
+    const container =
+        document.getElementById(
+            "adminPurchaseOrdersContainer"
+        );
+
+    if(!container){
+        return;
+    }
+
+    const dailyElement =
+        document.getElementById(
+            "purchaseDailyTotal"
+        );
+
+    const weeklyElement =
+        document.getElementById(
+            "purchaseWeeklyTotal"
+        );
+
+    const monthlyElement =
+        document.getElementById(
+            "purchaseMonthlyTotal"
+        );
+
+    const yearlyElement =
+        document.getElementById(
+            "purchaseYearlyTotal"
+        );
+
+    container.innerHTML = `
+        <div class="admin-empty">
+            Loading purchase orders...
+        </div>
+    `;
+
+    try{
+
+        const response =
+            await fetch(
+                API_BASE +
+                "/api/admin/purchase-orders",
+                {
+                    headers: getAuthHeaders()
+                }
+            );
+
+        const data =
+            await response.json();
+
+        if(
+            !response.ok ||
+            !data.success
+        ){
+
+            throw new Error(
+                data.message ||
+                "Unable to load purchase orders."
+            );
+        }
+
+        const purchaseOrders =
+            Array.isArray(
+                data.purchaseOrders
+            )
+                ? data.purchaseOrders
+                : [];
+
+        const now = new Date();
+
+        const startOfToday =
+            new Date(
+                now.getFullYear(),
+                now.getMonth(),
+                now.getDate()
+            );
+
+        const startOfWeek =
+            new Date(startOfToday);
+
+        const currentDay =
+            startOfToday.getDay();
+
+        const daysSinceMonday =
+            currentDay === 0
+                ? 6
+                : currentDay - 1;
+
+        startOfWeek.setDate(
+            startOfToday.getDate() -
+            daysSinceMonday
+        );
+
+        const startOfMonth =
+            new Date(
+                now.getFullYear(),
+                now.getMonth(),
+                1
+            );
+
+        const startOfYear =
+            new Date(
+                now.getFullYear(),
+                0,
+                1
+            );
+
+        function calculatePurchaseTotal(startDate){
+
+            return purchaseOrders
+                .filter(function(order){
+
+                    if(
+                        order.status ===
+                        "Cancelled"
+                    ){
+                        return false;
+                    }
+
+                    const orderDate =
+                        new Date(
+                            order.order_date ||
+                            order.created_at
+                        );
+
+                    return (
+                        !Number.isNaN(
+                            orderDate.getTime()
+                        ) &&
+                        orderDate >= startDate
+                    );
+
+                })
+                .reduce(function(total, order){
+
+                    return total +
+                        Number(
+                            order.total_cost ||
+                            0
+                        );
+
+                }, 0);
+        }
+
+        const dailyTotal =
+            calculatePurchaseTotal(
+                startOfToday
+            );
+
+        const weeklyTotal =
+            calculatePurchaseTotal(
+                startOfWeek
+            );
+
+        const monthlyTotal =
+            calculatePurchaseTotal(
+                startOfMonth
+            );
+
+        const yearlyTotal =
+            calculatePurchaseTotal(
+                startOfYear
+            );
+
+        if(dailyElement){
+            dailyElement.textContent =
+                "₦" +
+                dailyTotal.toLocaleString();
+        }
+
+        if(weeklyElement){
+            weeklyElement.textContent =
+                "₦" +
+                weeklyTotal.toLocaleString();
+        }
+
+        if(monthlyElement){
+            monthlyElement.textContent =
+                "₦" +
+                monthlyTotal.toLocaleString();
+        }
+
+        if(yearlyElement){
+            yearlyElement.textContent =
+                "₦" +
+                yearlyTotal.toLocaleString();
+        }
+
+        container.innerHTML = "";
+
+        if(purchaseOrders.length === 0){
+
+            container.innerHTML = `
+                <div class="admin-empty">
+                    <i class="fas fa-cart-flatbed"></i>
+                    <p>No purchase orders yet.</p>
+                </div>
+            `;
+
+            return;
+        }
+
+        purchaseOrders.forEach(
+            function(order){
+
+                const card =
+                    document.createElement(
+                        "div"
+                    );
+
+                card.className =
+                    "admin-purchase-order-card";
+
+                const orderNumber =
+                    order.purchase_order_number ||
+                    "Purchase Order";
+
+                const supplierName =
+                    order.supplier_name ||
+                    "Unknown Supplier";
+
+                const status =
+                    order.status ||
+                    "Pending";
+
+                const paymentStatus =
+                    order.payment_status ||
+                    "Unpaid";
+
+                const total =
+                    Number(
+                        order.total_cost ||
+                        0
+                    );
+
+                const date =
+                    order.order_date
+                        ? new Date(
+                            order.order_date
+                        ).toLocaleString()
+                        : "";
+
+                card.innerHTML = `
+                    <div class="admin-purchase-order-card-top">
+
+                        <div>
+                            <strong>
+                                ${orderNumber}
+                            </strong>
+
+                            <small>
+                                ${supplierName}
+                            </small>
+
+                            <small>
+                                ${date}
+                            </small>
+                        </div>
+
+                        <span class="admin-order-status">
+                            ${status}
+                        </span>
+
+                    </div>
+
+                    <small>
+                        Payment: ${paymentStatus}
+                    </small>
+
+                    <div class="admin-purchase-order-total">
+                        ₦${total.toLocaleString()}
+                    </div>
+                `;
+
+                card.addEventListener(
+                    "click",
+                    function(){
+
+                        localStorage.setItem(
+                            "selectedPurchaseOrderId",
+                            String(order.id)
+                        );
+
+                        window.location.href =
+                            "admin-purchase-order-details.html";
+                    }
+                );
+
+                container.appendChild(card);
+            }
+        );
+
+    }catch(error){
+
+        console.error(
+            "LOAD ADMIN PURCHASE ORDERS ERROR:",
+            error
+        );
+
+        container.innerHTML = `
+            <div class="admin-empty">
+                Unable to load purchase orders.
+            </div>
+        `;
+    }
+}
+
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        if(
+            window.location.pathname.endsWith(
+                "admin-purchase-orders.html"
+            )
+        ){
+            loadAdminPurchaseOrders();
+        }
+    }
+);
+
+// ===========================================
+// LOAD ADMIN PURCHASE ORDER DETAILS
+// ===========================================
+
+async function loadAdminPurchaseOrderDetails(){
+
+    const orderId =
+        localStorage.getItem(
+            "selectedPurchaseOrderId"
+        );
+
+    if(!orderId){
+        return;
+    }
+
+    try{
+
+        const response =
+            await fetch(
+                API_BASE +
+                "/api/admin/purchase-orders/" +
+                encodeURIComponent(orderId),
+                {
+                    headers: getAuthHeaders()
+                }
+            );
+
+        const data =
+            await response.json();
+
+        if(
+            !response.ok ||
+            !data.success
+        ){
+            throw new Error(
+                data.message ||
+                "Unable to load purchase order."
+            );
+        }
+
+        const order =
+            data.purchaseOrder || {};
+
+        const items =
+            Array.isArray(data.items)
+                ? data.items
+                : [];
+
+        const numberElement =
+            document.getElementById(
+                "purchaseOrderDetailsNumber"
+            );
+
+        const statusElement =
+            document.getElementById(
+                "purchaseOrderDetailsStatus"
+            );
+
+        const dateElement =
+            document.getElementById(
+                "purchaseOrderDetailsDate"
+            );
+
+        const totalElement =
+            document.getElementById(
+                "purchaseOrderDetailsTotal"
+            );
+
+        const subtotalElement =
+            document.getElementById(
+                "purchaseOrderDetailsSubtotal"
+            );
+
+        const discountElement =
+            document.getElementById(
+                "purchaseOrderDetailsDiscount"
+            );
+
+        const additionalCostElement =
+            document.getElementById(
+                "purchaseOrderDetailsAdditionalCost"
+            );
+
+        const paymentStatusElement =
+            document.getElementById(
+                "purchaseOrderDetailsPaymentStatus"
+            );
+
+        const supplierNameElement =
+            document.getElementById(
+                "purchaseSupplierName"
+            );
+
+        const supplierContactElement =
+            document.getElementById(
+                "purchaseSupplierContact"
+            );
+
+        const supplierPhoneElement =
+            document.getElementById(
+                "purchaseSupplierPhone"
+            );
+
+        const supplierEmailElement =
+            document.getElementById(
+                "purchaseSupplierEmail"
+            );
+
+        const supplierAddressElement =
+            document.getElementById(
+                "purchaseSupplierAddress"
+            );
+
+        const notesElement =
+            document.getElementById(
+                "purchaseOrderDetailsNotes"
+            );
+
+        const itemsContainer =
+            document.getElementById(
+                "purchaseOrderItemsContainer"
+            );
+
+        if(numberElement){
+            numberElement.textContent =
+                order.purchase_order_number ||
+                "-";
+        }
+
+        if(statusElement){
+            statusElement.textContent =
+                order.status ||
+                "Pending";
+        }
+
+        const receiveSection =
+            document.getElementById(
+                "purchaseReceiveStockSection"
+            );
+
+        const receiveButton =
+            document.getElementById(
+                "purchaseReceiveStockBtn"
+            );
+
+        const canReceiveStock =
+            order.status !== "Received" &&
+            order.status !== "Cancelled";
+
+        if(receiveSection){
+            receiveSection.hidden =
+                !canReceiveStock;
+        }
+
+        if(receiveButton){
+            receiveButton.disabled =
+                !canReceiveStock;
+        }
+
+        if(dateElement){
+            dateElement.textContent =
+                order.order_date
+                    ? new Date(
+                        order.order_date
+                    ).toLocaleString()
+                    : "-";
+        }
+
+        if(totalElement){
+            totalElement.textContent =
+                "₦" +
+                Number(
+                    order.total_cost || 0
+                ).toLocaleString();
+        }
+
+        if(subtotalElement){
+            subtotalElement.textContent =
+                "₦" +
+                Number(
+                    order.subtotal || 0
+                ).toLocaleString();
+        }
+
+        if(discountElement){
+            discountElement.textContent =
+                "₦" +
+                Number(
+                    order.discount_amount || 0
+                ).toLocaleString();
+        }
+
+        if(additionalCostElement){
+            additionalCostElement.textContent =
+                "₦" +
+                Number(
+                    order.additional_cost || 0
+                ).toLocaleString();
+        }
+
+        if(paymentStatusElement){
+            paymentStatusElement.textContent =
+                order.payment_status ||
+                "Unpaid";
+        }
+
+        if(supplierNameElement){
+            supplierNameElement.textContent =
+                order.supplier_name ||
+                "-";
+        }
+
+        if(supplierContactElement){
+            supplierContactElement.textContent =
+                order.contact_person ||
+                "-";
+        }
+
+        if(supplierPhoneElement){
+            supplierPhoneElement.textContent =
+                order.supplier_phone ||
+                "-";
+        }
+
+        if(supplierEmailElement){
+            supplierEmailElement.textContent =
+                order.supplier_email ||
+                "-";
+        }
+
+        if(supplierAddressElement){
+            supplierAddressElement.textContent =
+                order.supplier_address ||
+                "-";
+        }
+
+        if(notesElement){
+            notesElement.textContent =
+                order.notes ||
+                "No notes.";
+        }
+
+        if(!itemsContainer){
+            return;
+        }
+
+        itemsContainer.innerHTML = "";
+
+        if(items.length === 0){
+
+            itemsContainer.innerHTML = `
+                <div class="admin-empty">
+                    No purchase items found.
+                </div>
+            `;
+
+            return;
+        }
+
+        items.forEach(function(item){
+
+            const card =
+                document.createElement("div");
+
+            card.className =
+                "admin-purchase-item-card";
+
+            const quantity =
+                Number(
+                    item.quantity || 0
+                );
+
+            const receivedQuantity =
+                Number(
+                    item.received_quantity || 0
+                );
+
+            const unitCost =
+                Number(
+                    item.unit_cost || 0
+                );
+
+            const lineTotal =
+                Number(
+                    item.line_total || 0
+                );
+
+            card.innerHTML = `
+                <div class="admin-purchase-item-name">
+                    <strong>
+                        ${item.product_name || "Product"}
+                    </strong>
+
+                    ${
+                        item.variant_name
+                            ? `<small>${item.variant_name}</small>`
+                            : ""
+                    }
+                </div>
+
+                <div class="admin-purchase-item-grid">
+
+                    <div>
+                        <small>Qty</small>
+                        <strong>${quantity}</strong>
+                    </div>
+
+                    <div>
+                        <small>Received</small>
+                        <strong>${receivedQuantity}</strong>
+                    </div>
+
+                    <div>
+                        <small>Unit Cost</small>
+                        <strong>
+                            ₦${unitCost.toLocaleString()}
+                        </strong>
+                    </div>
+
+                    <div>
+                        <small>Total</small>
+                        <strong>
+                            ₦${lineTotal.toLocaleString()}
+                        </strong>
+                    </div>
+
+                </div>
+            `;
+
+            itemsContainer.appendChild(card);
+        });
+
+    }catch(error){
+
+        console.error(
+            "LOAD PURCHASE ORDER DETAILS ERROR:",
+            error
+        );
+
+        const itemsContainer =
+            document.getElementById(
+                "purchaseOrderItemsContainer"
+            );
+
+        if(itemsContainer){
+            itemsContainer.innerHTML = `
+                <div class="admin-empty">
+                    Unable to load purchase order details.
+                </div>
+            `;
+        }
+    }
+}
+
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        if(
+            window.location.pathname.endsWith(
+                "admin-purchase-order-details.html"
+            )
+        ){
+            loadAdminPurchaseOrderDetails();
+        }
+    }
+);
+
+// ===========================================
+// ADMIN PURCHASE ORDER FORM
+// ===========================================
+
+let adminPurchaseFormItems = [];
+let adminPurchaseFormProducts = [];
+
+
+// ===========================================
+// LOAD PURCHASE FORM DATA
+// ===========================================
+
+async function loadAdminPurchaseOrderForm(){
+
+    const supplierSelect =
+        document.getElementById(
+            "purchaseSupplierSelect"
+        );
+
+    const productSelect =
+        document.getElementById(
+            "purchaseProductSelect"
+        );
+
+    if(!supplierSelect || !productSelect){
+        return;
+    }
+
+    try{
+
+        const [
+            suppliersResponse,
+            productsResponse
+        ] = await Promise.all([
+
+            fetch(
+                API_BASE + "/api/admin/suppliers",
+                {
+                    headers: getAuthHeaders()
+                }
+            ),
+
+            fetch(
+                API_BASE + "/api/admin/products",
+                {
+                    headers: getAuthHeaders()
+                }
+            )
+
+        ]);
+
+        const suppliersData =
+            await suppliersResponse.json();
+
+        const productsData =
+            await productsResponse.json();
+
+        if(!suppliersResponse.ok){
+            throw new Error(
+                suppliersData.message ||
+                "Unable to load suppliers."
+            );
+        }
+
+        if(!productsResponse.ok){
+            throw new Error(
+                productsData.message ||
+                "Unable to load products."
+            );
+        }
+
+
+        // SUPPLIERS
+
+        supplierSelect.innerHTML =
+            '<option value="">Select supplier</option>';
+
+        const suppliers =
+            Array.isArray(suppliersData.suppliers)
+                ? suppliersData.suppliers
+                : [];
+
+        suppliers.forEach(function(supplier){
+
+            const option =
+                document.createElement("option");
+
+            option.value =
+                supplier.id;
+
+            option.textContent =
+                supplier.supplier_name;
+
+            supplierSelect.appendChild(option);
+
+        });
+
+
+        // PRODUCTS
+
+        adminPurchaseFormProducts =
+            Array.isArray(productsData.products)
+                ? productsData.products
+                : [];
+
+        productSelect.innerHTML =
+            '<option value="">Select product</option>';
+
+        adminPurchaseFormProducts.forEach(
+            function(product){
+
+                const option =
+                    document.createElement("option");
+
+                option.value =
+                    product.id;
+
+                option.textContent =
+                    product.product_name;
+
+                productSelect.appendChild(option);
+
+            }
+        );
+
+    }catch(error){
+
+        console.error(
+            "LOAD PURCHASE FORM ERROR:",
+            error
+        );
+
+        alert(
+            error.message ||
+            "Unable to load purchase order form."
+        );
+
+    }
+
+}
+
+
+// ===========================================
+// SHOW / HIDE ADD SUPPLIER FORM
+// ===========================================
+
+function showAddSupplierForm(){
+
+    const box =
+        document.getElementById(
+            "purchaseAddSupplierBox"
+        );
+
+    if(!box){
+        return;
+    }
+
+    box.hidden = !box.hidden;
+
+}
+
+
+// ===========================================
+// CREATE SUPPLIER FROM PURCHASE FORM
+// ===========================================
+
+async function createAdminSupplierFromForm(){
+
+    const name =
+        String(
+            document.getElementById(
+                "newSupplierName"
+            )?.value || ""
+        ).trim();
+
+    const contactPerson =
+        String(
+            document.getElementById(
+                "newSupplierContact"
+            )?.value || ""
+        ).trim();
+
+    const phone =
+        String(
+            document.getElementById(
+                "newSupplierPhone"
+            )?.value || ""
+        ).trim();
+
+    const email =
+        String(
+            document.getElementById(
+                "newSupplierEmail"
+            )?.value || ""
+        ).trim();
+
+    const address =
+        String(
+            document.getElementById(
+                "newSupplierAddress"
+            )?.value || ""
+        ).trim();
+
+    if(!name){
+
+        alert("Supplier name is required.");
+        return;
+
+    }
+
+    try{
+
+        const response =
+            await fetch(
+                API_BASE + "/api/admin/suppliers",
+                {
+                    method: "POST",
+
+                    headers: {
+                        ...getAuthHeaders(),
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        supplierName: name,
+                        contactPerson: contactPerson,
+                        phone: phone,
+                        email: email,
+                        address: address
+                    })
+                }
+            );
+
+        const data =
+            await response.json();
+
+        if(
+            !response.ok ||
+            !data.success
+        ){
+
+            throw new Error(
+                data.message ||
+                "Unable to add supplier."
+            );
+
+        }
+
+        const supplierSelect =
+            document.getElementById(
+                "purchaseSupplierSelect"
+            );
+
+        if(
+            supplierSelect &&
+            data.supplier
+        ){
+
+            const option =
+                document.createElement("option");
+
+            option.value =
+                data.supplier.id;
+
+            option.textContent =
+                data.supplier.supplier_name;
+
+            option.selected = true;
+
+            supplierSelect.appendChild(option);
+
+        }
+
+        [
+            "newSupplierName",
+            "newSupplierContact",
+            "newSupplierPhone",
+            "newSupplierEmail",
+            "newSupplierAddress"
+        ].forEach(function(id){
+
+            const element =
+                document.getElementById(id);
+
+            if(element){
+                element.value = "";
+            }
+
+        });
+
+        const box =
+            document.getElementById(
+                "purchaseAddSupplierBox"
+            );
+
+        if(box){
+            box.hidden = true;
+        }
+
+        alert(
+            "Supplier added successfully."
+        );
+
+    }catch(error){
+
+        console.error(
+            "CREATE SUPPLIER ERROR:",
+            error
+        );
+
+        alert(
+            error.message ||
+            "Unable to add supplier."
+        );
+
+    }
+
+}
+
+
+// ===========================================
+// ADD ITEM TO PURCHASE FORM
+// ===========================================
+
+function addPurchaseOrderItemFromForm(){
+
+    const productSelect =
+        document.getElementById(
+            "purchaseProductSelect"
+        );
+
+    const quantityInput =
+        document.getElementById(
+            "purchaseItemQuantity"
+        );
+
+    const unitCostInput =
+        document.getElementById(
+            "purchaseItemUnitCost"
+        );
+
+    if(
+        !productSelect ||
+        !quantityInput ||
+        !unitCostInput
+    ){
+        return;
+    }
+
+    const productId =
+        Number(productSelect.value);
+
+    const quantity =
+        Number(quantityInput.value);
+
+    const unitCost =
+        Number(unitCostInput.value);
+
+    if(
+        !Number.isInteger(productId) ||
+        productId <= 0
+    ){
+
+        alert("Select a product.");
+        return;
+
+    }
+
+    if(
+        !Number.isInteger(quantity) ||
+        quantity <= 0
+    ){
+
+        alert(
+            "Quantity must be at least 1."
+        );
+
+        return;
+
+    }
+
+    if(
+        !Number.isFinite(unitCost) ||
+        unitCost < 0
+    ){
+
+        alert(
+            "Enter a valid unit cost."
+        );
+
+        return;
+
+    }
+
+    const product =
+        adminPurchaseFormProducts.find(
+            function(item){
+                return Number(item.id) ===
+                    productId;
+            }
+        );
+
+    if(!product){
+
+        alert("Product not found.");
+        return;
+
+    }
+
+
+    const existingItem =
+        adminPurchaseFormItems.find(
+            function(item){
+                return (
+                    Number(item.productId) ===
+                        productId &&
+                    !item.variantId
+                );
+            }
+        );
+
+    if(existingItem){
+
+        existingItem.quantity += quantity;
+
+        existingItem.unitCost =
+            unitCost;
+
+    }else{
+
+        adminPurchaseFormItems.push({
+
+            productId: productId,
+
+            variantId: null,
+
+            productName:
+                product.product_name,
+
+            quantity: quantity,
+
+            unitCost: unitCost
+
+        });
+
+    }
+
+    productSelect.value = "";
+    quantityInput.value = "1";
+    unitCostInput.value = "";
+
+    renderAdminPurchaseFormItems();
+
+}
+
+
+// ===========================================
+// REMOVE PURCHASE FORM ITEM
+// ===========================================
+
+function removeAdminPurchaseFormItem(index){
+
+    if(
+        index < 0 ||
+        index >= adminPurchaseFormItems.length
+    ){
+        return;
+    }
+
+    adminPurchaseFormItems.splice(
+        index,
+        1
+    );
+
+    renderAdminPurchaseFormItems();
+
+}
+
+
+// ===========================================
+// RENDER PURCHASE FORM ITEMS
+// ===========================================
+
+function renderAdminPurchaseFormItems(){
+
+    const container =
+        document.getElementById(
+            "purchaseFormItemsContainer"
+        );
+
+    if(!container){
+        return;
+    }
+
+    container.innerHTML = "";
+
+    if(
+        adminPurchaseFormItems.length === 0
+    ){
+
+        container.innerHTML = `
+            <div class="admin-empty">
+                No items added yet.
+            </div>
+        `;
+
+        updatePurchaseFormTotals();
+
+        return;
+
+    }
+
+    adminPurchaseFormItems.forEach(
+        function(item, index){
+
+            const lineTotal =
+                Number(item.quantity) *
+                Number(item.unitCost);
+
+            const card =
+                document.createElement("div");
+
+            card.className =
+                "admin-purchase-item-card";
+
+            card.innerHTML = `
+
+                <div class="admin-purchase-item-card-top">
+
+                    <div>
+                        <strong>
+                            ${item.productName}
+                        </strong>
+
+                        <small>
+                            ${item.quantity}
+                            ×
+                            ₦${Number(
+                                item.unitCost
+                            ).toLocaleString()}
+                        </small>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="purchase-remove-item-btn"
+                        onclick="removeAdminPurchaseFormItem(${index})"
+                        aria-label="Remove item"
+                    >
+                        <i class="fas fa-trash"></i>
+                    </button>
+
+                </div>
+
+                <div class="admin-purchase-order-total">
+                    ₦${lineTotal.toLocaleString()}
+                </div>
+            `;
+
+            container.appendChild(card);
+
+        }
+    );
+
+    updatePurchaseFormTotals();
+
+}
+
+
+// ===========================================
+// UPDATE PURCHASE FORM TOTALS
+// ===========================================
+
+function updatePurchaseFormTotals(){
+
+    const subtotal =
+        adminPurchaseFormItems.reduce(
+            function(total, item){
+
+                return total +
+                    (
+                        Number(item.quantity) *
+                        Number(item.unitCost)
+                    );
+
+            },
+            0
+        );
+
+    const discount =
+        Math.max(
+            0,
+            Number(
+                document.getElementById(
+                    "purchaseDiscountAmount"
+                )?.value || 0
+            )
+        );
+
+    const additionalCost =
+        Math.max(
+            0,
+            Number(
+                document.getElementById(
+                    "purchaseAdditionalCost"
+                )?.value || 0
+            )
+        );
+
+    const total =
+        Math.max(
+            0,
+            subtotal -
+            discount +
+            additionalCost
+        );
+
+    const subtotalElement =
+        document.getElementById(
+            "purchaseFormSubtotal"
+        );
+
+    const totalElement =
+        document.getElementById(
+            "purchaseFormTotal"
+        );
+
+    if(subtotalElement){
+
+        subtotalElement.textContent =
+            "₦" +
+            subtotal.toLocaleString();
+
+    }
+
+    if(totalElement){
+
+        totalElement.textContent =
+            "₦" +
+            total.toLocaleString();
+
+    }
+
+}
+
+
+// ===========================================
+// SUBMIT PURCHASE ORDER
+// ===========================================
+
+async function submitAdminPurchaseOrder(){
+
+    const supplierId =
+        Number(
+            document.getElementById(
+                "purchaseSupplierSelect"
+            )?.value || 0
+        );
+
+    const discountAmount =
+        Math.max(
+            0,
+            Number(
+                document.getElementById(
+                    "purchaseDiscountAmount"
+                )?.value || 0
+            )
+        );
+
+    const additionalCost =
+        Math.max(
+            0,
+            Number(
+                document.getElementById(
+                    "purchaseAdditionalCost"
+                )?.value || 0
+            )
+        );
+
+    const expectedDate =
+        String(
+            document.getElementById(
+                "purchaseExpectedDate"
+            )?.value || ""
+        ).trim();
+
+    const notes =
+        String(
+            document.getElementById(
+                "purchaseNotes"
+            )?.value || ""
+        ).trim();
+
+
+    if(
+        !Number.isInteger(supplierId) ||
+        supplierId <= 0
+    ){
+
+        alert("Select a supplier.");
+        return;
+
+    }
+
+    if(
+        adminPurchaseFormItems.length === 0
+    ){
+
+        alert(
+            "Add at least one purchase item."
+        );
+
+        return;
+
+    }
+
+
+    const requestItems =
+        adminPurchaseFormItems.map(
+            function(item){
+
+                return {
+                    productId:
+                        item.productId,
+
+                    variantId:
+                        item.variantId,
+
+                    quantity:
+                        item.quantity,
+
+                    unitCost:
+                        item.unitCost
+                };
+
+            }
+        );
+
+
+    try{
+
+        const response =
+            await fetch(
+                API_BASE +
+                "/api/admin/purchase-orders",
+                {
+                    method: "POST",
+
+                    headers: {
+                        ...getAuthHeaders(),
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        supplierId:
+                            supplierId,
+
+                        items:
+                            requestItems,
+
+                        discountAmount:
+                            discountAmount,
+
+                        additionalCost:
+                            additionalCost,
+
+                        expectedDate:
+                            expectedDate || null,
+
+                        notes:
+                            notes
+
+                    })
+                }
+            );
+
+        const data =
+            await response.json();
+
+        if(
+            !response.ok ||
+            !data.success
+        ){
+
+            throw new Error(
+                data.message ||
+                "Unable to create purchase order."
+            );
+
+        }
+
+        const purchaseOrder =
+            data.purchaseOrder || {};
+
+        if(purchaseOrder.id){
+
+            localStorage.setItem(
+                "selectedPurchaseOrderId",
+                String(purchaseOrder.id)
+            );
+
+        }
+
+        adminPurchaseFormItems = [];
+
+        alert(
+            "Purchase order created successfully."
+        );
+
+        window.location.href =
+            purchaseOrder.id
+                ? "admin-purchase-order-details.html"
+                : "admin-purchase-orders.html";
+
+    }catch(error){
+
+        console.error(
+            "CREATE PURCHASE ORDER ERROR:",
+            error
+        );
+
+        alert(
+            error.message ||
+            "Unable to create purchase order."
+        );
+
+    }
+
+}
+
+
+// ===========================================
+// PURCHASE ORDER FORM PAGE STARTUP
+// ===========================================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        if(
+            window.location.pathname.endsWith(
+                "admin-purchase-order-form.html"
+            )
+        ){
+
+            adminPurchaseFormItems = [];
+
+            loadAdminPurchaseOrderForm();
+
+            renderAdminPurchaseFormItems();
+
+        }
+
+    }
+);
+
+// ===========================================
+// RECEIVE ADMIN PURCHASE ORDER STOCK
+// ===========================================
+
+async function receiveAdminPurchaseOrderStock(){
+
+    const orderId =
+        localStorage.getItem(
+            "selectedPurchaseOrderId"
+        );
+
+    if(!orderId){
+
+        alert(
+            "Purchase order was not found."
+        );
+
+        return;
+    }
+
+    const confirmed =
+        window.confirm(
+            "Confirm that all goods in this purchase order have arrived. Stock will be increased automatically."
+        );
+
+    if(!confirmed){
+        return;
+    }
+
+    const button =
+        document.getElementById(
+            "purchaseReceiveStockBtn"
+        );
+
+    if(button){
+
+        button.disabled = true;
+
+        button.innerHTML = `
+            <i class="fas fa-spinner fa-spin"></i>
+            Receiving...
+        `;
+    }
+
+    try{
+
+        const response =
+            await fetch(
+                API_BASE +
+                "/api/admin/purchase-orders/" +
+                encodeURIComponent(orderId) +
+                "/receive",
+                {
+                    method: "PUT",
+                    headers: getAuthHeaders()
+                }
+            );
+
+        const data =
+            await response.json();
+
+        if(
+            !response.ok ||
+            !data.success
+        ){
+
+            throw new Error(
+                data.message ||
+                "Unable to receive stock."
+            );
+        }
+
+        alert(
+            "Stock received and inventory updated successfully."
+        );
+
+        await loadAdminPurchaseOrderDetails();
+
+    }catch(error){
+
+        console.error(
+            "RECEIVE PURCHASE STOCK ERROR:",
+            error
+        );
+
+        alert(
+            error.message ||
+            "Unable to receive stock."
+        );
+
+        if(button){
+
+            button.disabled = false;
+
+            button.innerHTML = `
+                <i class="fas fa-boxes-packing"></i>
+                Receive Stock
+            `;
+        }
+    }
+
+}

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Purchase Orders | JGGL-STORE</title>
+
+    <link
+        rel="stylesheet"
+        href="style_v8.css?v=9"
+    >
+
+    <link
+        rel="stylesheet"
+        href="admin.css?v=admin-purchase-1"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    >
+
+</head>
+
+<body>
+
+<header class="top-header">
+
+    <button
+        type="button"
+        class="back-btn"
+        onclick="history.back()"
+    >
+        <i class="fas fa-arrow-left"></i>
+        <span>Back</span>
+    </button>
+
+    <h2>Purchase Orders</h2>
+
+</header>
+
+<main class="admin-orders-page">
+
+    <section class="admin-orders-summary purchase-orders-summary">
+
+        <div class="admin-summary-card">
+            <span id="purchaseDailyTotal">₦0</span>
+            <small>Daily</small>
+        </div>
+
+        <div class="admin-summary-card">
+            <span id="purchaseWeeklyTotal">₦0</span>
+            <small>Weekly</small>
+        </div>
+
+        <div class="admin-summary-card">
+            <span id="purchaseMonthlyTotal">₦0</span>
+            <small>Monthly</small>
+        </div>
+
+        <div class="admin-summary-card">
+            <span id="purchaseYearlyTotal">₦0</span>
+            <small>Yearly</small>
+        </div>
+
+    </section>
+
+    <section class="admin-orders-section">
+
+        <div class="admin-orders-heading">
+
+            <h3>
+                <i class="fas fa-cart-flatbed"></i>
+                Purchase Orders
+            </h3>
+
+            <button
+                type="button"
+                class="admin-refresh-btn"
+                onclick="loadAdminPurchaseOrders()"
+            >
+                <i class="fas fa-rotate"></i>
+                Refresh
+            </button>
+
+        </div>
+
+        <a
+            href="admin-purchase-order-form.html"
+            class="admin-purchase-new-btn"
+        >
+            <i class="fas fa-plus"></i>
+            New Purchase Order
+        </a>
+
+        <div id="adminPurchaseOrdersContainer">
+
+            <div class="admin-empty">
+                Loading purchase orders...
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+<script src="products-data.js"></script>
+<script src="script_v8.js?v=admin-purchase-1"></script>
+
+</body>
+</html>
