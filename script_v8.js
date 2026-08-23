@@ -5589,9 +5589,16 @@ async function loadAdminDashboard(){
         const startOfWeek =
             new Date(startOfToday);
 
+        // JGGL-STORE week: Monday to Sunday
+        const currentDay = startOfToday.getDay();
+        const daysSinceMonday =
+            currentDay === 0
+                ? 6
+                : currentDay - 1;
+
         startOfWeek.setDate(
             startOfToday.getDate() -
-            startOfToday.getDay()
+            daysSinceMonday
         );
 
         const startOfMonth =
