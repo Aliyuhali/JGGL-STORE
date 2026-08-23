@@ -1798,3 +1798,61 @@ body:has(.admin-global-bottom-nav){
     top:-3px;
     right:-3px;
 }
+
+
+/* JGGL ADMIN FINAL RESPONSIVE FIX 2026-08-23 */
+
+/* Sales amounts must stay on one line */
+#dashboardTotalSales,
+#dashboardDailySales,
+#dashboardWeeklySales,
+#dashboardMonthlySales,
+#dashboardYearlySales{
+    white-space:nowrap;
+    overflow-wrap:normal !important;
+    word-break:normal !important;
+    font-size:clamp(17px, 5.1vw, 23px);
+    line-height:1.15;
+}
+
+/* Customer details rows */
+.admin-customer-details-info p{
+    display:grid;
+    grid-template-columns:max-content minmax(0, 1fr);
+    align-items:start;
+    gap:10px;
+    min-width:0;
+}
+
+.admin-customer-details-info p strong{
+    min-width:0;
+}
+
+.admin-customer-details-info p span{
+    min-width:0;
+}
+
+.admin-customer-email{
+    display:block;
+    width:100%;
+    max-width:100%;
+    overflow-wrap:anywhere;
+    word-break:break-word;
+}
+
+/* Final green compact notification bell */
+.admin-general-bell{
+    width:32px !important;
+    height:32px !important;
+    right:12px !important;
+}
+
+.admin-general-bell-icon{
+    font-size:18px !important;
+    color:#0B7A3E !important;
+}
+
+.admin-general-bell-icon i{
+    font-size:18px !important;
+    color:#0B7A3E !important;
+}
