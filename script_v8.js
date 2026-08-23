@@ -8583,7 +8583,7 @@ function ensureAdminNotificationBell(){
             class="admin-general-bell-icon"
             aria-hidden="true"
         >
-            🔔
+            <i class="fas fa-bell"></i>
         </span>
 
         <span

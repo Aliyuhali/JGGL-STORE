@@ -1775,3 +1775,26 @@ body:has(.admin-global-bottom-nav){
         font-size:15px;
     }
 }
+
+/* FINAL ADMIN GENERAL BELL FIX */
+.admin-general-bell{
+    width:32px;
+    height:32px;
+    right:12px;
+}
+
+.admin-general-bell-icon{
+    font-size:18px;
+    line-height:1;
+    color:#0B7A3E;
+}
+
+.admin-general-bell-icon i{
+    color:#0B7A3E !important;
+    font-size:18px !important;
+}
+
+.admin-general-bell-badge{
+    top:-3px;
+    right:-3px;
+}
