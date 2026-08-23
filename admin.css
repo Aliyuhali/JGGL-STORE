@@ -1888,3 +1888,26 @@ body:has(.admin-global-bottom-nav){
         max-width:max-content;
     }
 }
+
+/* GENERAL ADMIN BELL — VISIBLE GREEN FINAL */
+.admin-general-bell{
+    width:32px !important;
+    height:32px !important;
+    right:12px !important;
+    background:#ffffff !important;
+    border-radius:50% !important;
+    box-shadow:0 1px 4px rgba(0,0,0,.18);
+}
+
+.admin-general-bell-icon,
+.admin-general-bell-icon i{
+    color:#0B7A3E !important;
+    font-size:17px !important;
+}
+
+.admin-general-bell-badge{
+    background:#dc3545 !important;
+    color:#ffffff !important;
+    top:-4px !important;
+    right:-4px !important;
+}
