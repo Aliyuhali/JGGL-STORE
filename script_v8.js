@@ -2294,7 +2294,7 @@ async function loadProductsFromBackend(){
 
     try{
 
-        const response = await fetch("/api/products");
+        const response = await fetch(`${API_BASE}/api/products`);
 
         if(!response.ok){
             throw new Error("Failed to load products.");
@@ -2371,11 +2371,7 @@ document.addEventListener("DOMContentLoaded", async function(){
 
     }else{
 
-        if(typeof PRODUCT_GROUPS !== "undefined"){
-            loadProducts(PRODUCT_GROUPS);
-        }else{
-            loadProducts(PRODUCTS);
-        }
+        loadProducts(PRODUCTS);
 
     }
 
