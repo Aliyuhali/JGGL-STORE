@@ -62,3 +62,14 @@ test-qr.html
 index_tmp.txt
 new_index.html
 *.before-jwt-frontend
+
+# Local CFR working backups
+*.before-*
+*.before-*
+
+# Accidental Termux command fragments
+backend/100
+backend/20
+backend/450g
+backend/^C
+backend/carton
