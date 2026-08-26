@@ -1990,17 +1990,20 @@ function createProductCard(product){
              onclick="${clickAction}">
 
             <img
-                src="${product.image}"
+                src="${
+                    !isProductTypesPage &&
+                    String(product.group || product.name || "")
+                        .trim()
+                        .toLowerCase() === "semo"
+                        ? "images/groups/semo.webp"
+                        : product.image
+                }"
                 alt="${displayName}"
                 loading="lazy">
 
             <div class="product-info">
 
                 <h3>${displayName}</h3>
-
-                <p class="product-price">
-                    ₦${Number(product.price).toLocaleString()}
-                </p>
 
             </div>
 
@@ -2409,7 +2412,7 @@ function openProductDetails(productId){
     );
 
     window.location.href =
-        "product-details.html?v=38";
+        "product-details.html?v=variant-images-prices-1";
 
 }
 
@@ -7775,6 +7778,283 @@ document.addEventListener(
 
 
 // ===========================================
+// ADMIN PRODUCT VARIANTS EDITOR
+// ===========================================
+
+function renderAdminProductVariants(variants){
+
+    const container =
+        document.getElementById(
+            "adminProductVariantsContainer"
+        );
+
+    if(!container){
+        return;
+    }
+
+    if(
+        !Array.isArray(variants) ||
+        variants.length === 0
+    ){
+
+        container.innerHTML = `
+            <div class="admin-variant-empty">
+                This product has no variants.
+            </div>
+        `;
+
+        return;
+    }
+
+    container.innerHTML = "";
+
+    variants.forEach(function(variant, index){
+
+        const card =
+            document.createElement("div");
+
+        card.className =
+            "admin-product-variant-card";
+
+        card.dataset.variantId =
+            String(variant.id || "");
+
+        card.innerHTML = `
+            <div class="admin-variant-card-header">
+
+                <strong>
+                    Variant ${index + 1}
+                </strong>
+
+                <span class="admin-variant-stock-badge">
+                    Qty: ${Number(variant.stock_quantity || 0)}
+                </span>
+
+            </div>
+
+            <div class="admin-form-group">
+
+                <label>
+                    Variant Name
+                </label>
+
+                <input
+                    type="text"
+                    class="adminVariantName"
+                    value="${escapeAdminVariantValue(
+                        variant.variant_name || ""
+                    )}"
+                    placeholder="Example: 500g"
+                >
+
+            </div>
+
+            <div class="admin-form-group">
+
+                <label>
+                    SKU
+                </label>
+
+                <input
+                    type="text"
+                    class="adminVariantSku"
+                    value="${escapeAdminVariantValue(
+                        variant.sku || ""
+                    )}"
+                    placeholder="Variant SKU"
+                >
+
+            </div>
+
+            <div class="admin-variant-price-grid">
+
+                <div class="admin-form-group">
+
+                    <label>
+                        Retail Price
+                    </label>
+
+                    <input
+                        type="number"
+                        class="adminVariantRetailPrice"
+                        min="0"
+                        step="0.01"
+                        value="${Number(
+                            variant.retail_price || 0
+                        )}"
+                    >
+
+                </div>
+
+                <div class="admin-form-group">
+
+                    <label>
+                        Wholesale Price
+                    </label>
+
+                    <input
+                        type="number"
+                        class="adminVariantWholesalePrice"
+                        min="0"
+                        step="0.01"
+                        value="${Number(
+                            variant.wholesale_price || 0
+                        )}"
+                    >
+
+                </div>
+
+                <div class="admin-form-group">
+
+                    <label>
+                        Bulk Price
+                    </label>
+
+                    <input
+                        type="number"
+                        class="adminVariantBulkPrice"
+                        min="0"
+                        step="0.01"
+                        value="${Number(
+                            variant.bulk_price || 0
+                        )}"
+                    >
+
+                </div>
+
+            </div>
+
+            <div class="admin-form-group">
+
+                <label>
+                    Stock Quantity
+                </label>
+
+                <input
+                    type="number"
+                    class="adminVariantStock"
+                    min="0"
+                    step="1"
+                    value="${Number(
+                        variant.stock_quantity || 0
+                    )}"
+                >
+
+            </div>
+
+            <div class="admin-form-group">
+
+                <label>
+                    Image Path
+                </label>
+
+                <input
+                    type="text"
+                    class="adminVariantImage"
+                    value="${escapeAdminVariantValue(
+                        variant.image_url || ""
+                    )}"
+                    placeholder="Example: images/product-500g.jpg"
+                >
+
+            </div>
+        `;
+
+        container.appendChild(card);
+
+    });
+
+}
+
+
+function escapeAdminVariantValue(value){
+
+    return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/"/g, "&quot;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+
+}
+
+
+function collectAdminProductVariants(){
+
+    const cards =
+        document.querySelectorAll(
+            ".admin-product-variant-card"
+        );
+
+    return Array.from(cards).map(function(card){
+
+        return {
+
+            id:
+                Number(
+                    card.dataset.variantId || 0
+                ),
+
+            variantName:
+                card.querySelector(
+                    ".adminVariantName"
+                ).value.trim(),
+
+            sku:
+                card.querySelector(
+                    ".adminVariantSku"
+                ).value.trim(),
+
+            retailPrice:
+                Number(
+                    card.querySelector(
+                        ".adminVariantRetailPrice"
+                    ).value || 0
+                ),
+
+            wholesalePrice:
+                Number(
+                    card.querySelector(
+                        ".adminVariantWholesalePrice"
+                    ).value || 0
+                ),
+
+            bulkPrice:
+                Number(
+                    card.querySelector(
+                        ".adminVariantBulkPrice"
+                    ).value || 0
+                ),
+
+            stock:
+                Math.max(
+                    0,
+                    Number(
+                        card.querySelector(
+                            ".adminVariantStock"
+                        ).value || 0
+                    )
+                ),
+
+            image:
+                card.querySelector(
+                    ".adminVariantImage"
+                ).value.trim()
+
+        };
+
+    }).filter(function(variant){
+
+        return (
+            Number.isInteger(variant.id) &&
+            variant.id > 0
+        );
+
+    });
+
+}
+
+
+// ===========================================
 // LOAD ADMIN PRODUCT FORM
 // ===========================================
 
@@ -7804,6 +8084,20 @@ async function loadAdminProductForm(){
         if(title){
             title.textContent =
                 "Add Product";
+        }
+
+        const variantsContainer =
+            document.getElementById(
+                "adminProductVariantsContainer"
+            );
+
+        if(variantsContainer){
+            variantsContainer.innerHTML = `
+                <div class="admin-variant-empty">
+                    Save the product first.
+                    Variants can then be edited here.
+                </div>
+            `;
         }
 
         return;
@@ -7915,6 +8209,10 @@ async function loadAdminProductForm(){
         ).value =
             product.description ||
             "";
+
+        renderAdminProductVariants(
+            data.variants || []
+        );
 
     }catch(error){
 
@@ -8082,13 +8380,63 @@ async function saveAdminProduct(event){
             return;
         }
 
+        if(isEdit){
+
+            const variants =
+                collectAdminProductVariants();
+
+            if(variants.length > 0){
+
+                const variantsResponse =
+                    await fetch(
+                        API_BASE +
+                        "/api/admin/products/" +
+                        encodeURIComponent(
+                            selectedProductId
+                        ) +
+                        "/variants",
+                        {
+                            method: "PUT",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify({
+                                    variants: variants
+                                })
+                        }
+                    );
+
+                const variantsData =
+                    await variantsResponse.json();
+
+                if(
+                    !variantsResponse.ok ||
+                    !variantsData.success
+                ){
+
+                    alert(
+                        variantsData.message ||
+                        "Product saved, but variants could not be updated."
+                    );
+
+                    return;
+                }
+
+            }
+
+        }
+
         localStorage.removeItem(
             "selectedAdminProductId"
         );
 
         alert(
             isEdit
-                ? "Product updated successfully."
+                ? "Product and variants updated successfully."
                 : "Product added successfully."
         );
 

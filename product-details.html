@@ -1116,45 +1116,11 @@ function applySelectedProductVariant(
 
     updateCurrentProductAvailability();
 
-    selectedPurchasePrice =
-        Number(variantPrice);
-
-    minimumPurchaseQuantity =
-        purchaseType === "wholesale"
-            ? (
-                variant.wholesaleMinQty ||
-                product.wholesaleMinQty ||
-                5
-            )
-            : purchaseType === "bulk"
-                ? (
-                    variant.bulkMinQty ||
-                    product.bulkMinQty ||
-                    20
-                )
-                : 1;
-
-    const selectedPrice =
-        document.getElementById(
-            "selectedPurchasePrice"
-        );
-
-    const minimumQuantity =
-        document.getElementById(
-            "minimumPurchaseQuantity"
-        );
-
-    if(selectedPrice){
-        selectedPrice.textContent =
-            "₦" +
-            Number(selectedPurchasePrice)
-                .toLocaleString();
-    }
-
-    if(minimumQuantity){
-        minimumQuantity.textContent =
-            minimumPurchaseQuantity;
-    }
+    // Re-apply the currently selected purchase type
+    // so Retail / Wholesale / Bulk follows this variant.
+    selectPurchaseType(
+        purchaseType || "retail"
+    );
 
 }
 
@@ -1520,32 +1486,56 @@ function selectPurchaseType(type){
 
     });
 
+    const activeVariant =
+        selectedProductVariant || null;
+
     if(type === "wholesale"){
 
         selectedPurchasePrice =
-            currentProduct.wholesalePrice ||
-            currentProduct.retailPrice ||
-            currentProduct.price;
+            (
+                activeVariant &&
+                activeVariant.wholesalePrice !== undefined
+            )
+                ? activeVariant.wholesalePrice
+                : (
+                    currentProduct.wholesalePrice ||
+                    currentProduct.retailPrice ||
+                    currentProduct.price
+                );
 
         minimumPurchaseQuantity =
-            currentProduct.wholesaleMinQty || 5;
+            currentProduct.wholesaleMinQty || 1;
 
     }else if(type === "bulk"){
 
         selectedPurchasePrice =
-            currentProduct.bulkPrice ||
-            currentProduct.wholesalePrice ||
-            currentProduct.retailPrice ||
-            currentProduct.price;
+            (
+                activeVariant &&
+                activeVariant.bulkPrice !== undefined
+            )
+                ? activeVariant.bulkPrice
+                : (
+                    currentProduct.bulkPrice ||
+                    currentProduct.wholesalePrice ||
+                    currentProduct.retailPrice ||
+                    currentProduct.price
+                );
 
         minimumPurchaseQuantity =
-            currentProduct.bulkMinQty || 20;
+            currentProduct.bulkMinQty || 1;
 
     }else{
 
         selectedPurchasePrice =
-            currentProduct.retailPrice ||
-            currentProduct.price;
+            (
+                activeVariant &&
+                activeVariant.retailPrice !== undefined
+            )
+                ? activeVariant.retailPrice
+                : (
+                    currentProduct.retailPrice ||
+                    currentProduct.price
+                );
 
         minimumPurchaseQuantity = 1;
 
