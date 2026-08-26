@@ -7827,7 +7827,11 @@ function renderAdminProductVariants(variants){
                 </strong>
 
                 <span class="admin-variant-stock-badge">
-                    Qty: ${Number(variant.stock_quantity || 0)}
+                    R: ${Number(variant.retail_quantity || 0)}
+                    |
+                    W: ${Number(variant.wholesale_quantity || 0)}
+                    |
+                    B: ${Number(variant.bulk_quantity || 0)}
                 </span>
 
             </div>
@@ -7924,21 +7928,55 @@ function renderAdminProductVariants(variants){
 
             </div>
 
-            <div class="admin-form-group">
+            <div class="admin-form-price-grid">
 
-                <label>
-                    Stock Quantity
-                </label>
+                <div class="admin-form-group">
+                    <label>
+                        Retail Quantity
+                    </label>
 
-                <input
-                    type="number"
-                    class="adminVariantStock"
-                    min="0"
-                    step="1"
-                    value="${Number(
-                        variant.stock_quantity || 0
-                    )}"
-                >
+                    <input
+                        type="number"
+                        class="adminVariantRetailQuantity"
+                        min="0"
+                        step="1"
+                        value="${Number(
+                            variant.retail_quantity || 0
+                        )}"
+                    >
+                </div>
+
+                <div class="admin-form-group">
+                    <label>
+                        Wholesale Quantity
+                    </label>
+
+                    <input
+                        type="number"
+                        class="adminVariantWholesaleQuantity"
+                        min="0"
+                        step="1"
+                        value="${Number(
+                            variant.wholesale_quantity || 0
+                        )}"
+                    >
+                </div>
+
+                <div class="admin-form-group">
+                    <label>
+                        Bulk Quantity
+                    </label>
+
+                    <input
+                        type="number"
+                        class="adminVariantBulkQuantity"
+                        min="0"
+                        step="1"
+                        value="${Number(
+                            variant.bulk_quantity || 0
+                        )}"
+                    >
+                </div>
 
             </div>
 
@@ -8025,12 +8063,32 @@ function collectAdminProductVariants(){
                     ).value || 0
                 ),
 
-            stock:
+            retailQuantity:
                 Math.max(
                     0,
                     Number(
                         card.querySelector(
-                            ".adminVariantStock"
+                            ".adminVariantRetailQuantity"
+                        ).value || 0
+                    )
+                ),
+
+            wholesaleQuantity:
+                Math.max(
+                    0,
+                    Number(
+                        card.querySelector(
+                            ".adminVariantWholesaleQuantity"
+                        ).value || 0
+                    )
+                ),
+
+            bulkQuantity:
+                Math.max(
+                    0,
+                    Number(
+                        card.querySelector(
+                            ".adminVariantBulkQuantity"
                         ).value || 0
                     )
                 ),

@@ -565,6 +565,9 @@ app.get("/api/products/:id", async function(req, res){
                     wholesale_price,
                     bulk_price,
                     stock_quantity,
+                    retail_quantity,
+                    wholesale_quantity,
+                    bulk_quantity,
                     image_url,
                     specifications,
                     is_active
@@ -731,6 +734,9 @@ app.get("/api/admin/products/:id", async function(req, res){
                     wholesale_price,
                     bulk_price,
                     stock_quantity,
+                    retail_quantity,
+                    wholesale_quantity,
+                    bulk_quantity,
                     image_url,
                     is_active
                 FROM product_variants
@@ -1151,11 +1157,41 @@ app.put(
                     continue;
                 }
 
-                const stockQuantity =
+                const retailQuantity =
                     Math.max(
                         0,
-                        Number(variant.stock || 0)
+                        Number(
+                            variant.retailQuantity ??
+                            variant.retail_quantity ??
+                            variant.stock ??
+                            0
+                        )
                     );
+
+                const wholesaleQuantity =
+                    Math.max(
+                        0,
+                        Number(
+                            variant.wholesaleQuantity ??
+                            variant.wholesale_quantity ??
+                            0
+                        )
+                    );
+
+                const bulkQuantity =
+                    Math.max(
+                        0,
+                        Number(
+                            variant.bulkQuantity ??
+                            variant.bulk_quantity ??
+                            0
+                        )
+                    );
+
+                const stockQuantity =
+                    retailQuantity +
+                    wholesaleQuantity +
+                    bulkQuantity;
 
                 const result =
                     await client.query(
@@ -1167,11 +1203,14 @@ app.put(
                             retail_price = $3,
                             wholesale_price = $4,
                             bulk_price = $5,
-                            stock_quantity = $6,
-                            image_url = $7
+                            retail_quantity = $6,
+                            wholesale_quantity = $7,
+                            bulk_quantity = $8,
+                            stock_quantity = $9,
+                            image_url = $10
                         WHERE
-                            id = $8
-                            AND product_id = $9
+                            id = $11
+                            AND product_id = $12
                         RETURNING
                             id,
                             product_id,
@@ -1181,6 +1220,9 @@ app.put(
                             wholesale_price,
                             bulk_price,
                             stock_quantity,
+                            retail_quantity,
+                            wholesale_quantity,
+                            bulk_quantity,
                             image_url,
                             is_active
                         `,
@@ -1207,6 +1249,9 @@ app.put(
                                 variant.bulkPrice || 0
                             ),
 
+                            retailQuantity,
+                            wholesaleQuantity,
+                            bulkQuantity,
                             stockQuantity,
 
                             variant.image
@@ -1241,7 +1286,11 @@ app.put(
                     `
                     SELECT
                         COALESCE(
-                            SUM(stock_quantity),
+                            SUM(
+                                retail_quantity +
+                                wholesale_quantity +
+                                bulk_quantity
+                            ),
                             0
                         )::int AS total_stock
                     FROM product_variants
@@ -4842,6 +4891,9 @@ console.log("STEP 1: BEGIN OK");
                             wholesale_price,
                             bulk_price,
                             stock_quantity,
+                            retail_quantity,
+                            wholesale_quantity,
+                            bulk_quantity,
                             is_active
                         FROM product_variants
                         WHERE
@@ -4887,8 +4939,12 @@ console.log("STEP 1: BEGIN OK");
                     Math.max(
                         0,
                         Number(
-                            selectedVariant.stock_quantity || 0
-                        )
+                            purchaseType === "wholesale"
+                                ? selectedVariant.wholesale_quantity
+                                : purchaseType === "bulk"
+                                    ? selectedVariant.bulk_quantity
+                                    : selectedVariant.retail_quantity
+                        ) || 0
                     );
 
                 if(variantStock <= 0){
@@ -5075,15 +5131,38 @@ console.log("STEP 2: ORDER INSERTED");
                     `
                     UPDATE product_variants
                     SET
+                        retail_quantity =
+                            CASE
+                                WHEN $3 = 'retail'
+                                    THEN GREATEST(retail_quantity - $1, 0)
+                                ELSE retail_quantity
+                            END,
+
+                        wholesale_quantity =
+                            CASE
+                                WHEN $3 = 'wholesale'
+                                    THEN GREATEST(wholesale_quantity - $1, 0)
+                                ELSE wholesale_quantity
+                            END,
+
+                        bulk_quantity =
+                            CASE
+                                WHEN $3 = 'bulk'
+                                    THEN GREATEST(bulk_quantity - $1, 0)
+                                ELSE bulk_quantity
+                            END,
+
                         stock_quantity =
-                            stock_quantity - $1,
+                            GREATEST(stock_quantity - $1, 0),
+
                         updated_at =
                             CURRENT_TIMESTAMP
                     WHERE id = $2
                     `,
                     [
                         item.quantity,
-                        item.variantId
+                        item.variantId,
+                        item.purchaseType
                     ]
                 );
 
