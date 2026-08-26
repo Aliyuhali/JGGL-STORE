@@ -2130,3 +2130,74 @@ body:has(.admin-global-bottom-nav){
 #purchaseReceiveStockSection[hidden]{
     display:none;
 }
+
+
+/* ==========================================
+   ADMIN PRODUCT VARIANTS EDITOR
+========================================== */
+
+.admin-product-variants-container{
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.admin-product-variant-card{
+    border: 1px solid #d9e4dc;
+    border-radius: 12px;
+    padding: 14px;
+    background: #fff;
+}
+
+.admin-variant-card-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.admin-variant-card-header strong{
+    font-size: 15px;
+}
+
+.admin-variant-stock-badge{
+    background: #eef7f1;
+    color: #0B7A3E;
+    border-radius: 20px;
+    padding: 5px 9px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.admin-variant-help{
+    margin: 0 0 14px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #666;
+}
+
+.admin-variant-empty{
+    text-align: center;
+    border: 1px dashed #cbd8cf;
+    border-radius: 10px;
+    padding: 18px 12px;
+    color: #777;
+    font-size: 13px;
+}
+
+.admin-variant-price-grid{
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+}
+
+@media (min-width: 700px){
+
+    .admin-variant-price-grid{
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+}

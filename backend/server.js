@@ -1072,6 +1072,261 @@ app.put("/api/admin/products/:id", async function(req, res){
 
 
 
+
+// ===========================================
+// UPDATE ADMIN PRODUCT VARIANTS
+// ===========================================
+
+app.put(
+    "/api/admin/products/:id/variants",
+    async function(req, res){
+
+        const client =
+            await pool.connect();
+
+        try{
+
+            const productId =
+                String(req.params.id);
+
+            const variants =
+                Array.isArray(req.body.variants)
+                    ? req.body.variants
+                    : [];
+
+            if(variants.length === 0){
+
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        "No product variants were provided."
+                });
+
+            }
+
+            await client.query("BEGIN");
+
+            const productResult =
+                await client.query(
+                    `
+                    SELECT
+                        id,
+                        frontend_id
+                    FROM products
+                    WHERE
+                        id::text = $1
+                        OR frontend_id::text = $1
+                    LIMIT 1
+                    FOR UPDATE
+                    `,
+                    [productId]
+                );
+
+            if(productResult.rows.length === 0){
+
+                await client.query("ROLLBACK");
+
+                return res.status(404).json({
+                    success: false,
+                    message:
+                        "Product not found."
+                });
+
+            }
+
+            const realProductId =
+                productResult.rows[0].id;
+
+            const updatedVariants = [];
+
+            for(const variant of variants){
+
+                const variantId =
+                    Number(variant.id);
+
+                if(
+                    !Number.isInteger(variantId) ||
+                    variantId <= 0
+                ){
+                    continue;
+                }
+
+                const stockQuantity =
+                    Math.max(
+                        0,
+                        Number(variant.stock || 0)
+                    );
+
+                const result =
+                    await client.query(
+                        `
+                        UPDATE product_variants
+                        SET
+                            variant_name = $1,
+                            sku = $2,
+                            retail_price = $3,
+                            wholesale_price = $4,
+                            bulk_price = $5,
+                            stock_quantity = $6,
+                            image_url = $7
+                        WHERE
+                            id = $8
+                            AND product_id = $9
+                        RETURNING
+                            id,
+                            product_id,
+                            variant_name,
+                            sku,
+                            retail_price,
+                            wholesale_price,
+                            bulk_price,
+                            stock_quantity,
+                            image_url,
+                            is_active
+                        `,
+                        [
+                            String(
+                                variant.variantName || ""
+                            ).trim(),
+
+                            variant.sku
+                                ? String(
+                                    variant.sku
+                                ).trim()
+                                : null,
+
+                            Number(
+                                variant.retailPrice || 0
+                            ),
+
+                            Number(
+                                variant.wholesalePrice || 0
+                            ),
+
+                            Number(
+                                variant.bulkPrice || 0
+                            ),
+
+                            stockQuantity,
+
+                            variant.image
+                                ? String(
+                                    variant.image
+                                ).trim()
+                                : null,
+
+                            variantId,
+                            realProductId
+                        ]
+                    );
+
+                if(result.rows.length === 0){
+
+                    throw new Error(
+                        "Variant " +
+                        variantId +
+                        " does not belong to this product."
+                    );
+
+                }
+
+                updatedVariants.push(
+                    result.rows[0]
+                );
+
+            }
+
+            const stockResult =
+                await client.query(
+                    `
+                    SELECT
+                        COALESCE(
+                            SUM(stock_quantity),
+                            0
+                        )::int AS total_stock
+                    FROM product_variants
+                    WHERE
+                        product_id = $1
+                        AND is_active = TRUE
+                    `,
+                    [realProductId]
+                );
+
+            const totalStock =
+                Number(
+                    stockResult.rows[0]
+                        .total_stock || 0
+                );
+
+            await client.query(
+                `
+                UPDATE products
+                SET
+                    stock_quantity = $1,
+                    stock_status =
+                        CASE
+                            WHEN $1 <= 0
+                                THEN 'Out of Stock'
+
+                            WHEN
+                                reorder_level > 0
+                                AND $1 <= reorder_level
+                                THEN 'Low Stock'
+
+                            ELSE 'In Stock'
+                        END,
+                    updated_at =
+                        CURRENT_TIMESTAMP
+                WHERE id = $2
+                `,
+                [
+                    totalStock,
+                    realProductId
+                ]
+            );
+
+            await client.query("COMMIT");
+
+            return res.status(200).json({
+                success: true,
+                message:
+                    "Product variants updated successfully.",
+                totalStock: totalStock,
+                variants: updatedVariants
+            });
+
+        }catch(error){
+
+            try{
+                await client.query("ROLLBACK");
+            }catch(rollbackError){
+                console.error(
+                    "Variant rollback error:",
+                    rollbackError
+                );
+            }
+
+            console.error(
+                "Unable to update product variants:",
+                error
+            );
+
+            return res.status(500).json({
+                success: false,
+                message:
+                    "Unable to update product variants."
+            });
+
+        }finally{
+
+            client.release();
+
+        }
+
+    }
+);
+
+
 // ===========================================
 // DELETE ADMIN PRODUCT
 // ===========================================
