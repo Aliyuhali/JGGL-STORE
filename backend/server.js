@@ -5499,6 +5499,180 @@ app.post("/api/admin/suppliers", async function(req, res){
 // ADMIN PURCHASE ORDERS
 // ===========================================
 
+
+// ===========================================
+// ADMIN PURCHASE ANALYTICS
+// ===========================================
+
+app.get("/api/admin/purchase-analytics", async function(req, res){
+
+    try{
+
+        const receivedOrdersResult =
+            await pool.query(
+                `
+                SELECT
+                    id,
+                    purchase_order_number,
+                    total_cost,
+                    order_date,
+                    received_at,
+                    created_at
+                FROM purchase_orders
+                WHERE LOWER(
+                    COALESCE(status, '')
+                ) = 'received'
+                ORDER BY
+                    COALESCE(
+                        received_at,
+                        order_date,
+                        created_at
+                    ) DESC,
+                    id DESC
+                `
+            );
+
+        const topPurchasedResult =
+            await pool.query(
+                `
+                SELECT
+                    poi.product_id,
+                    poi.variant_id,
+                    poi.product_name,
+                    COALESCE(
+                        NULLIF(
+                            BTRIM(poi.variant_name),
+                            ''
+                        ),
+                        ''
+                    ) AS variant_name,
+
+                    SUM(
+                        COALESCE(
+                            poi.received_quantity,
+                            poi.quantity,
+                            0
+                        )
+                    ) AS quantity_purchased,
+
+                    SUM(
+                        COALESCE(
+                            poi.received_quantity,
+                            poi.quantity,
+                            0
+                        )
+                        *
+                        COALESCE(
+                            poi.unit_cost,
+                            0
+                        )
+                    ) AS purchase_value
+
+                FROM purchase_order_items poi
+
+                INNER JOIN purchase_orders po
+                    ON po.id = poi.purchase_order_id
+
+                WHERE LOWER(
+                    COALESCE(po.status, '')
+                ) = 'received'
+
+                GROUP BY
+                    poi.product_id,
+                    poi.variant_id,
+                    poi.product_name,
+                    COALESCE(
+                        NULLIF(
+                            BTRIM(poi.variant_name),
+                            ''
+                        ),
+                        ''
+                    )
+
+                ORDER BY
+                    quantity_purchased DESC,
+                    purchase_value DESC,
+                    poi.product_name ASC
+
+                LIMIT 5
+                `
+            );
+
+        return res.json({
+            success: true,
+
+            receivedPurchaseOrders:
+                receivedOrdersResult.rows.map(function(order){
+
+                    return {
+                        id:
+                            order.id,
+
+                        purchaseOrderNumber:
+                            order.purchase_order_number,
+
+                        totalCost:
+                            Number(
+                                order.total_cost || 0
+                            ),
+
+                        orderDate:
+                            order.order_date,
+
+                        receivedAt:
+                            order.received_at,
+
+                        createdAt:
+                            order.created_at
+                    };
+                }),
+
+            topPurchasedProducts:
+                topPurchasedResult.rows.map(function(item){
+
+                    return {
+                        productId:
+                            item.product_id,
+
+                        variantId:
+                            item.variant_id,
+
+                        productName:
+                            item.product_name,
+
+                        variantName:
+                            item.variant_name || "",
+
+                        quantityPurchased:
+                            Number(
+                                item.quantity_purchased || 0
+                            ),
+
+                        purchaseValue:
+                            Number(
+                                item.purchase_value || 0
+                            )
+                    };
+                })
+        });
+
+    }catch(error){
+
+        console.error(
+            "GET ADMIN PURCHASE ANALYTICS ERROR:",
+            error
+        );
+
+        return res.status(500).json({
+            success: false,
+            message:
+                "Unable to load purchase analytics."
+        });
+    }
+
+});
+
+
 app.get("/api/admin/purchase-orders", async function(req, res){
 
     try{

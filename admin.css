@@ -2201,3 +2201,43 @@ body:has(.admin-global-bottom-nav){
     }
 
 }
+
+
+/* ==========================================
+   ADMIN PURCHASE ANALYTICS
+========================================== */
+
+#analyticsTopPurchasedProducts{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+}
+
+.admin-top-purchase-value{
+    text-align:right;
+    flex-shrink:0;
+}
+
+.admin-top-purchase-value small{
+    display:block;
+    color:#777;
+    font-size:12px;
+    margin-bottom:4px;
+}
+
+.admin-top-purchase-value strong{
+    color:#0B7A3E;
+    font-size:16px;
+}
+
+@media(max-width:600px){
+
+    .admin-top-product-card{
+        gap:12px;
+    }
+
+    .admin-top-purchase-value{
+        min-width:90px;
+    }
+
+}

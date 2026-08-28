@@ -18,7 +18,7 @@
 
     <link
         rel="stylesheet"
-        href="admin.css?v=admin-nav-1"
+        href="admin.css?v=purchase-analytics-20260828-1"
     >
 
     <link
@@ -199,10 +199,92 @@
 
         </section>
 
+
+        <!-- ===========================================
+             PURCHASE ANALYSIS
+        ============================================ -->
+
+        <section class="admin-analytics-section">
+
+            <h2>Purchase Analysis</h2>
+
+            <div class="admin-analytics-grid">
+
+                <article class="admin-analytics-card">
+                    <div class="admin-analytics-icon">
+                        <i class="fas fa-calendar-day"></i>
+                    </div>
+
+                    <div>
+                        <span>Daily Purchases</span>
+                        <h3 id="analyticsDailyPurchases">
+                            ₦0
+                        </h3>
+                    </div>
+                </article>
+
+                <article class="admin-analytics-card">
+                    <div class="admin-analytics-icon">
+                        <i class="fas fa-calendar-week"></i>
+                    </div>
+
+                    <div>
+                        <span>Weekly Purchases</span>
+                        <h3 id="analyticsWeeklyPurchases">
+                            ₦0
+                        </h3>
+                    </div>
+                </article>
+
+                <article class="admin-analytics-card">
+                    <div class="admin-analytics-icon">
+                        <i class="fas fa-calendar-days"></i>
+                    </div>
+
+                    <div>
+                        <span>Monthly Purchases</span>
+                        <h3 id="analyticsMonthlyPurchases">
+                            ₦0
+                        </h3>
+                    </div>
+                </article>
+
+                <article class="admin-analytics-card">
+                    <div class="admin-analytics-icon">
+                        <i class="fas fa-chart-column"></i>
+                    </div>
+
+                    <div>
+                        <span>Yearly Purchases</span>
+                        <h3 id="analyticsYearlyPurchases">
+                            ₦0
+                        </h3>
+                    </div>
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <section class="admin-analytics-section">
+
+            <h2>Top Purchased Products</h2>
+
+            <div id="analyticsTopPurchasedProducts">
+
+                <p class="admin-empty-message">
+                    No purchase data yet.
+                </p>
+
+            </div>
+
+        </section>
+
     </main>
 
     <script src="products-data.js"></script>
-    <script src="script_v8.js?v=admin-ui-20260823-1"></script>
+    <script src="script_v8.js?v=purchase-analytics-20260828-2"></script>
 
 </body>
 

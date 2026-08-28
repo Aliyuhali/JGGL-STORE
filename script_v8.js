@@ -7458,6 +7458,63 @@ async function loadAdminAnalytics(){
                 ? customersData.customers
                 : [];
 
+
+        // ===========================================
+        // PURCHASE ANALYTICS DATA
+        // ===========================================
+
+        let receivedPurchaseOrders = [];
+        let topPurchasedProducts = [];
+
+        try{
+
+            const purchaseResponse =
+                await fetch(
+                    API_BASE +
+                    "/api/admin/purchase-analytics"
+                );
+
+            const purchaseData =
+                await purchaseResponse.json();
+
+            if(
+                purchaseResponse.ok &&
+                purchaseData.success
+            ){
+
+                receivedPurchaseOrders =
+                    Array.isArray(
+                        purchaseData.receivedPurchaseOrders
+                    )
+                        ? purchaseData.receivedPurchaseOrders
+                        : [];
+
+                topPurchasedProducts =
+                    Array.isArray(
+                        purchaseData.topPurchasedProducts
+                    )
+                        ? purchaseData.topPurchasedProducts
+                        : [];
+
+            }else{
+
+                console.warn(
+                    "PURCHASE ANALYTICS:",
+                    purchaseData.message ||
+                    "Unable to load purchase analytics."
+                );
+
+            }
+
+        }catch(purchaseError){
+
+            console.error(
+                "LOAD PURCHASE ANALYTICS ERROR:",
+                purchaseError
+            );
+
+        }
+
         const totalOrders =
             orders.length;
 
@@ -7740,6 +7797,297 @@ async function loadAdminAnalytics(){
             }
 
         }
+
+
+        // ===========================================
+        // PURCHASE TOTALS
+        // ===========================================
+
+        const purchaseNow =
+            new Date();
+
+        const purchaseStartOfToday =
+            new Date(
+                purchaseNow.getFullYear(),
+                purchaseNow.getMonth(),
+                purchaseNow.getDate()
+            );
+
+        const purchaseStartOfWeek =
+            new Date(
+                purchaseStartOfToday
+            );
+
+        purchaseStartOfWeek.setDate(
+            purchaseStartOfToday.getDate() -
+            purchaseStartOfToday.getDay()
+        );
+
+        const purchaseStartOfMonth =
+            new Date(
+                purchaseNow.getFullYear(),
+                purchaseNow.getMonth(),
+                1
+            );
+
+        const purchaseStartOfYear =
+            new Date(
+                purchaseNow.getFullYear(),
+                0,
+                1
+            );
+
+
+        function calculatePurchaseTotalFrom(
+            startDate
+        ){
+
+            return receivedPurchaseOrders
+                .reduce(function(sum, order){
+
+                    const rawDate =
+                        order.receivedAt ||
+                        order.orderDate ||
+                        order.createdAt;
+
+                    if(!rawDate){
+                        return sum;
+                    }
+
+                    const purchaseDate =
+                        new Date(rawDate);
+
+                    if(
+                        Number.isNaN(
+                            purchaseDate.getTime()
+                        ) ||
+                        purchaseDate < startDate
+                    ){
+                        return sum;
+                    }
+
+                    return sum +
+                        Number(
+                            order.totalCost || 0
+                        );
+
+                }, 0);
+
+        }
+
+
+        const purchaseTotals = {
+
+            analyticsDailyPurchases:
+                calculatePurchaseTotalFrom(
+                    purchaseStartOfToday
+                ),
+
+            analyticsWeeklyPurchases:
+                calculatePurchaseTotalFrom(
+                    purchaseStartOfWeek
+                ),
+
+            analyticsMonthlyPurchases:
+                calculatePurchaseTotalFrom(
+                    purchaseStartOfMonth
+                ),
+
+            analyticsYearlyPurchases:
+                calculatePurchaseTotalFrom(
+                    purchaseStartOfYear
+                )
+
+        };
+
+
+        Object.entries(
+            purchaseTotals
+        ).forEach(function(entry){
+
+            const id =
+                entry[0];
+
+            const value =
+                entry[1];
+
+            const element =
+                document.getElementById(id);
+
+            if(element){
+
+                element.textContent =
+                    "₦" +
+                    Math.round(
+                        value
+                    ).toLocaleString();
+
+            }
+
+        });
+
+
+        // ===========================================
+        // TOP PURCHASED PRODUCTS
+        // ===========================================
+
+        const topPurchasedContainer =
+            document.getElementById(
+                "analyticsTopPurchasedProducts"
+            );
+
+        if(topPurchasedContainer){
+
+            topPurchasedContainer.innerHTML =
+                "";
+
+            if(
+                topPurchasedProducts.length === 0
+            ){
+
+                const emptyMessage =
+                    document.createElement("p");
+
+                emptyMessage.className =
+                    "admin-empty-message";
+
+                emptyMessage.textContent =
+                    "No purchase data yet.";
+
+                topPurchasedContainer
+                    .appendChild(
+                        emptyMessage
+                    );
+
+            }else{
+
+                topPurchasedProducts
+                    .slice(0, 5)
+                    .forEach(
+                        function(item, index){
+
+                            const card =
+                                document.createElement(
+                                    "article"
+                                );
+
+                            card.className =
+                                "admin-top-product-card";
+
+                            const productInfo =
+                                document.createElement(
+                                    "div"
+                                );
+
+                            const productTitle =
+                                document.createElement(
+                                    "strong"
+                                );
+
+                            const productName =
+                                String(
+                                    item.productName ||
+                                    "Unknown Product"
+                                );
+
+                            const variantName =
+                                String(
+                                    item.variantName ||
+                                    ""
+                                ).trim();
+
+                            productTitle.textContent =
+                                (index + 1) +
+                                ". " +
+                                productName +
+                                (
+                                    variantName
+                                        ? " (" +
+                                          variantName +
+                                          ")"
+                                        : ""
+                                );
+
+                            const quantityLabel =
+                                document.createElement(
+                                    "p"
+                                );
+
+                            const quantity =
+                                Number(
+                                    item.quantityPurchased ||
+                                    0
+                                );
+
+                            quantityLabel.textContent =
+                                "Quantity purchased: " +
+                                quantity.toLocaleString();
+
+                            productInfo.appendChild(
+                                productTitle
+                            );
+
+                            productInfo.appendChild(
+                                quantityLabel
+                            );
+
+
+                            const valueBox =
+                                document.createElement(
+                                    "div"
+                                );
+
+                            valueBox.className =
+                                "admin-top-purchase-value";
+
+                            const valueLabel =
+                                document.createElement(
+                                    "small"
+                                );
+
+                            valueLabel.textContent =
+                                "Purchase value";
+
+                            const valueAmount =
+                                document.createElement(
+                                    "strong"
+                                );
+
+                            valueAmount.textContent =
+                                "₦" +
+                                Math.round(
+                                    Number(
+                                        item.purchaseValue ||
+                                        0
+                                    )
+                                ).toLocaleString();
+
+                            valueBox.appendChild(
+                                valueLabel
+                            );
+
+                            valueBox.appendChild(
+                                valueAmount
+                            );
+
+                            card.appendChild(
+                                productInfo
+                            );
+
+                            card.appendChild(
+                                valueBox
+                            );
+
+                            topPurchasedContainer
+                                .appendChild(card);
+
+                        }
+                    );
+
+            }
+
+        }
+
 
     }catch(error){
 
